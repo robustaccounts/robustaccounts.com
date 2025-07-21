@@ -7,6 +7,7 @@ import { Close, Menu } from "@/ui/icons/google-icons";
 import Link from "@/ui/link";
 import Image from "next/image";
 import cn from "@/utils/cn";
+import contactInfo from "@/data/contact-info";
 
 const mobileMenuLinks = [
   { name: "Home", href: "/" },
@@ -75,72 +76,68 @@ export default function Header() {
       <header
         className={cn(
           "fixed top-8 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-[100vw] -translate-x-1/2 transform rounded-full px-4 py-3 text-primary transition-all duration-300 md:container md:mx-auto md:w-full md:px-8 md:py-4",
-          isScrolled ? "bg-white backdrop-blur-sm" : "bg-white"
+          isScrolled ? "bg-secondary/60 backdrop-blur-sm" : "bg-secondary"
         )}
       >
-        <div className="w-full">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link
-              href="/"
-              className="group flex items-center gap-2 justify-between"
-            >
-              <Image
-                src="/assets/logo.png"
-                alt="Robust Accounts Logo"
-                width={48}
-                height={48}
-              />
-              {/* <span className="text-lg font-bold sm:text-xl">
-                  robustaccounts.com
-                </span> */}
-              <span className="text-xl font-bold sm:text-xl">
-                Robust Accounts
-              </span>
-            </Link>
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link
+            href="/"
+            className="group flex items-center justify-between object-contain"
+          >
+            <Image
+              src="/assets/logo.png"
+              alt="Robust Accounts Logo"
+              width={48}
+              height={48}
+              className="w-12 h-12 object-contain"
+            />
+            <span className="text-xl font-bold sm:text-xl">
+              Robust Accounts
+            </span>
+          </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden items-center gap-6 lg:flex lg:gap-8">
-              {[
-                { name: "Services", href: "/services" },
-                { name: "About", href: "/about" },
-                {
-                  name: "Our Expertise",
-                  href: "/our-expertise",
-                },
-                { name: "How It Works", href: "/how-it-works" },
-                { name: "Pricing", href: "/pricing" },
-              ].map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="font-medium transition-all hover:text-primary/60"
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </nav>
+          {/* Desktop Navigation */}
+          <nav className="hidden items-center gap-6 lg:flex lg:gap-8">
+            {[
+              { name: "Services", href: "/services" },
+              { name: "About", href: "/about" },
+              {
+                name: "Our Expertise",
+                href: "/our-expertise",
+              },
+              { name: "How It Works", href: "/how-it-works" },
+              { name: "Pricing", href: "/pricing" },
+            ].map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="font-medium transition-all hover:text-primary/60"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
 
-            <Link
-              href="tel:+18133370109"
-              className="text-lg font-semibold text-primary "
-            >
-              +1 (813) 337-0109
-            </Link>
+          <Link
+            href={`tel:${contactInfo.phoneHref}`}
+            className="text-lg font-semibold text-primary "
+          >
+            {contactInfo.phoneDisplay}
+          </Link>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 transition-colors hover:text-primary/60 lg:hidden"
-              aria-label="Toggle mobile menu"
-            >
-              {isMobileMenuOpen ? (
-                <Close className="h-7 w-7 fill-primary transition-transform duration-200" />
-              ) : (
-                <Menu className="h-7 w-7 fill-primary transition-transform duration-200" />
-              )}
-            </button>
-          </div>
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 transition-colors hover:text-primary/60 lg:hidden"
+            aria-label="Toggle mobile menu"
+          >
+            {isMobileMenuOpen ? (
+              <Close className="h-7 w-7 fill-primary transition-transform duration-200" />
+            ) : (
+              <Menu className="h-7 w-7 fill-primary transition-transform duration-200" />
+            )}
+          </button>
         </div>
       </header>
       <AnimatePresence>
@@ -198,10 +195,10 @@ export default function Header() {
               className="fixed right-0 bottom-0 left-0 z-50 flex w-full justify-center bg-secondary/95 px-4 pt-4 pb-8"
             >
               <Link
-                href="tel:+18133370109"
+                href={`tel:${contactInfo.phoneHref}`}
                 className="text-primary text-2xl font-bold"
               >
-                +1 (813) 337-0109
+                {contactInfo.phoneDisplay}
               </Link>
             </motion.div>
           </motion.div>

@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import { ArrowForward } from "@/ui/icons/google-icons";
 import cn from "@/utils/cn";
 import ScheduleCall from "./schedule-call";
+import contactInfo from "@/data/contact-info";
 
 const stats = [
-  { value: "24hrs", label: "Response Time" },
+  { value: contactInfo.responseTime, label: "Response Time" },
   { value: "500+", label: "Happy Clients" },
   { value: "99.9%", label: "Uptime" },
   { value: "5★", label: "Client Rating" },

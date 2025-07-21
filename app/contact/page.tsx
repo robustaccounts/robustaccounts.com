@@ -12,30 +12,31 @@ import SocialMediaSection from "@/components/social-media-section";
 import ContactHeroSection from "@/components/contact/hero-section";
 import ContactMethodsGrid from "@/components/contact/methods-section";
 import ContactFAQGrid from "@/components/contact/faq-section";
+import contactInfo from "@/data/contact-info";
 
 const contactMethods = [
   {
     icon: <Call className="h-8 w-8 fill-primary" />,
     title: "Phone",
     description: "Speak with our team directly",
-    contact: "+1 (555) 123-4567",
-    subtext: "Mon-Fri 9AM-6PM EST",
-    href: "tel:+15551234567",
+    contact: contactInfo.phoneDisplay,
+    subtext: contactInfo.businessHours.fullDisplay,
+    href: `tel:${contactInfo.phoneHref}`,
   },
   {
     icon: <Mail className="h-8 w-8 fill-primary" />,
     title: "Email",
     description: "Send us a message anytime",
-    contact: "info@accountingagency.com",
-    subtext: "We respond within 24 hours",
-    href: "mailto:info@accountingagency.com",
+    contact: contactInfo.emailDisplay,
+    subtext: `We respond within ${contactInfo.responseTime}`,
+    href: `mailto:${contactInfo.emailHref}`,
   },
   {
     icon: <CalendarClock className="h-8 w-8 fill-primary" />,
     title: "Schedule a Call",
     description: "Book a free consultation",
     contact: "Schedule Now",
-    subtext: "30-minute free consultation",
+    subtext: contactInfo.consultationDuration,
     href: "/getting-started",
   },
   {
@@ -43,7 +44,7 @@ const contactMethods = [
     title: "Live Chat",
     description: "Chat with our support team",
     contact: "Start Chat",
-    subtext: "Available Mon-Fri 9AM-6PM EST",
+    subtext: `Available ${contactInfo.supportHours}`,
     href: "#",
   },
 ];
