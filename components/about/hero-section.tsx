@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Check } from '@/ui/icons/google-icons';
 
-import GetStartedButton from '@/components/common/get-started-button';
+import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
 
 import cn from '@/utils/cn';
 
@@ -75,7 +75,7 @@ export default function HeroSection() {
 
             {/* CTA Button */}
             <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
-                <GetStartedButton />
+                <ScheduleMyCallButton showSubtext={false} />
             </div>
         </section>
     );

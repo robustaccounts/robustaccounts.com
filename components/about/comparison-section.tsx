@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Check } from '@/ui/icons/google-icons';
 
-import GetStartedButton from '@/components/common/get-started-button';
+import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
 
 import cn from '@/utils/cn';
 
@@ -221,7 +221,7 @@ export default function ComparisonSection() {
                         accounting.
                     </p>
                     <div className="flex flex-col justify-center gap-4 sm:flex-row">
-                        <GetStartedButton size="lg" />
+                        <ScheduleMyCallButton size="lg" showSubtext={false} />
                     </div>
                 </div>
             </div>

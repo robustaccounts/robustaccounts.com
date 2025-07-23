@@ -8,6 +8,7 @@ import Link from "@/ui/link";
 import Image from "next/image";
 import cn from "@/utils/cn";
 import contactInfo from "@/data/contact-info";
+import { useModal } from "@/contexts/modal-context";
 
 const mobileMenuLinks = [
   { name: "Home", href: "/" },
@@ -44,6 +45,7 @@ const itemVariants = {
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { isSchedulingModalOpen } = useModal();
 
   // Handle scroll detection
   useEffect(() => {
@@ -71,11 +73,15 @@ export default function Header() {
     };
   }, [isMobileMenuOpen]);
 
+  if (isSchedulingModalOpen) {
+    return null;
+  }
+
   return (
     <>
       <header
         className={cn(
-          "fixed top-8 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-[100vw] -translate-x-1/2 transform rounded-full px-4 py-3 text-primary transition-all duration-300 md:container md:mx-auto md:w-full md:px-8 md:py-4",
+          "fixed top-8 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-[100vw] -translate-x-1/2 transform rounded-full px-4 py-3 text-primary transition-all duration-300 md:container md:mx-auto md:w-full md:px-8",
           isScrolled ? "bg-secondary/60 backdrop-blur-sm" : "bg-secondary"
         )}
       >
@@ -119,9 +125,10 @@ export default function Header() {
             ))}
           </nav>
 
+          {/* Only show phone number in header on lg or higher */}
           <Link
             href={`tel:${contactInfo.phoneHref}`}
-            className="text-lg font-semibold text-primary "
+            className="hidden lg:inline text-lg font-semibold text-primary"
           >
             {contactInfo.phoneDisplay}
           </Link>

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import GetStartedButton from '@/components/common/get-started-button';
+import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
 
 import cn from '@/utils/cn';
 
@@ -25,7 +25,7 @@ export default function HeroSection() {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col justify-center gap-4 sm:flex-row sm:gap-6">
-                    <GetStartedButton className="w-xs" size="lg" />
+                    <ScheduleMyCallButton className="w-xs" size="lg" showSubtext={false} />
                 </div>
             </div>
 

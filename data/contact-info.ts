@@ -4,11 +4,8 @@ const contactInfo = {
   phoneHref: "+18133370109",
   emailDisplay: "consultations@robustaccounts.com",
   emailHref: "consultations@robustaccounts.com",
-  addressDisplay: "522 Oakfield DrBrandon, FL 33511, USA",
-  addressHref:
-    "https://maps.app.goo.gl/?q=522+Oakfield+Dr+Brandon+FL+33511+USA",
+  addressDisplay: "522 Oakfield Drive, Brandon, FL 33511, USA",
 
-  // Business Hours
   businessHours: {
     weekdays: "Mon-Fri 9AM-6PM",
     weekend: "Sat-Sun Closed",

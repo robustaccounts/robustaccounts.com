@@ -99,15 +99,12 @@ export default function Footer() {
                 {contactInfo.emailDisplay}
               </span>
             </Link>
-            <Link
-              href={contactInfo.addressHref}
-              className="flex items-center gap-2"
-            >
+            <div className="flex items-center gap-2">
               <LocationOn className="h-6 w-6 fill-primary" />
               <span className="text-sm font-medium">
                 {contactInfo.addressDisplay}
               </span>
-            </Link>
+            </div>
           </div>
         </div>
         <div className="col-span-3 grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4 lg:gap-x-12 lg:gap-y-16">

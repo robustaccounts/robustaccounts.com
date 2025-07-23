@@ -2,7 +2,7 @@ import React from "react";
 
 import { ArrowForward } from "@/ui/icons/google-icons";
 
-import GetStartedButton from "@/components/common/get-started-button";
+import ScheduleMyCallButton from "@/components/ui/schedule-my-call-button";
 
 const steps = [
   {
@@ -128,7 +128,7 @@ export default function ProcessStepsSection() {
             </div>
             {/* CTA Button */}
             <div className="mt-14 flex justify-center">
-              <GetStartedButton size="lg" />
+              <ScheduleMyCallButton size="lg" showSubtext={false} />
             </div>
           </div>
         </div>

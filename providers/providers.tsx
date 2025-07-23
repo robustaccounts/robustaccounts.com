@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 
 import { initializeAmplitude } from '@/lib/amplitude';
+import { ModalProvider } from '@/contexts/modal-context';
 
 
 export function Providers({
@@ -12,5 +13,9 @@ export function Providers({
         initializeAmplitude();
     }, []);
 
-    return children;
+    return (
+        <ModalProvider>
+            {children}
+        </ModalProvider>
+    );
 }

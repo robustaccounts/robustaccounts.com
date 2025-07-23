@@ -3,9 +3,9 @@
 import { motion } from "framer-motion";
 import React, { useState, useEffect, useRef } from "react";
 
-import { ArrowForward, Check } from "@/ui/icons/google-icons";
+import { Check } from "@/ui/icons/google-icons";
 import cn from "@/utils/cn";
-import SchedulingModal from "../scheduling-modal";
+import ScheduleMyCallButton from "../ui/schedule-my-call-button";
 import contactInfo from "@/data/contact-info";
 
 // Animation variants and speed matching the reference
@@ -29,8 +29,6 @@ const heroItem = {
 };
 
 export default function HeroSection() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   // Parallax state
   const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -54,19 +52,11 @@ export default function HeroSection() {
   const badgeParallax = scrollY * 0.13;
   const trustParallax = scrollY * 0.18;
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
   return (
     <section
       ref={sectionRef}
       className={cn(
-        "relative flex w-full flex-col items-center justify-center overflow-hidden aspect-[16/9] min-h-[400px] sm:min-h-[500px] md:min-h-[600px] lg:min-h-[700px]"
+        "relative flex w-full flex-col items-center justify-center overflow-hidden min-h-[100vh] sm:min-h-[100vh] md:min-h-[100vh] lg:min-h-[100vh]"
       )}
     >
       {/* Parallax Background Image */}
@@ -97,7 +87,7 @@ export default function HeroSection() {
         initial="hidden"
         animate="show"
         className={cn(
-          "relative z-20 flex w-full flex-col items-center gap-8 px-4 py-16 sm:gap-12 sm:px-6 sm:py-0 md:px-12 lg:px-16 h-full justify-center will-change-transform",
+          "relative z-20 flex w-full flex-col items-center gap-6 px-4 py-8 sm:gap-8 sm:px-6 sm:py-16 md:gap-12 md:px-12 lg:px-16 h-full justify-center will-change-transform",
           contentParallax !== 0 && "transition-transform duration-300"
         )}
         style={{
@@ -110,7 +100,7 @@ export default function HeroSection() {
         <motion.div
           variants={heroItem}
           className={cn(
-            "mt-8 inline-flex w-max items-center gap-2 rounded-full  px-4 py-2 text-sm font-medium backdrop-blur-sm bg-white/10 will-change-transform",
+            "mt-4 sm:mt-8 inline-flex w-max items-center gap-2 rounded-full px-3 py-2 sm:px-4 text-xs sm:text-sm font-medium backdrop-blur-sm bg-white/10 will-change-transform",
             badgeParallax !== 0 && "transition-transform duration-300"
           )}
           style={{
@@ -126,12 +116,12 @@ export default function HeroSection() {
         {/* Main Content */}
         <motion.div
           variants={heroItem}
-          className="flex flex-col items-center justify-center space-y-6 text-center sm:space-y-8 max-w-4xl"
+          className="flex flex-col items-center justify-center space-y-4 sm:space-y-6 md:space-y-8 text-center max-w-4xl w-full"
         >
           {/* Main Headline */}
           <motion.h1
             variants={heroItem}
-            className="text-center text-3xl font-extrabold sm:text-4xl md:text-5xl lg:text-6xl text-white"
+            className="text-center text-2xl font-extrabold sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white leading-tight"
             transition={{ duration: 0.5 }}
           >
             Transform Your <span className="text-white">Business</span> with{" "}
@@ -141,7 +131,7 @@ export default function HeroSection() {
           {/* Subtitle */}
           <motion.p
             variants={heroItem}
-            className="text-center text-base leading-relaxed sm:text-lg lg:text-xl text-white"
+            className="text-center text-sm leading-relaxed sm:text-base md:text-lg lg:text-xl text-white max-w-3xl"
             transition={{ duration: 0.5 }}
           >
             Save 40+ hours monthly and reduce costs by 60% with our
@@ -152,27 +142,10 @@ export default function HeroSection() {
           {/* CTA Buttons */}
           <motion.div
             variants={heroItem}
-            className="flex flex-col justify-center gap-4 sm:flex-row sm:gap-6"
+            className="flex flex-col justify-center gap-3 sm:gap-4 md:flex-row md:gap-6"
             transition={{ duration: 0.5 }}
           >
-            <div className="flex flex-col gap-3 items-center">
-              <button
-                onClick={handleOpenModal}
-                className={cn(
-                  "flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-accent pl-1 pr-4 py-1 font-semibold text-white backdrop-blur-2xl transition-all hover:bg-accent/80 sm:w-auto"
-                )}
-              >
-                <div className={cn("rounded-full bg-white p-3")}>
-                  <ArrowForward className="h-5 w-5 fill-accent" />
-                </div>
-                <span className="text-lg font-semibold">
-                  Schedule My Free Consultation
-                </span>
-              </button>
-              <p className="text-center text-sm text-white sm:text-left">
-                No credit card required • {contactInfo.consultationDuration}
-              </p>
-            </div>
+            <ScheduleMyCallButton size="lg" />
           </motion.div>
         </motion.div>
 
@@ -180,7 +153,7 @@ export default function HeroSection() {
         <motion.div
           variants={heroItem}
           className={cn(
-            "flex flex-col items-center gap-4 px-4 py-12 will-change-transform",
+            "flex flex-col items-center gap-3 sm:gap-4 px-4 py-6 sm:py-8 md:py-12 will-change-transform",
             trustParallax !== 0 && "transition-transform duration-300"
           )}
           transition={{ duration: 0.5 }}
@@ -190,7 +163,7 @@ export default function HeroSection() {
               : undefined,
           }}
         >
-          <div className="flex items-center gap-x-4 text-sm text-white">
+          <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4 gap-y-2 text-xs sm:text-sm text-white">
             <Check className="h-4 w-4 fill-white" />
             <span>No setup fees</span>
             <Check className="h-4 w-4 fill-white" />
@@ -200,7 +173,6 @@ export default function HeroSection() {
           </div>
         </motion.div>
       </motion.div>
-      <SchedulingModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </section>
   );
 }
