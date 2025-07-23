@@ -1,5 +1,7 @@
-import React from "react";
+"use client";
 
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowForward, Check } from "@/ui/icons/google-icons";
 import Link from "@/ui/link";
 import cn from "@/utils/cn";
@@ -54,29 +56,45 @@ function WhyChooseUsCard({
 }
 
 export default function WhyChooseUsSection() {
+  // Section ref for scroll tracking
+  const sectionRef = useRef<HTMLDivElement>(null);
+  // Framer Motion scroll progress for this section
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  // Parallax transforms (tweak values for desired effect)
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0px", "80px"]);
+  const overlayY = useTransform(scrollYProgress, [0, 1], ["0px", "50px"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0px", "-30px"]);
+
   return (
     <section
+      ref={sectionRef}
       className={cn(
         "relative flex min-h-screen w-full flex-col items-center justify-center px-4 py-20 sm:px-8 md:px-16 lg:px-24 xl:py-32 overflow-hidden"
       )}
     >
-      {/* Full-width Background Image */}
-      <div
-        className="absolute inset-0 z-0"
+      {/* Parallax Background Image */}
+      <motion.div
+        className="absolute inset-0 z-0 will-change-transform bg-cover bg-center"
         style={{
           backgroundImage: "url('/assets/images/hero-section-bg.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
+          y: bgY,
         }}
         aria-hidden="true"
       />
-      {/* Overlay for better text contrast */}
-      <div
-        className="absolute inset-0 z-10 bg-black/70 pointer-events-none"
+      {/* Parallax Overlay for better text contrast */}
+      <motion.div
+        className="absolute inset-0 z-10 bg-black/70 pointer-events-none will-change-transform"
+        style={{ y: overlayY }}
         aria-hidden="true"
       />
-      <div className="relative z-20 flex w-full max-w-6xl flex-col gap-16 lg:flex-row lg:items-center lg:justify-center">
+      <motion.div
+        className="relative z-20 flex w-full max-w-6xl flex-col gap-16 lg:flex-row lg:items-center lg:justify-center will-change-transform"
+        style={{ y: contentY }}
+      >
         {/* Left: Heading and Description */}
         <div className="flex flex-col items-center lg:items-start justify-center gap-8 text-center lg:text-left sm:gap-10 w-full lg:w-1/2">
           <h2 className="text-3xl font-bold sm:text-4xl lg:text-5xl text-white">
@@ -90,9 +108,10 @@ export default function WhyChooseUsSection() {
             <p className="text-lg sm:text-xl text-gray-200">
               Ready to transform your business finances?
             </p>
+            {/* Hide Get Started button on mobile */}
             <Link
               href="/contact"
-              className="flex transform cursor-pointer items-center justify-center gap-2 rounded-full bg-accent pl-1 pr-4 py-1 font-semibold text-white backdrop-blur-2xl transition-all hover:bg-accent/80 sm:w-auto"
+              className="hidden sm:flex transform cursor-pointer items-center justify-center gap-2 rounded-full bg-accent pl-1 pr-4 py-1 font-semibold text-white backdrop-blur-2xl transition-all hover:bg-accent/80 sm:w-auto"
             >
               <div className={cn("rounded-full bg-white p-3")}>
                 <ArrowForward className="h-5 w-5 fill-accent" />
@@ -111,7 +130,7 @@ export default function WhyChooseUsSection() {
             />
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

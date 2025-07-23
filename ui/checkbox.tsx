@@ -83,6 +83,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
                         : 'var(--color-foreground, #1a4d3a)',
                 }}
                 onClick={handleChange}
+                onMouseDown={(e) => e.preventDefault()}
             >
                 {label}
             </label>
