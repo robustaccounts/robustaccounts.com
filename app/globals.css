@@ -1,24 +1,24 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
-  --background: #ffffff;
-  --foreground: #000000;
-  --primary: #0f3d2e;
-  --accent: #2d8f5f;
-  --secondary: #f5f9f7;
+    --background: #ffffff;
+    --foreground: #000000;
+    --primary: #0f3d2e;
+    --accent: #2d8f5f;
+    --secondary: #f5f9f7;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-accent: var(--accent);
-  --color-secondary: var(--secondary);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-primary: var(--primary);
+    --color-accent: var(--accent);
+    --color-secondary: var(--secondary);
 
-  --font-montserrat: var(--font-montserrat);
-  --font-merriweather: var(--font-merriweather);
-  --font-onest: var(--font-onest);
-  --font-inter: var(--font-inter);
+    --font-montserrat: var(--font-montserrat);
+    --font-merriweather: var(--font-merriweather);
+    --font-onest: var(--font-onest);
+    --font-inter: var(--font-inter);
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -29,7 +29,7 @@
 } */
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-onest);
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-onest);
 }

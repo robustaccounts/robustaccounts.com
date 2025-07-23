@@ -1,12 +1,14 @@
 import React from 'react';
 
+import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
+
 import cn from '@/utils/cn';
 
 export function HeroSection() {
     return (
         <section
             className={cn(
-                'container mx-auto flex w-full flex-col items-center justify-center gap-12 px-4 pt-40 sm:gap-16 sm:px-6 md:px-12 lg:px-16',
+                'mx-auto flex w-full max-w-3xl flex-col items-center justify-center gap-12 px-4 pt-40 sm:gap-16 sm:px-6',
             )}
         >
             {/* Main Content */}
@@ -23,22 +25,25 @@ export function HeroSection() {
             </div>
 
             {/* Trust Indicators */}
-            {/* <div className="grid w-full max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {trustIndicators.map((indicator, index) => (
+            <div className="mt-6 grid w-full max-w-xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                    '100+ Clients',
+                    'Certified Experts',
+                    '99% Satisfaction',
+                    'Secure & Compliant',
+                ].map((indicator, index) => (
                     <div
                         key={index}
                         className="flex items-center justify-center gap-2 text-sm text-gray-600"
                     >
-                        <Check className="h-4 w-4 flex-shrink-0 fill-accent" />
+                        {/* You can replace this with a real icon if desired */}
+                        <span className="inline-block h-4 w-4 rounded-full bg-accent" />
                         <span>{indicator}</span>
                     </div>
                 ))}
-            </div> */}
+            </div>
 
-            {/* CTA Buttons */}
-            {/* <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
-                <GetStartedButton className="w-xs" size="lg" />
-            </div> */}
+            <ScheduleMyCallButton />
         </section>
     );
 }

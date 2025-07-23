@@ -66,14 +66,14 @@ export default function HeroSection() {
                 style={{
                     // Remove transform for background, let it fit via Tailwind
                     backgroundImage:
-                        "url('/assets/images/hero-section-bg.png')",
+                        "url('/assets/images/hero-section-bg-2.png')",
                 }}
                 aria-hidden="true"
             />
             {/* Parallax Overlay for better text contrast */}
             <motion.div
                 className={cn(
-                    'pointer-events-none absolute inset-0 z-10 bg-black/70 will-change-transform',
+                    'pointer-events-none absolute inset-0 z-10 bg-black/80 will-change-transform',
                     overlayParallax !== 0 &&
                         'transition-transform duration-300',
                 )}

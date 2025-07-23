@@ -16,8 +16,8 @@ const mobileMenuLinks = [
     { name: 'Home', href: '/' },
     { name: 'About', href: '/about' },
     { name: 'Services', href: '/services' },
-    { name: 'Our Expertise', href: '/our-expertise' },
     { name: 'How It Works', href: '/how-it-works' },
+    { name: 'Our Expertise', href: '/our-expertise' },
     { name: 'Testimonials', href: '/testimonials' },
     { name: 'FAQ', href: '/faq' },
     { name: 'Pricing', href: '/pricing' },
@@ -112,12 +112,14 @@ export default function Header() {
                         {[
                             { name: 'Services', href: '/services' },
                             { name: 'About', href: '/about' },
+
+                            { name: 'How It Works', href: '/how-it-works' },
                             {
                                 name: 'Our Expertise',
                                 href: '/our-expertise',
                             },
-                            { name: 'How It Works', href: '/how-it-works' },
                             { name: 'Pricing', href: '/pricing' },
+                            { name: 'Blog', href: '/blog' },
                         ].map((item) => (
                             <Link
                                 key={item.name}

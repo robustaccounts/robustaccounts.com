@@ -1,10 +1,9 @@
 import React from 'react';
 
 import HeroSection from '@/components/about/hero-section';
+import MissionVisionSection from '@/components/about/mission-vision-section';
 import OurStorySection from '@/components/about/our-story-section';
 import ValuesSection from '@/components/about/values-section';
-import MissionVisionSection from '@/components/about/mission-vision-section';
-import TeamSection from '@/components/about/team-section';
 
 export default function AboutPage() {
     return (
@@ -13,7 +12,6 @@ export default function AboutPage() {
             <OurStorySection />
             <ValuesSection />
             <MissionVisionSection />
-            <TeamSection />
         </main>
     );
 }

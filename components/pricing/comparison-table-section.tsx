@@ -98,7 +98,7 @@ export default function ComparisonTableSection() {
                                     </td>
                                     <td className="p-4 text-center text-sm">
                                         {feature.starter === true ? (
-                                            <Check className="mx-auto h-5 w-5 fill-primary" />
+                                            <Check className="mx-auto h-5 w-5 fill-accent" />
                                         ) : feature.starter === false ? (
                                             <span className="text-gray-400">
                                                 —
@@ -111,7 +111,7 @@ export default function ComparisonTableSection() {
                                     </td>
                                     <td className="p-4 text-center text-sm">
                                         {feature.professional === true ? (
-                                            <Check className="mx-auto h-5 w-5 fill-primary" />
+                                            <Check className="mx-auto h-5 w-5 fill-accent" />
                                         ) : feature.professional === false ? (
                                             <span className="text-gray-400">
                                                 —
@@ -124,7 +124,7 @@ export default function ComparisonTableSection() {
                                     </td>
                                     <td className="p-4 text-center text-sm">
                                         {feature.enterprise === true ? (
-                                            <Check className="mx-auto h-5 w-5 fill-primary" />
+                                            <Check className="mx-auto h-5 w-5 fill-accent" />
                                         ) : feature.enterprise === false ? (
                                             <span className="text-gray-400">
                                                 —
