@@ -406,7 +406,7 @@ export default function SchedulingModal({
                                     </div>
 
                                     {/* Appointment Details Card */}
-                                    <div className="mb-8 w-full max-w-md rounded-xl bg-gradient-to-br from-secondary to-gray-50 p-6 shadow-lg">
+                                    <div className="mb-8 w-full max-w-md rounded-xl p-6">
                                         <div className="text-center">
                                             <div className="mb-3 text-sm font-medium text-gray-600 sm:text-base">
                                                 Your appointment is scheduled
@@ -441,83 +441,74 @@ export default function SchedulingModal({
                                         </div>
                                     </div>
                                     {/* Calendar Integration Section */}
-                                    <div className="mb-6 w-full max-w-md">
-                                        <div className="space-y-3">
-                                            {/* Google Calendar */}
-                                            <button
-                                                onClick={() => {
-                                                    const selectedSlot =
-                                                        timeSlots.find(
-                                                            (slot) =>
-                                                                slot.id ===
-                                                                selectedTimeSlot,
-                                                        );
-                                                    if (
-                                                        selectedDate &&
-                                                        selectedSlot
-                                                    ) {
-                                                        const startTime =
-                                                            new Date(
-                                                                selectedDate,
-                                                            );
-                                                        const [hours, minutes] =
-                                                            selectedSlot.pstTime
-                                                                .split(' ')[0]
-                                                                .split(':')
-                                                                .map(Number);
-                                                        startTime.setHours(
-                                                            hours,
-                                                            minutes,
-                                                            0,
-                                                            0,
-                                                        );
+                                    <div className="mb-6 flex w-full items-center justify-center">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const selectedSlot =
+                                                    timeSlots.find(
+                                                        (slot) =>
+                                                            slot.id ===
+                                                            selectedTimeSlot,
+                                                    );
+                                                if (
+                                                    selectedDate &&
+                                                    selectedSlot
+                                                ) {
+                                                    const startTime = new Date(
+                                                        selectedDate,
+                                                    );
+                                                    const [hours, minutes] =
+                                                        selectedSlot.pstTime
+                                                            .split(' ')[0]
+                                                            .split(':')
+                                                            .map(Number);
+                                                    startTime.setHours(
+                                                        hours,
+                                                        minutes,
+                                                        0,
+                                                        0,
+                                                    );
 
-                                                        const endTime =
-                                                            new Date(startTime);
-                                                        endTime.setHours(
-                                                            endTime.getHours() +
-                                                                1,
-                                                        );
+                                                    const endTime = new Date(
+                                                        startTime,
+                                                    );
+                                                    endTime.setHours(
+                                                        endTime.getHours() + 1,
+                                                    );
 
-                                                        // Set consultations@robustaccounts.com as the organizer, and the user as the guest
-                                                        // Google Calendar web links do not support specifying the organizer directly,
-                                                        // but the event will be created by the user (the guest) in their calendar.
-                                                        // We'll add consultations@robustaccounts.com as a guest.
-                                                        const guestEmail =
-                                                            'consultations@robustaccounts.com';
-                                                        // The 'add' param is for guests, not organizer.
-                                                        // The event will be created in the user's calendar (the person clicking).
-                                                        const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Free Accounting Consultation - Robust Accounts&dates=${startTime
-                                                            .toISOString()
-                                                            .replace(
-                                                                /[-:]/g,
-                                                                '',
-                                                            )
-                                                            .replace(
-                                                                /\.\d{3}/,
-                                                                '',
-                                                            )}/${endTime
-                                                            .toISOString()
-                                                            .replace(
-                                                                /[-:]/g,
-                                                                '',
-                                                            )
-                                                            .replace(
-                                                                /\.\d{3}/,
-                                                                '',
-                                                            )}&details=Free consultation with Robust Accounts to discuss your accounting needs. We'll call you at the scheduled time.&location=Phone Call&add=${guestEmail}`;
-                                                        window.open(
-                                                            googleUrl,
-                                                            '_blank',
-                                                        );
-                                                    }
-                                                }}
-                                                className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition-all hover:bg-gray-50 hover:shadow-md sm:px-6 sm:py-4 sm:text-base"
-                                            >
-                                                <GoogleCalendar className="h-5 w-5" />
-                                                Add to Google Calendar
-                                            </button>
-                                        </div>
+                                                    // Set consultations@robustaccounts.com as the organizer, and the user as the guest
+                                                    // Google Calendar web links do not support specifying the organizer directly,
+                                                    // but the event will be created by the user (the guest) in their calendar.
+                                                    // We'll add consultations@robustaccounts.com as a guest.
+                                                    const guestEmail =
+                                                        'consultations@robustaccounts.com';
+                                                    // The 'add' param is for guests, not organizer.
+                                                    // The event will be created in the user's calendar (the person clicking).
+                                                    const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Free Accounting Consultation - Robust Accounts&dates=${startTime
+                                                        .toISOString()
+                                                        .replace(/[-:]/g, '')
+                                                        .replace(
+                                                            /\.\d{3}/,
+                                                            '',
+                                                        )}/${endTime
+                                                        .toISOString()
+                                                        .replace(/[-:]/g, '')
+                                                        .replace(
+                                                            /\.\d{3}/,
+                                                            '',
+                                                        )}&details=Free consultation with Robust Accounts to discuss your accounting needs. We'll call you at the scheduled time.&location=Phone Call&add=${guestEmail}`;
+                                                    window.open(
+                                                        googleUrl,
+                                                        '_blank',
+                                                    );
+                                                }
+                                            }}
+                                            className="flex w-auto cursor-pointer items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition-all sm:px-6 sm:py-4 sm:text-base"
+                                        >
+                                            <GoogleCalendar className="h-5 w-5" />
+                                            Add to Google Calendar
+                                        </button>
                                     </div>
 
                                     {/* Confirmation Details */}

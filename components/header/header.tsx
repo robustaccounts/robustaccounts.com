@@ -100,7 +100,7 @@ export default function Header() {
                             alt="Robust Accounts Logo"
                             width={64}
                             height={64}
-                            className="h-14 w-14 object-contain"
+                            className="h-10 w-10 object-contain md:h-14 md:w-14"
                         />
                         <span className="text-xl font-bold sm:text-xl">
                             Robust Accounts

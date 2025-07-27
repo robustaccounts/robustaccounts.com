@@ -50,14 +50,13 @@ export default function HeroSection() {
     // Parallax factors for each layer
     const overlayParallax = scrollY * 0.18;
     const contentParallax = scrollY * 0.08;
-    const badgeParallax = scrollY * 0.13;
     const trustParallax = scrollY * 0.18;
 
     return (
         <section
             ref={sectionRef}
             className={cn(
-                'relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden',
+                'relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden pt-8',
             )}
         >
             {/* Parallax Background Image */}
@@ -100,27 +99,6 @@ export default function HeroSection() {
                         : undefined,
                 }}
             >
-                {/* Badge */}
-                {/* <motion.div
-                    variants={heroItem}
-                    className={cn(
-                        // Font size: xs (mobile), sm (sm+), md (md+)
-                        'mt-4 inline-flex w-max items-center gap-2 rounded-full bg-white/10 px-3 py-2 text-xs font-medium backdrop-blur-sm will-change-transform sm:mt-8 sm:px-4 sm:text-sm md:text-base',
-                        badgeParallax !== 0 &&
-                            'transition-transform duration-300',
-                    )}
-                    style={{
-                        transform: badgeParallax
-                            ? `translateY(-${badgeParallax}px)`
-                            : undefined,
-                    }}
-                >
-                    <div className="h-2 w-2 animate-pulse rounded-full bg-accent" />
-                    <span className="text-white">
-                        Trusted by Growing Businesses
-                    </span>
-                </motion.div> */}
-
                 {/* Main Content */}
                 <motion.div
                     variants={heroItem}
