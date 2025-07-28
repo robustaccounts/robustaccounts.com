@@ -161,7 +161,7 @@ export default function Header() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.18 }}
-                        className="fixed inset-0 top-0 z-40 h-screen w-screen bg-secondary/95 p-4 backdrop-blur-sm lg:hidden"
+                        className="fixed inset-0 top-0 z-40 h-screen w-screen bg-white p-4 backdrop-blur-sm lg:hidden"
                     >
                         <motion.button
                             initial={{ opacity: 0, scale: 0.8, y: -10 }}
@@ -210,7 +210,7 @@ export default function Header() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 32 }}
                             transition={{ delay: 0.18, duration: 0.22 }}
-                            className="fixed right-0 bottom-0 left-0 z-50 flex w-full justify-center bg-secondary/95 px-4 pt-4 pb-8"
+                            className="fixed right-0 bottom-0 left-0 z-50 flex w-full justify-center bg-white px-4 pt-4 pb-8"
                         >
                             <Link
                                 href={`tel:${contactInfo.phoneHref}`}

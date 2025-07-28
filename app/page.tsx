@@ -1,5 +1,10 @@
+'use client';
+
+import { useModal } from '@/contexts/modal-context';
+
 import React from 'react';
 
+import SoftwaresMasterySection from '@/components/common/softwares-mastery';
 import FAQSection from '@/components/home/faq-section';
 import HeroSection from '@/components/home/hero-section';
 import ProcessStepsSection from '@/components/home/process-steps-section';
@@ -12,6 +17,7 @@ export default function Home() {
         <main className="flex min-h-screen flex-col">
             <HeroSection />
             <ServicesSection />
+            <SoftwaresMasterySection />
             <ProcessStepsSection />
             <WhyChooseUsSection />
             <FAQSection />

@@ -1,46 +1,46 @@
-import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
-import Script from "next/script";
+import type { Metadata } from 'next';
+import { Manrope } from 'next/font/google';
+import Script from 'next/script';
 
-import { Providers } from "@/providers/providers";
+import { Providers } from '@/providers/providers';
 
-import ContactUsBanner from "@/components/contact-us-banner";
-import Footer from "@/components/footer/footer";
-import Header from "@/components/header/header";
-import NewsletterSubscription from "@/components/newsletter-subscription";
+import ContactUsBanner from '@/components/contact-us-banner';
+import Footer from '@/components/footer/footer';
+import Header from '@/components/header/header';
+import NewsletterSubscription from '@/components/newsletter-subscription';
 
-import "./globals.css";
+import './globals.css';
 
 const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+    subsets: ['latin'],
+    weight: ['400', '500', '600', '700'],
 });
 
 export const metadata: Metadata = {
-  title: "Accounting Outsourcing Agency",
-  description: "Accounting Outsourcing Agency",
+    title: 'Accounting Outsourcing Agency',
+    description: 'Accounting Outsourcing Agency',
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className={`${manrope.className} antialiased`}>
-        <Script
-          src="//code.tidio.co/9itfrqnmmdew7a6oktqq4yb0mm6cqddb.js"
-          strategy="beforeInteractive"
-        />
-        <Providers>
-          <Header />
-          {children}
-          <ContactUsBanner />
-          {/* <NewsletterSubscription /> */}
-          <Footer />
-        </Providers>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en">
+            <body className={`${manrope.className} antialiased`}>
+                <Script
+                    src="//code.tidio.co/9itfrqnmmdew7a6oktqq4yb0mm6cqddb.js"
+                    strategy="beforeInteractive"
+                />
+                <Providers>
+                    <Header />
+                    {children}
+                    <ContactUsBanner />
+                    {/* <NewsletterSubscription /> */}
+                    <Footer />
+                </Providers>
+            </body>
+        </html>
+    );
 }

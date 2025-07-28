@@ -25,7 +25,7 @@ export default function TermsOfService() {
                     </div>
 
                     {/* Content */}
-                    <div className="prose prose-lg rounded-lg bg-white p-4 shadow-sm">
+                    <div className="prose prose-lg rounded-lg bg-white p-4">
                         <div className="space-y-8">
                             {/* Introduction */}
                             <section>
@@ -366,7 +366,7 @@ export default function TermsOfService() {
                                     of Service, please contact us:
                                 </p>
                                 <div className="flex flex-col gap-y-2 text-gray-700">
-                                    <div>
+                                    <div className="flex flex-col gap-y-2 md:flex-row">
                                         <span className="font-bold">
                                             Email:{' '}
                                         </span>
@@ -377,15 +377,18 @@ export default function TermsOfService() {
                                             {contactInfo.emailDisplay}
                                         </Link>
                                     </div>
-                                    <div>
+                                    <div className="flex flex-col gap-y-2 md:flex-row">
                                         <span className="font-bold">
                                             Phone:{' '}
                                         </span>
-                                        <span className="text-accent">
+                                        <Link
+                                            className="text-accent"
+                                            href={`tel:${contactInfo.phoneHref}`}
+                                        >
                                             {contactInfo.phoneDisplay}
-                                        </span>
+                                        </Link>
                                     </div>
-                                    <div>
+                                    <div className="flex flex-col gap-y-2 md:flex-row">
                                         <span className="font-bold">
                                             Address:{' '}
                                         </span>

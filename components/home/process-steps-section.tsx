@@ -5,8 +5,6 @@ import React, { useRef } from 'react';
 
 import { ArrowForward } from '@/ui/icons/google-icons';
 
-import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
-
 import cn from '@/utils/cn';
 
 const steps = [
@@ -49,7 +47,7 @@ export default function ProcessStepsSection() {
         <section
             ref={sectionRef}
             className={cn(
-                'relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden px-4 py-20 sm:px-8 md:px-16 lg:px-24 xl:py-32',
+                'relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden px-4 py-8 sm:px-8 sm:py-12 md:px-16 md:py-20 lg:px-24 xl:py-32',
             )}
         >
             {/* Parallax Background Image */}
@@ -69,10 +67,10 @@ export default function ProcessStepsSection() {
                 aria-hidden="true"
             />
             <motion.div
-                className="relative z-20 flex w-full max-w-4xl flex-col gap-16 will-change-transform"
+                className="relative z-20 flex w-full max-w-6xl flex-col gap-8 will-change-transform md:gap-16"
                 style={{ y: contentY }}
             >
-                <div className="mb-14 text-center">
+                <div className="pt-12 text-center">
                     <h2 className="mb-4 text-4xl font-bold text-white sm:text-5xl">
                         How It Works
                     </h2>
@@ -80,8 +78,8 @@ export default function ProcessStepsSection() {
                         Simple steps to get your accounting outsourced
                     </p>
                 </div>
-                {/* Steps Grid */}
-                <div className="relative mx-auto grid max-w-2xl grid-cols-2 grid-rows-2 gap-x-16 gap-y-16 md:gap-x-24 md:gap-y-20">
+                {/* Desktop Steps Grid - Hidden on mobile */}
+                <div className="relative mx-auto hidden max-w-4xl grid-cols-2 grid-rows-2 gap-x-16 gap-y-16 md:grid md:gap-x-24 md:gap-y-20 lg:max-w-5xl">
                     {/* Step 1 */}
                     <div className="relative flex flex-col items-center text-center">
                         <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-accent text-3xl font-bold text-white shadow-lg ring-4 ring-accent/10">
@@ -94,7 +92,7 @@ export default function ProcessStepsSection() {
                             {steps[0].description}
                         </p>
                         {/* Arrow to Step 2 (right) */}
-                        <div className="absolute top-1/2 right-[-44px] z-10 hidden md:block">
+                        <div className="absolute top-1/2 right-[-44px] z-10">
                             <ArrowForward className="h-10 w-10 text-accent" />
                         </div>
                     </div>
@@ -110,7 +108,7 @@ export default function ProcessStepsSection() {
                             {steps[1].description}
                         </p>
                         {/* Arrow to Step 3 (down) */}
-                        <div className="absolute bottom-[-44px] left-1/2 z-10 hidden -translate-x-1/2 md:block">
+                        <div className="absolute bottom-[-44px] left-1/2 z-10 -translate-x-1/2">
                             <ArrowForward className="h-10 w-10 rotate-90 text-accent" />
                         </div>
                     </div>
@@ -138,14 +136,14 @@ export default function ProcessStepsSection() {
                             {steps[2].description}
                         </p>
                         {/* Arrow to Step 4 (left) */}
-                        <div className="absolute top-1/2 left-[-44px] z-10 hidden -translate-y-1/2 md:block">
+                        <div className="absolute top-1/2 left-[-44px] z-10 -translate-y-1/2">
                             <ArrowForward className="h-10 w-10 rotate-180 text-accent" />
                         </div>
                     </div>
                 </div>
-                {/* Mobile Steps & CTA */}
-                <div className="mt-16 md:hidden">
-                    <div className="relative flex flex-col gap-12">
+                {/* Mobile Steps - No CTA */}
+                <div className="mt-8 md:mt-16 md:hidden">
+                    <div className="relative flex flex-col gap-8">
                         {steps.map((item, index) => (
                             <div
                                 key={index}
@@ -165,16 +163,12 @@ export default function ProcessStepsSection() {
                                 </p>
                                 {/* Arrow (mobile, below step, except last) */}
                                 {index < steps.length - 1 && (
-                                    <div className="mt-6 mb-2 block">
+                                    <div className="mt-4 mb-2 block">
                                         <ArrowForward className="mx-auto h-6 w-6 rotate-90 text-accent" />
                                     </div>
                                 )}
                             </div>
                         ))}
-                    </div>
-                    {/* CTA Button */}
-                    <div className="mt-14 flex justify-center">
-                        <ScheduleMyCallButton size="lg" showSubtext={false} />
                     </div>
                 </div>
             </motion.div>

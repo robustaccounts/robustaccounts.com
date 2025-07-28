@@ -1,7 +1,6 @@
-import { blogPosts } from '@/data/blog-posts';
-
 import { MetadataRoute } from 'next';
 
+import { getAllBlogPosts } from '@/lib/blog';
 import { config } from '@/lib/config';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -33,7 +32,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: route === '' ? 1 : 0.8,
     }));
 
-    // Blog posts from your data
+    // Blog posts from content folder
+    const blogPosts = getAllBlogPosts();
     const blogPostRoutes = blogPosts.map((post) => ({
         url: `${baseUrl}/blog/${post.slug}`,
         lastModified: new Date(post.date),

@@ -56,7 +56,7 @@ export default function HeroSection() {
         <section
             ref={sectionRef}
             className={cn(
-                'relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden pt-8',
+                'relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden lg:pt-32',
             )}
         >
             {/* Parallax Background Image */}

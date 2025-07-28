@@ -9,8 +9,6 @@ import { ArrowForward } from '@/ui/icons/google-icons';
 
 import cn from '@/utils/cn';
 
-import SchedulingModal from '../scheduling-modal';
-
 interface ScheduleMyCallButtonProps {
     className?: string;
     showSubtext?: boolean;
@@ -26,14 +24,10 @@ export default function ScheduleMyCallButton({
     variant = 'primary',
     subTextClassName,
 }: ScheduleMyCallButtonProps) {
-    const { isSchedulingModalOpen, setSchedulingModalOpen } = useModal();
+    const { setSchedulingModalOpen } = useModal();
 
     const handleOpenModal = () => {
         setSchedulingModalOpen(true);
-    };
-
-    const handleCloseModal = () => {
-        setSchedulingModalOpen(false);
     };
 
     const sizeClasses = {
@@ -100,10 +94,6 @@ export default function ScheduleMyCallButton({
                     No credit card required • {contactInfo.consultationDuration}
                 </p>
             )}
-            <SchedulingModal
-                isOpen={isSchedulingModalOpen}
-                onClose={handleCloseModal}
-            />
         </div>
     );
 }

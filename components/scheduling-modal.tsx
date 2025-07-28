@@ -13,6 +13,7 @@ import PhoneInput from '@/ui/phone-input';
 import Textarea from '@/ui/textarea';
 
 import cn from '@/utils/cn';
+import { saveLead } from '@/lib/save-lead';
 
 interface SchedulingModalProps {
     isOpen: boolean;
@@ -67,7 +68,6 @@ export default function SchedulingModal({
         message: '',
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [isAnimating, setIsAnimating] = useState(false);
     const [isBooking, setIsBooking] = useState(false);
     const [isBooked, setIsBooked] = useState(false);
     const [smsOptOut, setSmsOptOut] = useState(false);
@@ -94,14 +94,6 @@ export default function SchedulingModal({
         setSmsUpdates(false);
     }, []);
 
-    // Handle animation timing
-    useEffect(() => {
-        if (isOpen) {
-            setIsAnimating(true);
-        } else {
-            setIsAnimating(false);
-        }
-    }, [isOpen]);
 
     // Prevent body scrolling when modal is open
     useEffect(() => {
@@ -280,23 +272,45 @@ export default function SchedulingModal({
         setIsBooking(true);
 
         try {
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-
             const selectedSlot = timeSlots.find(
                 (slot) => slot.id === selectedTimeSlot,
             );
-            console.log('Booking details:', {
-                contactData,
-                date: selectedDate,
-                timeSlot: selectedTimeSlot,
-                localTime: selectedSlot?.time,
-                pstTime: selectedSlot?.pstTime,
+
+            if (!selectedSlot) return;
+
+            // Create UTC datetime from PST time slot
+            const pstTime = selectedSlot.pstTime.split(' ')[0]; // Remove ' PST'
+            const [hours, minutes] = pstTime.split(':').map(Number);
+            
+            // Create date in PST timezone
+            const appointmentDate = new Date(selectedDate);
+            appointmentDate.setHours(hours, minutes, 0, 0);
+            
+            // Convert PST to UTC (PST is UTC-8)
+            const utcAppointmentDatetime = new Date(appointmentDate.getTime() + (8 * 60 * 60 * 1000));
+
+            const leadData = {
+                firstName: contactData.firstName,
+                lastName: contactData.lastName,
+                email: contactData.email,
+                phone: contactData.phone,
+                businessName: contactData.businessName,
+                industry: contactData.industry,
+                message: contactData.message,
+                appointmentDatetime: utcAppointmentDatetime,
                 smsOptOut,
                 smsUpdates,
-            });
+            };
 
-            setIsBooked(true);
+            const result = await saveLead(leadData);
+            
+            if (result.success) {
+                console.log('Lead saved successfully with ID:', result.leadId);
+                setIsBooked(true);
+            } else {
+                console.error('Failed to save lead:', result.error);
+                // Handle error - you might want to show an error message to the user
+            }
         } catch (error) {
             console.error('Booking error:', error);
         } finally {
@@ -357,7 +371,8 @@ export default function SchedulingModal({
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="fixed inset-0 z-[9999] h-screen w-screen bg-black/20"
+                    className="fixed inset-0 z-[9999] flex h-screen w-screen bg-black/50"
+                    onClick={handleClose}
                 >
                     {isBooked ? (
                         <motion.div
@@ -370,7 +385,8 @@ export default function SchedulingModal({
                                 stiffness: 200,
                                 duration: 0.5,
                             }}
-                            className="absolute inset-0 flex h-full w-full flex-col bg-white"
+                            className="relative h-full w-full flex-col bg-white"
+                            onClick={(e) => e.stopPropagation()}
                         >
                             {/* Header with close button on the right - Sticky */}
                             <div className="sticky top-0 z-10 flex w-full items-center justify-between border-b border-gray-200 bg-white px-4 py-4 sm:px-6 sm:py-6">
@@ -545,7 +561,8 @@ export default function SchedulingModal({
                                 stiffness: 200,
                                 duration: 0.5,
                             }}
-                            className="absolute inset-0 flex h-full w-full flex-col bg-white"
+                            className="relative h-full w-full flex-col bg-white"
+                            onClick={(e) => e.stopPropagation()}
                         >
                             {/* Header with close button on the right - Sticky */}
                             <div className="sticky top-0 z-10 flex w-full items-center justify-between border-b border-gray-200 bg-white px-4 py-4 sm:px-6 sm:py-6">
@@ -603,6 +620,7 @@ export default function SchedulingModal({
                                                         (date) => (
                                                             <button
                                                                 key={date.toISOString()}
+                                                                type="button"
                                                                 onClick={() => {
                                                                     setSelectedDate(
                                                                         date,
@@ -640,6 +658,7 @@ export default function SchedulingModal({
                                                                     key={
                                                                         slot.id
                                                                     }
+                                                                    type="button"
                                                                     disabled={
                                                                         !slot.available
                                                                     }

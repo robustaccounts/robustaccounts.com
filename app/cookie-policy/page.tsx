@@ -25,7 +25,7 @@ export default function CookiePolicy() {
                     </div>
 
                     {/* Content */}
-                    <div className="prose prose-lg rounded-lg bg-white p-4 shadow-sm">
+                    <div className="prose prose-lg rounded-lg bg-white p-4">
                         <div className="space-y-8">
                             {/* Introduction */}
                             <section>
@@ -412,7 +412,7 @@ export default function CookiePolicy() {
                                     contact us:
                                 </p>
                                 <div className="flex flex-col gap-y-2 text-gray-700">
-                                    <div>
+                                    <div className="flex flex-col gap-y-2 md:flex-row">
                                         <span className="font-bold">
                                             Email:{' '}
                                         </span>
@@ -423,7 +423,7 @@ export default function CookiePolicy() {
                                             {contactInfo.emailDisplay}
                                         </Link>
                                     </div>
-                                    <div>
+                                    <div className="flex flex-col gap-y-2 md:flex-row">
                                         <span className="font-bold">
                                             Phone:{' '}
                                         </span>
@@ -434,7 +434,7 @@ export default function CookiePolicy() {
                                             {contactInfo.phoneDisplay}
                                         </Link>
                                     </div>
-                                    <div>
+                                    <div className="flex flex-col gap-y-2 md:flex-row">
                                         <span className="font-bold">
                                             Address:{' '}
                                         </span>
