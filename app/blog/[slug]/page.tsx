@@ -13,22 +13,28 @@ interface BlogPageProps {
     };
 }
 
-export default function BlogPost({ params }: BlogPageProps) {
+export default async function BlogPost({ params }: BlogPageProps) {
     // Validate params
     if (!params || !params.slug || typeof params.slug !== 'string') {
         notFound();
     }
 
-    const post = getBlogPostBySlug(params.slug);
+    // Await params if needed (Next.js 15+ requirement)
+    // If params is a promise, await it. Otherwise, use as is.
+    // In most cases, params is not a promise, but for compliance:
+    const slug =
+        typeof params.slug === 'string' ? params.slug : await params.slug;
+
+    const post = await getBlogPostBySlug(slug);
 
     if (!post || !post.title || !post.content) {
         notFound();
     }
 
-    const relatedPosts = getRelatedPosts(post, 3) || [];
+    const relatedPosts = (await getRelatedPosts(post, 3)) || [];
 
     return (
-        <main className="mt-24 flex min-h-screen flex-col">
+        <main className="hero-section flex min-h-screen flex-col">
             {/* Article Header */}
             <section className="flex flex-col gap-4 py-12 lg:pt-24">
                 <div className="container mx-auto px-4">
