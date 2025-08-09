@@ -73,8 +73,6 @@ export default function HeroSection() {
             <motion.div
                 className={cn(
                     'pointer-events-none absolute inset-0 z-10 bg-black/80 will-change-transform',
-                    overlayParallax !== 0 &&
-                        'transition-transform duration-300',
                 )}
                 style={{
                     // Use Tailwind for overlay, but keep parallax effect
@@ -90,8 +88,6 @@ export default function HeroSection() {
                 animate="show"
                 className={cn(
                     'relative z-20 flex h-full w-full flex-col items-center justify-center gap-6 px-4 py-8 will-change-transform sm:gap-8 sm:px-6 sm:py-16 md:gap-12 md:px-12 lg:px-16',
-                    contentParallax !== 0 &&
-                        'transition-transform duration-300',
                 )}
                 style={{
                     transform: contentParallax
@@ -143,8 +139,6 @@ export default function HeroSection() {
                     className={cn(
                         // Font size: xs (mobile), sm (sm+), md (md+)
                         'flex flex-col items-center gap-3 px-4 py-6 will-change-transform sm:gap-4 sm:py-8 md:py-12',
-                        trustParallax !== 0 &&
-                            'transition-transform duration-300',
                     )}
                     transition={{ duration: 0.5 }}
                     style={{

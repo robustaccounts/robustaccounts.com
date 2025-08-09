@@ -1,7 +1,5 @@
 'use client';
 
-import { useModal } from '@/contexts/modal-context';
-
 import React from 'react';
 
 import SoftwaresMasterySection from '@/components/common/softwares-mastery';

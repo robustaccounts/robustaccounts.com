@@ -65,7 +65,7 @@ export default function BlogPageClient({
     }, [activeCategory, categories]);
 
     return (
-        <main className="mt-24 flex flex-col">
+        <main className="hero-section flex flex-col">
             {/* Hero Section */}
             <section className="relative flex h-full px-4 py-12 sm:px-6 lg:px-12">
                 <div className="container mx-auto flex h-auto w-full flex-col items-center justify-center gap-6 px-4 py-8 sm:gap-8 sm:px-6 lg:px-12 lg:py-12">

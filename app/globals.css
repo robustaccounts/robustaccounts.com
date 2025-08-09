@@ -33,3 +33,23 @@ body {
     color: var(--foreground);
     font-family: var(--font-onest);
 }
+
+/* removed landing-specific helpers per request */
+
+/* Global top spacing helper for pages with the fixed header */
+.hero-section {
+    /* Ensure content starts below the fixed header (which sits at top-8 with a pill height) */
+    padding-top: 6.5rem; /* ~104px on small screens */
+}
+
+@media (min-width: 768px) {
+    .hero-section {
+        padding-top: 7rem; /* ~112px on md */
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-section {
+        padding-top: 7.5rem; /* ~120px on lg+ */
+    }
+}

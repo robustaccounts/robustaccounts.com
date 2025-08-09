@@ -96,7 +96,7 @@ export default function ServicesSection() {
   return (
     <section
       className={cn(
-        "min-h-screen container mx-auto flex h-full w-full flex-col items-center justify-center gap-12 px-4 py-16 sm:px-6 md:px-12 lg:px-16 lg:py-24 xl:min-h-screen"
+        "container mx-auto flex h-full w-full flex-col items-center justify-center gap-12 px-4 py-16 sm:px-6 md:px-12 lg:px-16 lg:py-24"
       )}
     >
       <div className="flex flex-col items-center justify-center gap-6 text-center sm:gap-8">

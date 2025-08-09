@@ -153,31 +153,50 @@ export default function SchedulingModal({
         }
     }, [selectedDate]);
 
-    // Convert PST time to local time
-    const convertPSTToLocal = (pstTime: string): string => {
+    // Helper: build a UTC Date for a given local time in a specific IANA timezone
+    const getUtcForTimeZone = (
+        year: number,
+        month: number,
+        day: number,
+        hour: number,
+        minute: number,
+        timeZone: string,
+    ): Date => {
+        const utcBase = new Date(Date.UTC(year, month - 1, day, hour, minute));
+        const tzAsLocal = new Date(utcBase.toLocaleString('en-US', { timeZone }));
+        const offsetMs = tzAsLocal.getTime() - utcBase.getTime();
+        return new Date(utcBase.getTime() - offsetMs);
+    };
+
+    // Convert a Los Angeles time (HH:MM) on a given date to user's local display (handles DST)
+    const convertLATimeToLocalDisplay = (date: Date, laTime: string): string => {
         try {
-            // Create a date object for today
-            const today = new Date();
-
-            // Create a date string in PST timezone
-            const pstDateString = today.toLocaleDateString('en-CA', {
+            const laDateStr = new Intl.DateTimeFormat('en-CA', {
                 timeZone: 'America/Los_Angeles',
-            }); // YYYY-MM-DD format
-            const pstDateTimeString = `${pstDateString}T${pstTime.padStart(5, '0')}:00`;
-
-            // Create a date object that represents this time in PST
-            const pstDate = new Date(pstDateTimeString + '-08:00'); // PST is UTC-8
-
-            // Convert to local time
-            const localHours = pstDate.getHours();
-            const localMinutes = pstDate.getMinutes();
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+            }).format(date);
+            const [laYear, laMonth, laDay] = laDateStr
+                .split('-')
+                .map((n) => parseInt(n, 10));
+            const [h, m] = laTime.split(':').map(Number);
+            const startUtc = getUtcForTimeZone(
+                laYear,
+                laMonth,
+                laDay,
+                h,
+                m,
+                'America/Los_Angeles',
+            );
+            const localHours = startUtc.getHours();
+            const localMinutes = startUtc.getMinutes();
             const ampm = localHours >= 12 ? 'pm' : 'am';
             const displayHours = localHours % 12 || 12;
             return `${displayHours}:${localMinutes.toString().padStart(2, '0')}${ampm}`;
         } catch (error) {
             console.error('Time conversion error:', error);
-            // Fallback: return the PST time as is with proper formatting
-            const [hours, minutes] = pstTime.split(':').map(Number);
+            const [hours, minutes] = laTime.split(':').map(Number);
             const ampm = hours >= 12 ? 'pm' : 'am';
             const displayHours = hours % 12 || 12;
             return `${displayHours}:${minutes.toString().padStart(2, '0')}${ampm}`;
@@ -210,7 +229,7 @@ export default function SchedulingModal({
         ];
 
         pstTimeSlots.forEach((pstTime, index) => {
-            const localTime = convertPSTToLocal(pstTime);
+            const localTime = convertLATimeToLocalDisplay(date, pstTime);
             slots.push({
                 id: `${date.toISOString().split('T')[0]}-${index}`,
                 time: localTime,
@@ -278,16 +297,26 @@ export default function SchedulingModal({
 
             if (!selectedSlot) return;
 
-            // Create UTC datetime from PST time slot
-            const pstTime = selectedSlot.pstTime.split(' ')[0]; // Remove ' PST'
-            const [hours, minutes] = pstTime.split(':').map(Number);
-            
-            // Create date in PST timezone
-            const appointmentDate = new Date(selectedDate);
-            appointmentDate.setHours(hours, minutes, 0, 0);
-            
-            // Convert PST to UTC (PST is UTC-8)
-            const utcAppointmentDatetime = new Date(appointmentDate.getTime() + (8 * 60 * 60 * 1000));
+            // Use LA timezone to generate correct UTC (handles PST/PDT)
+            const laTime = selectedSlot.pstTime.split(' ')[0];
+            const [slotHour, slotMinute] = laTime.split(':').map(Number);
+            const laDateStr = new Intl.DateTimeFormat('en-CA', {
+                timeZone: 'America/Los_Angeles',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+            }).format(selectedDate);
+            const [laYear, laMonth, laDay] = laDateStr
+                .split('-')
+                .map((n) => parseInt(n, 10));
+            const utcAppointmentDatetime = getUtcForTimeZone(
+                laYear,
+                laMonth,
+                laDay,
+                slotHour,
+                slotMinute,
+                'America/Los_Angeles',
+            );
 
             const leadData = {
                 firstName: contactData.firstName,
@@ -471,26 +500,39 @@ export default function SchedulingModal({
                                                     selectedDate &&
                                                     selectedSlot
                                                 ) {
-                                                    const startTime = new Date(
-                                                        selectedDate,
-                                                    );
-                                                    const [hours, minutes] =
+                                                    const laTime =
                                                         selectedSlot.pstTime
-                                                            .split(' ')[0]
+                                                            .split(' ')[0];
+                                                    const [slotHour, slotMinute] =
+                                                        laTime
                                                             .split(':')
                                                             .map(Number);
-                                                    startTime.setHours(
-                                                        hours,
-                                                        minutes,
-                                                        0,
-                                                        0,
-                                                    );
 
-                                                    const endTime = new Date(
-                                                        startTime,
+                                                    const laDateStr = new Intl.DateTimeFormat(
+                                                        'en-CA',
+                                                        {
+                                                            timeZone:
+                                                                'America/Los_Angeles',
+                                                            year: 'numeric',
+                                                            month: '2-digit',
+                                                            day: '2-digit',
+                                                        },
+                                                    ).format(selectedDate);
+                                                    const [laYear, laMonth, laDay] =
+                                                        laDateStr
+                                                            .split('-')
+                                                            .map((n) => parseInt(n, 10));
+
+                                                    const startTimeUtc = getUtcForTimeZone(
+                                                        laYear,
+                                                        laMonth,
+                                                        laDay,
+                                                        slotHour,
+                                                        slotMinute,
+                                                        'America/Los_Angeles',
                                                     );
-                                                    endTime.setHours(
-                                                        endTime.getHours() + 1,
+                                                    const endTimeUtc = new Date(
+                                                        startTimeUtc.getTime() + 60 * 60 * 1000,
                                                     );
 
                                                     // Set consultations@robustaccounts.com as the organizer, and the user as the guest
@@ -501,13 +543,13 @@ export default function SchedulingModal({
                                                         'consultations@robustaccounts.com';
                                                     // The 'add' param is for guests, not organizer.
                                                     // The event will be created in the user's calendar (the person clicking).
-                                                    const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Free Accounting Consultation - Robust Accounts&dates=${startTime
+                                                    const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Free Accounting Consultation - Robust Accounts&dates=${startTimeUtc
                                                         .toISOString()
                                                         .replace(/[-:]/g, '')
                                                         .replace(
                                                             /\.\d{3}/,
                                                             '',
-                                                        )}/${endTime
+                                                        )}/${endTimeUtc
                                                         .toISOString()
                                                         .replace(/[-:]/g, '')
                                                         .replace(

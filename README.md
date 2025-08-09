@@ -5,8 +5,14 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 First, set up your environment variables:
 
 ```bash
-# Create a .env.local file with your website URL
-echo "NEXT_PUBLIC_WEBSITE_URL=https://robustaccounts.com" > .env.local
+# Create a .env.local file with your required env vars
+cat > .env.local << 'EOF'
+NEXT_PUBLIC_WEBSITE_URL=https://robustaccounts.com
+# Optional: enable Amplitude analytics on the client
+NEXT_PUBLIC_AMPLITUDE_API_KEY=your_amplitude_public_key
+# Required for saving leads via Neon Postgres
+DATABASE_URL=postgresql://user:password@host:port/dbname?sslmode=require
+EOF
 ```
 
 Then, run the development server:
@@ -59,6 +65,12 @@ This project includes automatic sitemap and robots.txt generation using Next.js 
 - Uses `NEXT_PUBLIC_WEBSITE_URL` environment variable for base URL
 
 Both files are automatically generated at build time and follow the latest Next.js best practices.
+
+## Notes
+
+- MDX articles are rendered server-side for performance using `next-mdx-remote` RSC.
+- Leads are stored using a server action in `lib/save-lead.ts`; ensure `DATABASE_URL` is set.
+- Analytics is initialized on the client via Amplitude. No analytics run in middleware.
 
 ## Deploy on Vercel
 

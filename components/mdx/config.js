@@ -142,16 +142,4 @@ export const mdxComponents = {
       </EnhancedCodeBlock>
     );
   },
-  code: ({ className, ...props }) => {
-    // If code is inline (not in a pre block), render as normal code
-    if (className?.includes('language-')) {
-      return <code className={className} {...props} />;
-    }
-    return (
-      <code
-        className="rounded bg-gray-100 px-1.5 py-1 font-mono text-sm"
-        {...props}
-      />
-    );
-  },
 };

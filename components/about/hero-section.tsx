@@ -25,11 +25,7 @@ export default function HeroSection() {
         <section className="relative min-h-screen w-full">
             {/* Background Image - Full width */}
             <div
-                className="absolute inset-0 z-0 bg-cover bg-center"
-                style={{
-                    backgroundImage:
-                        "url('/assets/images/hero-section-bg-2.png')",
-                }}
+                className="absolute inset-0 z-0 bg-[url('/assets/images/hero-section-bg-2.png')] bg-cover bg-center"
                 aria-hidden="true"
             />
             {/* Overlay for better text contrast */}
@@ -39,15 +35,15 @@ export default function HeroSection() {
             />
 
             {/* Content Container */}
-            <div className="relative z-20 flex min-h-screen w-full flex-col items-center justify-center gap-12 px-4 py-16 sm:gap-16 sm:px-6 md:px-12 lg:px-16 lg:py-32 xl:container xl:mx-auto">
+            <div className="relative z-20 flex min-h-screen w-full flex-col items-center justify-center gap-10 px-4 py-20 sm:gap-12 sm:px-6 md:px-12 lg:px-16 lg:py-32 xl:container xl:mx-auto">
                 {/* Main Content */}
                 <div className="flex max-w-4xl flex-col items-center justify-center gap-6 text-center">
-                    <h1 className="text-3xl font-extrabold text-white sm:text-4xl md:text-5xl lg:text-6xl">
+                    <h1 className="text-center text-3xl leading-tight font-extrabold text-white sm:text-4xl md:text-5xl lg:text-6xl">
                         Your Trusted{' '}
                         <span className="text-accent">Financial Partner</span>{' '}
                         for Global Success
                     </h1>
-                    <p className="max-w-3xl text-base leading-relaxed text-white sm:text-lg lg:text-xl">
+                    <p className="max-w-3xl text-base leading-relaxed text-white/90 sm:text-lg lg:text-xl">
                         With years of expertise in international accounting and
                         taxation, we serve clients across the USA, UK, Canada,
                         Australia, and India. Our mission is to provide
@@ -57,7 +53,7 @@ export default function HeroSection() {
                 </div>
 
                 {/* Trust Indicators */}
-                <div className="grid w-full max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid w-full max-w-2xl grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     {trustIndicators.map((indicator, index) => (
                         <div
                             key={index}

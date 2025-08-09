@@ -51,7 +51,7 @@ export default function ValuesSection() {
                     {values.map((value, index) => (
                         <div
                             key={index}
-                            className="group cursor-pointer rounded-xl p-6 transition-all duration-300 hover:shadow-lg sm:p-8"
+                            className="group cursor-pointer rounded-xl border border-gray-100 bg-white p-6 transition-all duration-300 hover:shadow-lg sm:p-8"
                         >
                             <div className="flex flex-col gap-4">
                                 <h3 className="text-xl font-semibold text-gray-900 sm:text-2xl">

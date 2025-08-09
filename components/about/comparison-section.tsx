@@ -121,28 +121,28 @@ export default function ComparisonSection() {
                     </p>
                 </div>
 
-                <div className="w-full max-w-7xl space-y-8">
+                <div className="w-full max-w-6xl space-y-8">
                     {comparisonData.map((category, index) => (
                         <div
                             key={index}
-                            className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-lg"
+                            className="overflow-hidden rounded-2xl p-5 sm:p-8"
                         >
-                            <div className="bg-accent p-6 text-center">
-                                <h3 className="text-2xl font-bold text-white sm:text-3xl">
+                            <div className="pb-3 text-center sm:pb-4">
+                                <h3 className="text-2xl font-bold text-accent sm:text-3xl">
                                     {category.category}
                                 </h3>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-0 lg:grid-cols-2">
+                            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
                                 {/* Robust Accounts Column */}
-                                <div className="border-r-0 border-gray-200 p-6 lg:border-r lg:p-8">
-                                    <div className="mb-6 flex items-center gap-3">
-                                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-accent">
-                                            <Check className="h-3 w-3 fill-white" />
-                                        </div>
+                                <div className="rounded-2xl bg-white p-5 sm:p-6 lg:p-8">
+                                    <div className="mb-4 flex items-start justify-between">
                                         <h4 className="text-xl font-semibold text-gray-900 sm:text-2xl">
                                             {category.robustAccounts.title}
                                         </h4>
+                                        <span className="hidden rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent sm:inline-flex">
+                                            Robust Accounts
+                                        </span>
                                     </div>
                                     <ul className="space-y-3">
                                         {category.robustAccounts.features.map(
@@ -151,8 +151,8 @@ export default function ComparisonSection() {
                                                     key={featureIndex}
                                                     className="flex items-start gap-3"
                                                 >
-                                                    <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-accent/10">
-                                                        <Check className="h-3 w-3 fill-accent" />
+                                                    <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-accent/10">
+                                                        <Check className="h-3.5 w-3.5 fill-accent" />
                                                     </div>
                                                     <span className="text-gray-700">
                                                         {feature}
@@ -164,23 +164,14 @@ export default function ComparisonSection() {
                                 </div>
 
                                 {/* Traditional Firms Column */}
-                                <div className="bg-secondary p-6 lg:p-8">
-                                    <div className="mb-6 flex items-center gap-3">
-                                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-400">
-                                            <svg
-                                                className="h-3 w-3 fill-white"
-                                                viewBox="0 0 20 20"
-                                            >
-                                                <path
-                                                    fillRule="evenodd"
-                                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                                    clipRule="evenodd"
-                                                />
-                                            </svg>
-                                        </div>
+                                <div className="rounded-2xl bg-white p-5 sm:p-6 lg:p-8">
+                                    <div className="mb-4 flex items-start justify-between">
                                         <h4 className="text-xl font-semibold text-gray-900 sm:text-2xl">
                                             {category.traditional.title}
                                         </h4>
+                                        <span className="hidden rounded-full bg-gray-200 px-3 py-1 text-xs font-medium text-gray-700 sm:inline-flex">
+                                            Traditional
+                                        </span>
                                     </div>
                                     <ul className="space-y-3">
                                         {category.traditional.features.map(
@@ -189,9 +180,9 @@ export default function ComparisonSection() {
                                                     key={featureIndex}
                                                     className="flex items-start gap-3"
                                                 >
-                                                    <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-gray-200">
+                                                    <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-gray-200">
                                                         <svg
-                                                            className="h-3 w-3 fill-gray-500"
+                                                            className="h-3.5 w-3.5 fill-gray-500"
                                                             viewBox="0 0 20 20"
                                                         >
                                                             <path

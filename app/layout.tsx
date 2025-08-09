@@ -8,6 +8,7 @@ import ContactUsBanner from '@/components/contact-us-banner';
 import Footer from '@/components/footer/footer';
 import Header from '@/components/header/header';
 import NewsletterSubscription from '@/components/newsletter-subscription';
+// import StickyCtaMobile from '@/components/ui/sticky-cta-mobile';
 
 import './globals.css';
 
@@ -29,6 +30,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${manrope.className} antialiased`}>
+                
                 <Script
                     src="//code.tidio.co/9itfrqnmmdew7a6oktqq4yb0mm6cqddb.js"
                     strategy="beforeInteractive"
@@ -37,6 +39,7 @@ export default function RootLayout({
                     <Header />
                     {children}
                     <ContactUsBanner />
+                    {/* <StickyCtaMobile /> */}
                     {/* <NewsletterSubscription /> */}
                     <Footer />
                 </Providers>
