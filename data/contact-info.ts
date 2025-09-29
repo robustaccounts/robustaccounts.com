@@ -4,7 +4,7 @@ const contactInfo = {
     phoneHref: '+18133370109',
     emailDisplay: 'consultations@robustaccounts.com',
     emailHref: 'consultations@robustaccounts.com',
-    addressDisplay: '522 Oakfield Drive, Brandon, FL 33511, USA',
+    addressDisplay: '280 Fallswater Road Northeast, Calgary, AB T3J 1B3, Canada',
 
     businessHours: {
         weekdays: 'Mon-Fri 9AM-6PM',
