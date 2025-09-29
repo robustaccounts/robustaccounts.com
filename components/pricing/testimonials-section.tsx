@@ -67,10 +67,15 @@ export default function TestimonialsSection() {
 
         start();
         emblaApi.on('pointerDown', stop);
-        emblaApi.on('mouseEnter', stop);
-        emblaApi.on('mouseLeave', start);
         emblaApi.on('destroy', stop);
+
+        const root = emblaApi.rootNode();
+        root.addEventListener('mouseenter', stop);
+        root.addEventListener('mouseleave', start);
+
         return () => {
+            root.removeEventListener('mouseenter', stop);
+            root.removeEventListener('mouseleave', start);
             if (autoplayRef.current) clearInterval(autoplayRef.current);
         };
     }, [emblaApi]);

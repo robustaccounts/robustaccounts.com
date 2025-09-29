@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Manrope } from 'next/font/google';
 import Script from 'next/script';
 
 import { Providers } from '@/providers/providers';
@@ -11,11 +10,6 @@ import NewsletterSubscription from '@/components/newsletter-subscription';
 // import StickyCtaMobile from '@/components/ui/sticky-cta-mobile';
 
 import './globals.css';
-
-const manrope = Manrope({
-    subsets: ['latin'],
-    weight: ['400', '500', '600', '700'],
-});
 
 export const metadata: Metadata = {
     title: 'Accounting Outsourcing Agency',
@@ -29,7 +23,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${manrope.className} antialiased`}>
+            <body className={"antialiased font-sans"}>
                 
                 <Script
                     src="//code.tidio.co/9itfrqnmmdew7a6oktqq4yb0mm6cqddb.js"

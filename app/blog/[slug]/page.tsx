@@ -7,23 +7,19 @@ import { type BlogPost, getBlogPostBySlug, getRelatedPosts } from '@/lib/blog';
 
 import MDXRenderer from '@/components/mdx-renderer';
 
-interface BlogPageProps {
-    params: {
-        slug: string;
-    };
-}
-
-export default async function BlogPost({ params }: BlogPageProps) {
+export default async function BlogPost({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}) {
     // Validate params
-    if (!params || !params.slug || typeof params.slug !== 'string') {
+    const resolvedParams = await params;
+    if (!resolvedParams || typeof resolvedParams.slug !== 'string') {
         notFound();
     }
 
-    // Await params if needed (Next.js 15+ requirement)
-    // If params is a promise, await it. Otherwise, use as is.
-    // In most cases, params is not a promise, but for compliance:
-    const slug =
-        typeof params.slug === 'string' ? params.slug : await params.slug;
+    // Resolve params (Next.js 15 provides params as a Promise)
+    const { slug } = resolvedParams;
 
     const post = await getBlogPostBySlug(slug);
 

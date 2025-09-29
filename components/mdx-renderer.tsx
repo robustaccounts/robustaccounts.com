@@ -1,4 +1,5 @@
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import type { MDXComponents } from 'mdx/types';
 
 import { mdxComponents } from '@/components/mdx/config';
 
@@ -22,9 +23,11 @@ export default function MDXRenderer({ content }: MDXRendererProps) {
         );
     }
 
+    const components: MDXComponents = mdxComponents as MDXComponents;
+
     return (
         <div className="max-w-none">
-            <MDXRemote source={trimmed} components={mdxComponents as any} />
+            <MDXRemote source={trimmed} components={components} />
         </div>
     );
 }
