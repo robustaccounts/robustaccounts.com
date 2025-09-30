@@ -14,7 +14,7 @@ type Props = {
  *   Example: "G-XXXXXXXX,AW-YYYYYYYY"
  */
 export default function GoogleTag({ ids }: Props) {
-  const raw = ids ?? process.env.NEXT_PUBLIC_GOOGLE_TAG_IDS ?? process.env.NEXT_PUBLIC_GOOGLE_TAG_ID ?? 'AW-17600938444';
+  const raw = ids ?? process.env.NEXT_PUBLIC_GOOGLE_TAG_IDS ?? process.env.NEXT_PUBLIC_GOOGLE_TAG_ID;
   const list = raw
     ?.split(',')
     .map((s) => s.trim())
@@ -43,4 +43,3 @@ export default function GoogleTag({ ids }: Props) {
     </>
   );
 }
-

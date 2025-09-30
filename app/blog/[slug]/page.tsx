@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import React from 'react';
 
 import Link from '@/ui/link';
@@ -210,4 +211,33 @@ export default async function BlogPost({
             )}
         </main>
     );
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const post = await getBlogPostBySlug(slug);
+    if (!post) {
+        return {
+            title: 'Article',
+            description: 'Read expert insights from Robust Accounts.'
+        };
+    }
+
+    return {
+        title: post.title,
+        description: post.excerpt,
+        alternates: { canonical: `/blog/${post.slug}` },
+        openGraph: {
+            type: 'article',
+            title: post.title,
+            description: post.excerpt,
+            url: `/blog/${post.slug}`,
+            authors: post.author ? [post.author] : undefined,
+        },
+        twitter: {
+            card: 'summary',
+            title: post.title,
+            description: post.excerpt,
+        },
+    };
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 
 import ContactFAQGrid from '@/components/contact/faq-section';
 import ContactHeroSection from '@/components/contact/hero-section';
@@ -43,3 +44,10 @@ export default function ContactPage() {
         </main>
     );
 }
+
+export const metadata: Metadata = {
+    title: 'Contact',
+    description:
+        'Get in touch with Robust Accounts for a free consultation. Call, email, or schedule a time that suits you.',
+    alternates: { canonical: '/contact' },
+};

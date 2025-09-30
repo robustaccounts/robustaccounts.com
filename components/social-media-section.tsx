@@ -1,3 +1,5 @@
+"use client";
+
 import { Facebook, Linkedin, Whatsapp } from "@/ui/icons/social-media";
 import Link from "@/ui/link";
 
@@ -14,6 +16,12 @@ export default function SocialMediaSection() {
   );
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
+  const facebookUrl = process.env.NEXT_PUBLIC_FACEBOOK_URL?.trim();
+  const linkedinUrl = process.env.NEXT_PUBLIC_LINKEDIN_URL?.trim();
+
+  const showFacebook = Boolean(facebookUrl);
+  const showLinkedin = Boolean(linkedinUrl);
+
   return (
     <section className="py-12 lg:py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-12">
@@ -26,20 +34,28 @@ export default function SocialMediaSection() {
             company news
           </p>
           <div className="flex justify-center space-x-6">
-            <Link
-              href="#"
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-white transition-colors hover:bg-secondary"
-              aria-label="Follow us on Facebook"
-            >
-              <Facebook className="h-6 w-6" />
-            </Link>
-            <Link
-              href="#"
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-800 text-white transition-colors hover:bg-accent"
-              aria-label="Follow us on LinkedIn"
-            >
-              <Linkedin className="h-6 w-6" />
-            </Link>
+            {showFacebook && (
+              <Link
+                href={facebookUrl as string}
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-white transition-colors hover:bg-accent"
+                aria-label="Follow us on Facebook"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Facebook className="h-6 w-6" />
+              </Link>
+            )}
+            {showLinkedin && (
+              <Link
+                href={linkedinUrl as string}
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-white transition-colors hover:bg-accent"
+                aria-label="Follow us on LinkedIn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Linkedin className="h-6 w-6" />
+              </Link>
+            )}
             <Link
               href={whatsappLink}
               className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-white transition-colors hover:bg-secondary"

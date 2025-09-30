@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Check } from '@/ui/icons/google-icons';
 
-import ContactUsBanner from '@/components/contact-us-banner';
+// ContactUsBanner is rendered globally in layout; avoid double-render on this page.
 
 const testimonials = [
     {
@@ -12,7 +12,7 @@ const testimonials = [
         industry: 'Technology',
         image: '/images/testimonials/john-dobrik.jpg',
         rating: 5,
-        quote: "Glocal Accounting is highly knowledgeable about accounting as well as the internal controls of our organization. We've had the best experience working with them and letting them take charge of our bookkeeping. Truly the best decision ever made.",
+        quote: "Robust Accounts is highly knowledgeable about accounting as well as the internal controls of our organization. We've had the best experience working with them and letting them take charge of our bookkeeping. Truly the best decision ever made.",
         results: [
             'Reduced accounting costs by 65%',
             'Improved financial reporting accuracy',
@@ -26,7 +26,7 @@ const testimonials = [
         industry: 'E-commerce',
         image: '/images/testimonials/liam-stamos.jpg',
         rating: 5,
-        quote: 'The biggest benefit of working with Glocal Accounting is that they are a true full-service accounting firm. I am highly impressed with their level of expertise with top-notch accounting services.',
+        quote: 'The biggest benefit of working with Robust Accounts is that they are a true full-service accounting firm. I am highly impressed with their level of expertise with top-notch accounting services.',
         results: [
             'Comprehensive financial management',
             'Expert tax planning and compliance',
@@ -40,7 +40,7 @@ const testimonials = [
         industry: 'Healthcare',
         image: '/images/testimonials/samantha-matthews.jpg',
         rating: 5,
-        quote: 'The knowledge that each person at Glocal Accounting brings to our account and their expertise in various fields, bookkeeping, managing accounts and handling payrolls gives us peace of mind.',
+        quote: 'The knowledge that each person at Robust Accounts brings to our account and their expertise in various fields, bookkeeping, managing accounts and handling payrolls gives us peace of mind.',
         results: [
             'Regulatory compliance assurance',
             'Specialized healthcare accounting',
@@ -54,7 +54,7 @@ const testimonials = [
         industry: 'Manufacturing',
         image: '/images/testimonials/stefan-bennett.jpg',
         rating: 5,
-        quote: 'Their key management staff is highly consistent and dependable for all accounting needs. Glocal Accounting helped me understand how easy it is to outsource my accounting needs and save money as well as valuable time.',
+        quote: 'Their key management staff is highly consistent and dependable for all accounting needs. Robust Accounts helped me understand how easy it is to outsource my accounting needs and save money as well as valuable time.',
         results: [
             'Significant cost savings achieved',
             'Time-efficient accounting processes',
@@ -68,7 +68,7 @@ const testimonials = [
         industry: 'Hospitality',
         image: '/images/testimonials/maria-rodriguez.jpg',
         rating: 5,
-        quote: 'Working with Glocal Accounting has transformed our financial management. Their expertise in hospitality accounting and multi-location reporting has been invaluable for our restaurant chain.',
+        quote: 'Working with Robust Accounts has transformed our financial management. Their expertise in hospitality accounting and multi-location reporting has been invaluable for our restaurant chain.',
         results: [
             'Multi-location financial consolidation',
             'Improved cash flow management',
@@ -82,7 +82,7 @@ const testimonials = [
         industry: 'Real Estate',
         image: '/images/testimonials/david-chen.jpg',
         rating: 5,
-        quote: 'The team at Glocal Accounting understands the complexities of real estate accounting. Their property accounting expertise and investor reporting capabilities have exceeded our expectations.',
+        quote: 'The team at Robust Accounts understands the complexities of real estate accounting. Their property accounting expertise and investor reporting capabilities have exceeded our expectations.',
         results: [
             'Accurate property accounting',
             'Comprehensive investor reporting',
@@ -153,11 +153,11 @@ export default function TestimonialsPage() {
     return (
         <main className="flex min-h-screen flex-col">
             {/* Hero Section */}
-            <section className="relative flex h-full min-h-screen px-4 py-20 sm:px-6 lg:px-12">
+            <section className="hero-section relative flex h-full min-h-screen px-4 py-16 sm:px-6 lg:px-12">
                 <div className="container mx-auto flex h-auto w-full flex-col items-center justify-center gap-8 px-4 py-12 sm:gap-12 sm:px-6 lg:px-12 lg:py-16">
                     {/* Badge */}
-                    <div className="/80 inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium shadow-sm backdrop-blur-sm">
-                        <div className="h-2 w-2 animate-pulse rounded-full bg-secondary" />
+                    <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/80 px-4 py-2 text-sm font-medium shadow-sm backdrop-blur-sm">
+                        <div className="h-2 w-2 animate-pulse rounded-full bg-accent" />
                         <span className="text-gray-700">
                             Client Testimonials
                         </span>
@@ -165,14 +165,14 @@ export default function TestimonialsPage() {
 
                     {/* Main Content */}
                     <div className="flex flex-col items-center justify-center space-y-6 sm:space-y-8">
-                        <h1 className="text-center text-3xl font-extrabold text-gray-900 sm:text-4xl md:text-5xl lg:text-6xl">
+                        <h1 className="text-center text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
                             What Our Clients{' '}
                             <span className="text-primary">Say About Us</span>
                         </h1>
                         <p className="max-w-3xl text-center text-base leading-relaxed text-gray-600 sm:text-lg lg:text-xl">
                             Don't just take our word for it. Here's what our
                             clients have to say about their experience working
-                            with Glocal Accounting.
+                            with Robust Accounts.
                         </p>
                     </div>
 
@@ -226,17 +226,13 @@ export default function TestimonialsPage() {
                                             {testimonial.role},{' '}
                                             {testimonial.company}
                                         </p>
-                                        <div className="mt-1 flex items-center gap-1">
-                                            {[...Array(testimonial.rating)].map(
-                                                (_, i) => (
-                                                    <span
-                                                        key={i}
-                                                        className="text-yellow-400"
-                                                    >
-                                                        ★
-                                                    </span>
-                                                ),
-                                            )}
+                                        <div className="mt-1 flex items-center gap-1" aria-label={`${testimonial.rating} out of 5 stars`}>
+                                            <span className="sr-only">{`${testimonial.rating} out of 5 stars`}</span>
+                                            {[...Array(testimonial.rating)].map((_, i) => (
+                                                <span key={i} className="text-yellow-400" aria-hidden>
+                                                    ★
+                                                </span>
+                                            ))}
                                         </div>
                                     </div>
                                     <div className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
@@ -392,7 +388,7 @@ export default function TestimonialsPage() {
                 </div>
             </section>
 
-            <ContactUsBanner />
+            {/* ContactUsBanner is included in app/layout.tsx */}
         </main>
     );
 }

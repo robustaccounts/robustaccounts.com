@@ -1,13 +1,12 @@
 import React from "react";
+import SageLogo from "@/ui/logo/sage";
+import QuickBooksLogo from "@/ui/logo/intuit-quickbooks";
+import XeroLogo from "@/ui/logo/xero";
 
 const technologies = [
-  { name: "Sage", logo: "/assets/images/placeholder-sage.png" },
-  { name: "QuickBooks", logo: "/assets/images/placeholder-quickbooks.png" },
-  { name: "Xero", logo: "/assets/images/placeholder-xero.png" },
-  {
-    name: "Accounting Power",
-    logo: "/assets/images/placeholder-accountingpower.png",
-  },
+  { name: "Sage", component: SageLogo },
+  { name: "QuickBooks", component: QuickBooksLogo },
+  { name: "Xero", component: XeroLogo },
 ];
 
 export default function TechnologySection() {
@@ -22,12 +21,9 @@ export default function TechnologySection() {
             key={tech.name}
             className="flex flex-col items-center justify-center border rounded-lg bg-gray-50 px-10 py-6 min-w-[180px] min-h-[100px] shadow-sm"
           >
-            <img
-              src={tech.logo}
-              alt={tech.name + " logo"}
-              className="h-10 mb-2 object-contain opacity-60"
-              style={{ filter: "grayscale(1)" }}
-            />
+            <div className="mb-2 opacity-80" aria-hidden>
+              <tech.component className="h-10 w-auto" />
+            </div>
             <span className="text-gray-400 text-lg font-semibold">
               {tech.name}
             </span>

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Check } from '@/ui/icons/google-icons';
+import Image from 'next/image';
 
 import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
 
@@ -22,23 +23,25 @@ const trustIndicators = [
 
 export default function HeroSection() {
     return (
-        <section className="relative min-h-screen w-full">
-            {/* Background Image - Full width */}
-            <div
-                className="absolute inset-0 z-0 bg-[url('/assets/images/hero-section-bg-2.png')] bg-cover bg-center"
+        <section className="hero-section relative min-h-screen w-full">
+            {/* Optimized Background Image */}
+            <Image
+                src="/assets/images/hero-section-bg-2.png"
+                alt=""
+                fill
+                priority={false}
+                className="object-cover"
                 aria-hidden="true"
             />
             {/* Overlay for better text contrast */}
-            <div
-                className="absolute inset-0 z-10 bg-black/80"
-                aria-hidden="true"
-            />
+            <div className="absolute inset-0 z-10 bg-black/70" aria-hidden="true" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-black/40 to-transparent" />
 
             {/* Content Container */}
-            <div className="relative z-20 flex min-h-screen w-full flex-col items-center justify-center gap-10 px-4 py-20 sm:gap-12 sm:px-6 md:px-12 lg:px-16 lg:py-32 xl:container xl:mx-auto">
+            <div className="relative z-20 flex min-h-screen w-full flex-col items-center justify-center gap-8 px-4 py-16 sm:gap-12 sm:px-6 md:px-12 lg:px-16 xl:container xl:mx-auto">
                 {/* Main Content */}
                 <div className="flex max-w-4xl flex-col items-center justify-center gap-6 text-center">
-                    <h1 className="text-center text-3xl leading-tight font-extrabold text-white sm:text-4xl md:text-5xl lg:text-6xl">
+                    <h1 className="text-center text-4xl leading-tight font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
                         Your Trusted{' '}
                         <span className="text-accent">Financial Partner</span>{' '}
                         for Global Success

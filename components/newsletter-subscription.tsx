@@ -22,7 +22,9 @@ export default function NewsletterSubscription() {
                     {/* Subscribe Form */}
                     <div className="flex w-full flex-col gap-3 sm:flex-row lg:flex-col lg:items-end lg:gap-3">
                         <div className="flex w-full flex-col gap-2 sm:grid sm:grid-cols-2 lg:w-auto xl:flex xl:flex-col">
+                            <label htmlFor="newsletter-email" className="sr-only">Email address</label>
                             <input
+                                id="newsletter-email"
                                 type="email"
                                 placeholder="Enter your email"
                                 className="flex-1 rounded-full border border-primary bg-transparent px-6 py-3 text-sm text-primary placeholder:text-primary/70 focus:ring-2 focus:ring-primary/20 focus:outline-none sm:py-4 sm:text-base lg:w-sm"

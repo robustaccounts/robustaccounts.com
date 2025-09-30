@@ -72,6 +72,8 @@ export default function SchedulingModal({
     const [isBooked, setIsBooked] = useState(false);
     const [smsOptOut, setSmsOptOut] = useState(false);
     const [smsUpdates, setSmsUpdates] = useState(false);
+    const overlayRef = useState<React.RefObject<HTMLDivElement>>(() => React.createRef<HTMLDivElement>())[0];
+    const previouslyFocused = React.useRef<HTMLElement | null>(null);
 
     // Helper to reset all modal state
     const resetModalState = React.useCallback(() => {
@@ -95,9 +97,10 @@ export default function SchedulingModal({
     }, []);
 
 
-    // Prevent body scrolling when modal is open
+    // Prevent body scrolling when modal is open; manage focus
     useEffect(() => {
         if (isOpen) {
+            previouslyFocused.current = (document.activeElement as HTMLElement) || null;
             // Store the current scroll position
             const scrollY = window.scrollY;
 
@@ -107,13 +110,19 @@ export default function SchedulingModal({
             document.body.style.width = '100%';
             document.body.style.overflow = 'hidden';
 
-            // Cleanup function to restore scrolling
+            // Focus modal container when opened
+            setTimeout(() => {
+                overlayRef.current?.focus();
+            }, 0);
+
+            // Cleanup function to restore scrolling and focus
             return () => {
                 document.body.style.position = '';
                 document.body.style.top = '';
                 document.body.style.width = '';
                 document.body.style.overflow = '';
                 window.scrollTo(0, scrollY);
+                previouslyFocused.current?.focus?.();
             };
         }
     }, [isOpen]);
@@ -396,12 +405,23 @@ export default function SchedulingModal({
         <AnimatePresence>
             {isOpen && (
                 <motion.div
+                    ref={overlayRef}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="fixed inset-0 z-[9999] flex h-screen w-screen bg-black/50"
+                    className="fixed inset-0 z-[9999] flex h-screen w-screen bg-black/50 outline-none"
                     onClick={handleClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="scheduling-modal-title"
+                    tabIndex={-1}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Escape') {
+                            e.stopPropagation();
+                            handleClose();
+                        }
+                    }}
                 >
                     {isBooked ? (
                         <motion.div
@@ -422,7 +442,7 @@ export default function SchedulingModal({
                                 <div className="w-10"></div>{' '}
                                 {/* Spacer for centering */}
                                 <div className="px-2 text-center">
-                                    <h2 className="text-base font-bold text-foreground sm:text-lg">
+                                    <h2 id="scheduling-modal-title" className="text-base font-bold text-foreground sm:text-lg">
                                         Consultation Scheduled!
                                     </h2>
                                 </div>
@@ -617,7 +637,7 @@ export default function SchedulingModal({
                                     <ChevronRight className="h-5 w-5 rotate-180 fill-foreground sm:h-7 sm:w-7" />
                                 </button>
                                 <div className="px-2 text-center">
-                                    <h2 className="text-base font-bold text-foreground sm:text-lg">
+                                    <h2 id="scheduling-modal-title" className="text-base font-bold text-foreground sm:text-lg">
                                         {step === 'calendar'
                                             ? 'Select a time for your call.'
                                             : 'Enter your info to confirm.'}

@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 
 import HeroSection from '@/components/about/hero-section';
 import MissionVisionSection from '@/components/about/mission-vision-section';
@@ -17,3 +18,10 @@ export default function AboutPage() {
         </main>
     );
 }
+
+export const metadata: Metadata = {
+    title: 'About Us',
+    description:
+        'Learn about Robust Accounts — our mission, values, and track record helping businesses with accurate, compliant accounting.',
+    alternates: { canonical: '/about' },
+};

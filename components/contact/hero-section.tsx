@@ -17,7 +17,7 @@ const ContactHeroSection = () => {
     return (
         <section
             className={cn(
-                'relative flex min-h-screen w-full flex-col items-center justify-center gap-8 px-4 py-16 sm:gap-12 sm:px-6 sm:py-0 md:px-12 lg:px-16 xl:container xl:mx-auto',
+                'hero-section relative flex min-h-screen w-full flex-col items-center justify-center gap-8 px-4 py-16 sm:gap-12 sm:px-6 md:px-12 lg:px-16 xl:container xl:mx-auto',
             )}
         >
             <div className="flex w-full flex-col items-center gap-8 pt-8">

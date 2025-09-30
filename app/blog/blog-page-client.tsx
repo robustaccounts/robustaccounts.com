@@ -121,14 +121,16 @@ export default function BlogPageClient({
                             <div className="space-y-2">
                                 {Array.isArray(updatedCategories) && updatedCategories.length > 0 ? (
                                     updatedCategories.map((category, index) => (
-                                        <div
+                                        <button
                                             key={category?.name || index}
+                                            type="button"
                                             onClick={() => {
                                                 if (category?.name) {
                                                     setActiveCategory(category.name);
                                                 }
                                             }}
-                                            className={`flex cursor-pointer items-center justify-between rounded-lg px-4 py-3 transition-all ${
+                                            aria-pressed={Boolean(category?.active)}
+                                            className={`flex w-full items-center justify-between rounded-lg px-4 py-3 text-left transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
                                                 category?.active
                                                     ? 'bg-secondary text-accent'
                                                     : 'text-gray-700 hover:bg-gray-100'
@@ -140,7 +142,7 @@ export default function BlogPageClient({
                                             <span className="text-sm">
                                                 ({Number(category?.count || 0)})
                                             </span>
-                                        </div>
+                                        </button>
                                     ))
                                 ) : (
                                     <div className="text-center text-gray-500 py-4">
