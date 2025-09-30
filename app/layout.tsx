@@ -1,9 +1,11 @@
+import { Analytics } from '@vercel/analytics/next';
+
 import type { Metadata } from 'next';
 import Script from 'next/script';
-import GoogleTag from '@/components/analytics/google-tag';
 
 import { Providers } from '@/providers/providers';
 
+import GoogleTag from '@/components/analytics/google-tag';
 import ContactUsBanner from '@/components/contact-us-banner';
 import Footer from '@/components/footer/footer';
 import Header from '@/components/header/header';
@@ -38,7 +40,9 @@ export default function RootLayout({
                     <ContactUsBanner />
                     {/* <StickyCtaMobile /> */}
                     {/* <NewsletterSubscription /> */}
+
                     <Footer />
+                    <Analytics />
                 </Providers>
             </body>
         </html>
