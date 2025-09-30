@@ -13,6 +13,7 @@ import PhoneInput from '@/ui/phone-input';
 import Textarea from '@/ui/textarea';
 
 import cn from '@/utils/cn';
+import { saveLead } from '@/lib/save-lead';
 
 interface SchedulingModalProps {
     isOpen: boolean;
@@ -67,7 +68,6 @@ export default function SchedulingModal({
         message: '',
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [isAnimating, setIsAnimating] = useState(false);
     const [isBooking, setIsBooking] = useState(false);
     const [isBooked, setIsBooked] = useState(false);
     const [smsOptOut, setSmsOptOut] = useState(false);
@@ -94,14 +94,6 @@ export default function SchedulingModal({
         setSmsUpdates(false);
     }, []);
 
-    // Handle animation timing
-    useEffect(() => {
-        if (isOpen) {
-            setIsAnimating(true);
-        } else {
-            setIsAnimating(false);
-        }
-    }, [isOpen]);
 
     // Prevent body scrolling when modal is open
     useEffect(() => {
@@ -161,31 +153,50 @@ export default function SchedulingModal({
         }
     }, [selectedDate]);
 
-    // Convert PST time to local time
-    const convertPSTToLocal = (pstTime: string): string => {
+    // Helper: build a UTC Date for a given local time in a specific IANA timezone
+    const getUtcForTimeZone = (
+        year: number,
+        month: number,
+        day: number,
+        hour: number,
+        minute: number,
+        timeZone: string,
+    ): Date => {
+        const utcBase = new Date(Date.UTC(year, month - 1, day, hour, minute));
+        const tzAsLocal = new Date(utcBase.toLocaleString('en-US', { timeZone }));
+        const offsetMs = tzAsLocal.getTime() - utcBase.getTime();
+        return new Date(utcBase.getTime() - offsetMs);
+    };
+
+    // Convert a Los Angeles time (HH:MM) on a given date to user's local display (handles DST)
+    const convertLATimeToLocalDisplay = (date: Date, laTime: string): string => {
         try {
-            // Create a date object for today
-            const today = new Date();
-
-            // Create a date string in PST timezone
-            const pstDateString = today.toLocaleDateString('en-CA', {
+            const laDateStr = new Intl.DateTimeFormat('en-CA', {
                 timeZone: 'America/Los_Angeles',
-            }); // YYYY-MM-DD format
-            const pstDateTimeString = `${pstDateString}T${pstTime.padStart(5, '0')}:00`;
-
-            // Create a date object that represents this time in PST
-            const pstDate = new Date(pstDateTimeString + '-08:00'); // PST is UTC-8
-
-            // Convert to local time
-            const localHours = pstDate.getHours();
-            const localMinutes = pstDate.getMinutes();
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+            }).format(date);
+            const [laYear, laMonth, laDay] = laDateStr
+                .split('-')
+                .map((n) => parseInt(n, 10));
+            const [h, m] = laTime.split(':').map(Number);
+            const startUtc = getUtcForTimeZone(
+                laYear,
+                laMonth,
+                laDay,
+                h,
+                m,
+                'America/Los_Angeles',
+            );
+            const localHours = startUtc.getHours();
+            const localMinutes = startUtc.getMinutes();
             const ampm = localHours >= 12 ? 'pm' : 'am';
             const displayHours = localHours % 12 || 12;
             return `${displayHours}:${localMinutes.toString().padStart(2, '0')}${ampm}`;
         } catch (error) {
             console.error('Time conversion error:', error);
-            // Fallback: return the PST time as is with proper formatting
-            const [hours, minutes] = pstTime.split(':').map(Number);
+            const [hours, minutes] = laTime.split(':').map(Number);
             const ampm = hours >= 12 ? 'pm' : 'am';
             const displayHours = hours % 12 || 12;
             return `${displayHours}:${minutes.toString().padStart(2, '0')}${ampm}`;
@@ -218,7 +229,7 @@ export default function SchedulingModal({
         ];
 
         pstTimeSlots.forEach((pstTime, index) => {
-            const localTime = convertPSTToLocal(pstTime);
+            const localTime = convertLATimeToLocalDisplay(date, pstTime);
             slots.push({
                 id: `${date.toISOString().split('T')[0]}-${index}`,
                 time: localTime,
@@ -280,23 +291,55 @@ export default function SchedulingModal({
         setIsBooking(true);
 
         try {
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-
             const selectedSlot = timeSlots.find(
                 (slot) => slot.id === selectedTimeSlot,
             );
-            console.log('Booking details:', {
-                contactData,
-                date: selectedDate,
-                timeSlot: selectedTimeSlot,
-                localTime: selectedSlot?.time,
-                pstTime: selectedSlot?.pstTime,
+
+            if (!selectedSlot) return;
+
+            // Use LA timezone to generate correct UTC (handles PST/PDT)
+            const laTime = selectedSlot.pstTime.split(' ')[0];
+            const [slotHour, slotMinute] = laTime.split(':').map(Number);
+            const laDateStr = new Intl.DateTimeFormat('en-CA', {
+                timeZone: 'America/Los_Angeles',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+            }).format(selectedDate);
+            const [laYear, laMonth, laDay] = laDateStr
+                .split('-')
+                .map((n) => parseInt(n, 10));
+            const utcAppointmentDatetime = getUtcForTimeZone(
+                laYear,
+                laMonth,
+                laDay,
+                slotHour,
+                slotMinute,
+                'America/Los_Angeles',
+            );
+
+            const leadData = {
+                firstName: contactData.firstName,
+                lastName: contactData.lastName,
+                email: contactData.email,
+                phone: contactData.phone,
+                businessName: contactData.businessName,
+                industry: contactData.industry,
+                message: contactData.message,
+                appointmentDatetime: utcAppointmentDatetime,
                 smsOptOut,
                 smsUpdates,
-            });
+            };
 
-            setIsBooked(true);
+            const result = await saveLead(leadData);
+            
+            if (result.success) {
+                console.log('Lead saved successfully with ID:', result.leadId);
+                setIsBooked(true);
+            } else {
+                console.error('Failed to save lead:', result.error);
+                // Handle error - you might want to show an error message to the user
+            }
         } catch (error) {
             console.error('Booking error:', error);
         } finally {
@@ -357,7 +400,8 @@ export default function SchedulingModal({
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="fixed inset-0 z-50 h-screen bg-black/20"
+                    className="fixed inset-0 z-[9999] flex h-screen w-screen bg-black/50"
+                    onClick={handleClose}
                 >
                     {isBooked ? (
                         <motion.div
@@ -370,10 +414,11 @@ export default function SchedulingModal({
                                 stiffness: 200,
                                 duration: 0.5,
                             }}
-                            className="absolute right-0 bottom-0 left-0 flex h-full flex-col bg-white"
+                            className="relative h-full w-full flex-col bg-white"
+                            onClick={(e) => e.stopPropagation()}
                         >
                             {/* Header with close button on the right - Sticky */}
-                            <div className="sticky top-0 z-10 container mx-auto flex items-center justify-between border-b border-gray-200 bg-white p-4 sm:p-6">
+                            <div className="sticky top-0 z-10 flex w-full items-center justify-between border-b border-gray-200 bg-white px-4 py-4 sm:px-6 sm:py-6">
                                 <div className="w-10"></div>{' '}
                                 {/* Spacer for centering */}
                                 <div className="px-2 text-center">
@@ -392,7 +437,7 @@ export default function SchedulingModal({
                             </div>
 
                             {/* Content - Scrollable */}
-                            <div className="container mx-auto">
+                            <div className="w-full">
                                 <div className="flex h-full flex-col items-center justify-center p-4 sm:p-6 xl:mt-12">
                                     {/* Success Title */}
                                     <div className="mb-8 flex flex-col items-center">
@@ -406,7 +451,7 @@ export default function SchedulingModal({
                                     </div>
 
                                     {/* Appointment Details Card */}
-                                    <div className="mb-8 w-full max-w-md rounded-xl bg-gradient-to-br from-secondary to-gray-50 p-6 shadow-lg">
+                                    <div className="mb-8 w-full max-w-md rounded-xl p-6">
                                         <div className="text-center">
                                             <div className="mb-3 text-sm font-medium text-gray-600 sm:text-base">
                                                 Your appointment is scheduled
@@ -441,75 +486,87 @@ export default function SchedulingModal({
                                         </div>
                                     </div>
                                     {/* Calendar Integration Section */}
-                                    <div className="mb-6 w-full max-w-md">
-                                        <div className="space-y-3">
-                                            {/* Google Calendar */}
-                                            <button
-                                                onClick={() => {
-                                                    const selectedSlot =
-                                                        timeSlots.find(
-                                                            (slot) =>
-                                                                slot.id ===
-                                                                selectedTimeSlot,
-                                                        );
-                                                    if (
-                                                        selectedDate &&
-                                                        selectedSlot
-                                                    ) {
-                                                        const startTime =
-                                                            new Date(
-                                                                selectedDate,
-                                                            );
-                                                        const [hours, minutes] =
-                                                            selectedSlot.pstTime
-                                                                .split(' ')[0]
-                                                                .split(':')
-                                                                .map(Number);
-                                                        startTime.setHours(
-                                                            hours,
-                                                            minutes,
-                                                            0,
-                                                            0,
-                                                        );
+                                    <div className="mb-6 flex w-full items-center justify-center">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const selectedSlot =
+                                                    timeSlots.find(
+                                                        (slot) =>
+                                                            slot.id ===
+                                                            selectedTimeSlot,
+                                                    );
+                                                if (
+                                                    selectedDate &&
+                                                    selectedSlot
+                                                ) {
+                                                    const laTime =
+                                                        selectedSlot.pstTime
+                                                            .split(' ')[0];
+                                                    const [slotHour, slotMinute] =
+                                                        laTime
+                                                            .split(':')
+                                                            .map(Number);
 
-                                                        const endTime =
-                                                            new Date(startTime);
-                                                        endTime.setHours(
-                                                            endTime.getHours() +
-                                                                1,
-                                                        );
+                                                    const laDateStr = new Intl.DateTimeFormat(
+                                                        'en-CA',
+                                                        {
+                                                            timeZone:
+                                                                'America/Los_Angeles',
+                                                            year: 'numeric',
+                                                            month: '2-digit',
+                                                            day: '2-digit',
+                                                        },
+                                                    ).format(selectedDate);
+                                                    const [laYear, laMonth, laDay] =
+                                                        laDateStr
+                                                            .split('-')
+                                                            .map((n) => parseInt(n, 10));
 
-                                                        const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Free Accounting Consultation - Robust Accounts&dates=${startTime
-                                                            .toISOString()
-                                                            .replace(
-                                                                /[-:]/g,
-                                                                '',
-                                                            )
-                                                            .replace(
-                                                                /\.\d{3}/,
-                                                                '',
-                                                            )}/${endTime
-                                                            .toISOString()
-                                                            .replace(
-                                                                /[-:]/g,
-                                                                '',
-                                                            )
-                                                            .replace(
-                                                                /\.\d{3}/,
-                                                                '',
-                                                            )}&details=Free consultation with Robust Accounts to discuss your accounting needs. We'll call you at the scheduled time.&location=Phone Call`;
-                                                        window.open(
-                                                            googleUrl,
-                                                            '_blank',
-                                                        );
-                                                    }
-                                                }}
-                                                className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition-all hover:bg-gray-50 hover:shadow-md sm:px-6 sm:py-4 sm:text-base"
-                                            >
-                                                <GoogleCalendar className="h-5 w-5" />
-                                                Add to Google Calendar
-                                            </button>
-                                        </div>
+                                                    const startTimeUtc = getUtcForTimeZone(
+                                                        laYear,
+                                                        laMonth,
+                                                        laDay,
+                                                        slotHour,
+                                                        slotMinute,
+                                                        'America/Los_Angeles',
+                                                    );
+                                                    const endTimeUtc = new Date(
+                                                        startTimeUtc.getTime() + 60 * 60 * 1000,
+                                                    );
+
+                                                    // Set consultations@robustaccounts.com as the organizer, and the user as the guest
+                                                    // Google Calendar web links do not support specifying the organizer directly,
+                                                    // but the event will be created by the user (the guest) in their calendar.
+                                                    // We'll add consultations@robustaccounts.com as a guest.
+                                                    const guestEmail =
+                                                        'consultations@robustaccounts.com';
+                                                    // The 'add' param is for guests, not organizer.
+                                                    // The event will be created in the user's calendar (the person clicking).
+                                                    const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Free Accounting Consultation - Robust Accounts&dates=${startTimeUtc
+                                                        .toISOString()
+                                                        .replace(/[-:]/g, '')
+                                                        .replace(
+                                                            /\.\d{3}/,
+                                                            '',
+                                                        )}/${endTimeUtc
+                                                        .toISOString()
+                                                        .replace(/[-:]/g, '')
+                                                        .replace(
+                                                            /\.\d{3}/,
+                                                            '',
+                                                        )}&details=Free consultation with Robust Accounts to discuss your accounting needs. We'll call you at the scheduled time.&location=Phone Call&add=${guestEmail}`;
+                                                    window.open(
+                                                        googleUrl,
+                                                        '_blank',
+                                                    );
+                                                }
+                                            }}
+                                            className="flex w-auto cursor-pointer items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition-all sm:px-6 sm:py-4 sm:text-base"
+                                        >
+                                            <GoogleCalendar className="h-5 w-5" />
+                                            Add to Google Calendar
+                                        </button>
                                     </div>
 
                                     {/* Confirmation Details */}
@@ -546,10 +603,11 @@ export default function SchedulingModal({
                                 stiffness: 200,
                                 duration: 0.5,
                             }}
-                            className="absolute right-0 bottom-0 left-0 flex h-full flex-col bg-white"
+                            className="relative h-full w-full flex-col bg-white"
+                            onClick={(e) => e.stopPropagation()}
                         >
                             {/* Header with close button on the right - Sticky */}
-                            <div className="sticky top-0 z-10 container mx-auto flex items-center justify-between border-b border-gray-200 bg-white p-4 sm:p-6">
+                            <div className="sticky top-0 z-10 flex w-full items-center justify-between border-b border-gray-200 bg-white px-4 py-4 sm:px-6 sm:py-6">
                                 <button
                                     onClick={handleBack}
                                     className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-secondary transition-all duration-300 hover:bg-gray-200 focus:ring-2 focus:ring-accent/20 focus:outline-none sm:h-10 sm:w-10"
@@ -592,9 +650,9 @@ export default function SchedulingModal({
                             </div>
 
                             {/* Content - Scrollable */}
-                            <div className="container mx-auto flex-1 overflow-y-auto">
+                            <div className="w-full flex-1 overflow-y-auto">
                                 {step === 'calendar' ? (
-                                    <div className="p-4 sm:p-6">
+                                    <div className="p-3 sm:p-4 md:p-6">
                                         {/* Date and Time Selection Grid */}
                                         <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3">
                                             {/* Date Selection - Left Column */}
@@ -604,6 +662,7 @@ export default function SchedulingModal({
                                                         (date) => (
                                                             <button
                                                                 key={date.toISOString()}
+                                                                type="button"
                                                                 onClick={() => {
                                                                     setSelectedDate(
                                                                         date,
@@ -634,13 +693,14 @@ export default function SchedulingModal({
                                             {/* Time Selection - Right Grid */}
                                             <div className="lg:col-span-2">
                                                 {selectedDate ? (
-                                                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
+                                                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
                                                         {timeSlots.map(
                                                             (slot) => (
                                                                 <button
                                                                     key={
                                                                         slot.id
                                                                     }
+                                                                    type="button"
                                                                     disabled={
                                                                         !slot.available
                                                                     }
@@ -706,7 +766,7 @@ export default function SchedulingModal({
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="p-4 sm:p-6">
+                                    <div className="p-3 sm:p-4 md:p-6">
                                         <form
                                             onSubmit={handleContactSubmit}
                                             className="space-y-4 sm:space-y-6"
@@ -847,7 +907,7 @@ export default function SchedulingModal({
 
                                             {/* Terms and SMS Communication */}
                                             <div className="space-y-4 sm:space-y-6">
-                                                <p className="text-sm leading-relaxed text-gray-600">
+                                                <p className="text-start text-sm leading-relaxed text-gray-600">
                                                     By clicking 'Confirm My
                                                     Appointment' you agree to
                                                     our{' '}

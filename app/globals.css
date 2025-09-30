@@ -34,72 +34,22 @@ body {
     font-family: var(--font-onest);
 }
 
-/* Smooth scrolling */
-html {
-    scroll-behavior: smooth;
+/* removed landing-specific helpers per request */
+
+/* Global top spacing helper for pages with the fixed header */
+.hero-section {
+    /* Ensure content starts below the fixed header (which sits at top-8 with a pill height) */
+    padding-top: 6.5rem; /* ~104px on small screens */
 }
 
-/* Prevent horizontal scroll on mobile */
-html,
-body {
-    overflow-x: hidden;
+@media (min-width: 768px) {
+    .hero-section {
+        padding-top: 7rem; /* ~112px on md */
+    }
 }
 
-/* Override browser autofill styling */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active,
-textarea:-webkit-autofill,
-textarea:-webkit-autofill:hover,
-textarea:-webkit-autofill:focus,
-textarea:-webkit-autofill:active,
-select:-webkit-autofill,
-select:-webkit-autofill:hover,
-select:-webkit-autofill:focus,
-select:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px white inset !important;
-    -webkit-text-fill-color: var(--foreground) !important;
-    transition: background-color 5000s ease-in-out 0s;
-    background-color: white !important;
-    background-clip: content-box !important;
-}
-
-/* More specific selectors for form inputs */
-input[type='text']:-webkit-autofill,
-input[type='email']:-webkit-autofill,
-input[type='tel']:-webkit-autofill,
-input[type='password']:-webkit-autofill,
-input[type='number']:-webkit-autofill,
-input[type='search']:-webkit-autofill,
-input[type='url']:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px white inset !important;
-    -webkit-text-fill-color: var(--foreground) !important;
-    transition: background-color 5000s ease-in-out 0s;
-    background-color: white !important;
-    background-clip: content-box !important;
-}
-
-/* For Firefox */
-input:-moz-autofill,
-input:-moz-autofill:focus,
-textarea:-moz-autofill,
-textarea:-moz-autofill:focus,
-select:-moz-autofill,
-select:-moz-autofill:focus {
-    background-color: white !important;
-    color: var(--foreground) !important;
-}
-
-/* Additional override for any remaining autofill styling */
-* {
-    -webkit-box-shadow: none !important;
-}
-
-input,
-textarea,
-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+@media (min-width: 1024px) {
+    .hero-section {
+        padding-top: 7.5rem; /* ~120px on lg+ */
+    }
 }

@@ -1,6 +1,10 @@
 'use client';
 
+import { useModal } from '@/contexts/modal-context';
+import contactInfo from '@/data/contact-info';
+
 import { AnimatePresence, motion } from 'framer-motion';
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
 import { Close, Menu } from '@/ui/icons/google-icons';
@@ -8,14 +12,12 @@ import Link from '@/ui/link';
 
 import cn from '@/utils/cn';
 
-import GetStartedButton from '../common/get-started-button';
-
 const mobileMenuLinks = [
     { name: 'Home', href: '/' },
     { name: 'About', href: '/about' },
     { name: 'Services', href: '/services' },
-    { name: 'Our Expertise', href: '/our-expertise' },
     { name: 'How It Works', href: '/how-it-works' },
+    { name: 'Our Expertise', href: '/our-expertise' },
     { name: 'Testimonials', href: '/testimonials' },
     { name: 'FAQ', href: '/faq' },
     { name: 'Pricing', href: '/pricing' },
@@ -45,6 +47,7 @@ const itemVariants = {
 export default function Header() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const { isSchedulingModalOpen } = useModal();
 
     // Handle scroll detection
     useEffect(() => {
@@ -72,6 +75,10 @@ export default function Header() {
         };
     }, [isMobileMenuOpen]);
 
+    if (isSchedulingModalOpen) {
+        return null;
+    }
+
     return (
         <>
             <header
@@ -82,61 +89,68 @@ export default function Header() {
                         : 'bg-secondary',
                 )}
             >
-                <div className="w-full">
-                    <div className="flex items-center justify-between">
-                        {/* Logo */}
-                        <div className="flex items-center">
+                <div className="flex items-center justify-between">
+                    {/* Logo */}
+                    <Link
+                        href="/"
+                        className="group flex items-center justify-between object-contain"
+                    >
+                        <Image
+                            src="/assets/logo.png"
+                            alt="Robust Accounts Logo"
+                            width={64}
+                            height={64}
+                            className="h-10 w-10 object-contain md:h-14 md:w-14"
+                        />
+                        <span className="text-xl font-bold sm:text-xl">
+                            Robust Accounts
+                        </span>
+                    </Link>
+
+                    {/* Desktop Navigation */}
+                    <nav className="hidden items-center gap-6 lg:flex lg:gap-8">
+                        {[
+                            { name: 'Services', href: '/services' },
+                            { name: 'About', href: '/about' },
+
+                            { name: 'How It Works', href: '/how-it-works' },
+                            {
+                                name: 'Our Expertise',
+                                href: '/our-expertise',
+                            },
+                            { name: 'Pricing', href: '/pricing' },
+                            { name: 'Blog', href: '/blog' },
+                        ].map((item) => (
                             <Link
-                                href="/"
-                                className="group flex items-center space-x-3"
+                                key={item.name}
+                                href={item.href}
+                                className="font-medium transition-all hover:text-primary/60"
                             >
-                                <span className="text-lg font-bold sm:text-xl">
-                                    robustaccounts.com
-                                </span>
+                                {item.name}
                             </Link>
-                        </div>
+                        ))}
+                    </nav>
 
-                        {/* Desktop Navigation */}
-                        <nav className="hidden items-center gap-6 lg:flex lg:gap-8">
-                            {[
-                                { name: 'Services', href: '/services' },
-                                { name: 'About', href: '/about' },
-                                {
-                                    name: 'Our Expertise',
-                                    href: '/our-expertise',
-                                },
-                                { name: 'How It Works', href: '/how-it-works' },
-                                { name: 'Pricing', href: '/pricing' },
-                            ].map((item) => (
-                                <Link
-                                    key={item.name}
-                                    href={item.href}
-                                    className="font-medium transition-all hover:text-primary/60"
-                                >
-                                    {item.name}
-                                </Link>
-                            ))}
-                        </nav>
+                    {/* Only show phone number in header on lg or higher */}
+                    <Link
+                        href={`tel:${contactInfo.phoneHref}`}
+                        className="hidden text-lg font-semibold text-primary lg:inline"
+                    >
+                        {contactInfo.phoneDisplay}
+                    </Link>
 
-                        <div className="hidden lg:block">
-                            <GetStartedButton size="md" />
-                        </div>
-
-                        {/* Mobile Menu Button */}
-                        <button
-                            onClick={() =>
-                                setIsMobileMenuOpen(!isMobileMenuOpen)
-                            }
-                            className="p-2 transition-colors hover:text-primary/60 lg:hidden"
-                            aria-label="Toggle mobile menu"
-                        >
-                            {isMobileMenuOpen ? (
-                                <Close className="h-7 w-7 fill-primary transition-transform duration-200" />
-                            ) : (
-                                <Menu className="h-7 w-7 fill-primary transition-transform duration-200" />
-                            )}
-                        </button>
-                    </div>
+                    {/* Mobile Menu Button */}
+                    <button
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className="p-2 transition-colors hover:text-primary/60 lg:hidden"
+                        aria-label="Toggle mobile menu"
+                    >
+                        {isMobileMenuOpen ? (
+                            <Close className="h-7 w-7 fill-primary transition-transform duration-200" />
+                        ) : (
+                            <Menu className="h-7 w-7 fill-primary transition-transform duration-200" />
+                        )}
+                    </button>
                 </div>
             </header>
             <AnimatePresence>
@@ -147,7 +161,7 @@ export default function Header() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.18 }}
-                        className="fixed inset-0 top-0 z-40 h-screen w-screen bg-secondary/95 p-4 backdrop-blur-sm lg:hidden"
+                        className="fixed inset-0 top-0 z-40 h-screen w-screen bg-white p-4 backdrop-blur-sm lg:hidden"
                     >
                         <motion.button
                             initial={{ opacity: 0, scale: 0.8, y: -10 }}
@@ -196,12 +210,14 @@ export default function Header() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 32 }}
                             transition={{ delay: 0.18, duration: 0.22 }}
-                            className="fixed right-0 bottom-0 left-0 z-50 flex w-full justify-center bg-secondary/95 px-4 pt-4 pb-8"
+                            className="fixed right-0 bottom-0 left-0 z-50 flex w-full justify-center bg-white px-4 pt-4 pb-8"
                         >
-                            <GetStartedButton
-                                size="lg"
-                                className="w-full max-w-md"
-                            />
+                            <Link
+                                href={`tel:${contactInfo.phoneHref}`}
+                                className="text-2xl font-bold text-primary"
+                            >
+                                {contactInfo.phoneDisplay}
+                            </Link>
                         </motion.div>
                     </motion.div>
                 )}

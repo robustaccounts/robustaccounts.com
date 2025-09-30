@@ -1,3 +1,5 @@
+import contactInfo from '@/data/contact-info';
+
 import React from 'react';
 
 import { Call, LocationOn, Mail } from '@/ui/icons/google-icons';
@@ -84,32 +86,29 @@ export default function Footer() {
                     {/* phone email and address */}
                     <div className="flex flex-col gap-4">
                         <Link
-                            href="tel:+15551234567"
+                            href={`tel:${contactInfo.phoneHref}`}
                             className="flex items-center gap-2"
                         >
                             <Call className="h-6 w-6 fill-primary" />
                             <span className="text-sm font-medium">
-                                +1 (555) 123-4567
+                                {contactInfo.phoneDisplay}
                             </span>
                         </Link>
                         <Link
-                            href="mailto:info@accountingoutsourcing.com"
+                            href={`mailto:${contactInfo.emailHref}`}
                             className="flex items-center gap-2"
                         >
                             <Mail className="h-6 w-6 fill-primary" />
                             <span className="text-sm font-medium">
-                                info@accountingoutsourcing.com
+                                {contactInfo.emailDisplay}
                             </span>
                         </Link>
-                        <Link
-                            href="https://maps.app.goo.gl/1234567890"
-                            className="flex items-center gap-2"
-                        >
+                        <div className="flex items-center gap-2">
                             <LocationOn className="h-6 w-6 fill-primary" />
                             <span className="text-sm font-medium">
-                                123 Main St, Anytown, USA
+                                {contactInfo.addressDisplay}
                             </span>
-                        </Link>
+                        </div>
                     </div>
                 </div>
                 <div className="col-span-3 grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4 lg:gap-x-12 lg:gap-y-16">
@@ -182,11 +181,24 @@ export default function Footer() {
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="flex w-full flex-col items-center justify-end space-y-4 p-4 sm:px-6 md:flex-row md:space-y-0 lg:px-12">
-                <span className="text-sm text-gray-500">
-                    © 2025 Robust Accounts. All rights reserved.
-                </span>
+                {/* Footer fine print */}
+                <div className="pt-4 mt-6 border-t border-gray-200 md:col-span-5">
+                    <div className="flex w-full flex-col gap-2 text-center md:text-left">
+                        <span className="text-sm">
+                            © 2025 Robust Accounts. All rights reserved.
+                        </span>
+                        <p className="w-full text-sm leading-relaxed">
+                            Disclaimer: Robustaccounts.com is a part of KY Books
+                            Inc. We are an independent entity and are not
+                            affiliated with, endorsed by, or connected to any
+                            other brand, company, or organization unless
+                            explicitly stated. All trademarks, brand names, and
+                            logos appearing on this website are the property of
+                            their respective owners and are used strictly for
+                            informational and reference purposes only.
+                        </p>
+                    </div>
+                </div>
             </div>
         </footer>
     );

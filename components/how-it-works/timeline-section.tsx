@@ -39,6 +39,9 @@ export function TimelineSection() {
                 <p className="text-base lg:text-lg">
                     From initial consultation to full implementation
                 </p>
+                <div className="rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent sm:text-sm">
+                    Typical go-live in under 3 weeks
+                </div>
             </div>
 
             <div className="grid h-full w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">

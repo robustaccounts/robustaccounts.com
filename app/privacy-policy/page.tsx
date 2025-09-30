@@ -1,3 +1,5 @@
+import contactInfo from '@/data/contact-info';
+
 import React from 'react';
 
 import Link from '@/ui/link';
@@ -23,7 +25,7 @@ export default function PrivacyPolicy() {
                     </div>
 
                     {/* Content */}
-                    <div className="prose prose-lg rounded-lg bg-white p-4 shadow-sm">
+                    <div className="prose prose-lg rounded-lg bg-white p-4">
                         <div className="space-y-8">
                             {/* Introduction */}
                             <section>
@@ -331,39 +333,35 @@ export default function PrivacyPolicy() {
                                     us:
                                 </p>
                                 <div className="flex flex-col gap-y-2 text-gray-700">
-                                    <div>
+                                    <div className="flex flex-col gap-y-2 md:flex-row">
                                         <span className="font-bold">
                                             Email:{' '}
                                         </span>
                                         <Link
                                             className="text-accent"
-                                            href="mailto:privacy@robustaccounts.com"
+                                            href={`mailto:${contactInfo.emailHref}`}
                                         >
-                                            privacy@robustaccounts.com
+                                            {contactInfo.emailDisplay}
                                         </Link>
                                     </div>
-                                    <div>
+                                    <div className="flex flex-col gap-y-2 md:flex-row">
                                         <span className="font-bold">
                                             Phone:{' '}
                                         </span>
                                         <Link
                                             className="text-accent"
-                                            href="tel:+14153000000"
+                                            href={`tel:${contactInfo.phoneHref}`}
                                         >
-                                            +1 (415) 300-0000
+                                            {contactInfo.phoneDisplay}
                                         </Link>
                                     </div>
-
-                                    <div>
+                                    <div className="flex flex-col gap-y-2 md:flex-row">
                                         <span className="font-bold">
                                             Address:{' '}
                                         </span>
-                                        <Link
-                                            className="text-accent"
-                                            href="https://maps.app.goo.gl/1234567890"
-                                        >
-                                            [Your Business Address] (TODO)
-                                        </Link>
+                                        <span className="text-accent">
+                                            {contactInfo.addressDisplay}
+                                        </span>
                                     </div>
                                 </div>
                             </section>

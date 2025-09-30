@@ -1,6 +1,6 @@
 import React from 'react';
 
-import GetStartedButton from '@/components/common/get-started-button';
+import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
 
 import cn from '@/utils/cn';
 
@@ -67,7 +67,7 @@ export function BenefitsSection() {
                     Join hundreds of businesses who have streamlined their
                     accounting operations with our proven process.
                 </p>
-                <GetStartedButton size="lg" />
+                <ScheduleMyCallButton size="lg" showSubtext={false} />
             </div>
         </section>
     );

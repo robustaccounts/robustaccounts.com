@@ -1,3 +1,5 @@
+import contactInfo from '@/data/contact-info';
+
 import React from 'react';
 
 import { ArrowForward, Call, Mail } from '@/ui/icons/google-icons';
@@ -22,21 +24,21 @@ export default function ContactUsBanner() {
                         {/* Contact Info */}
                         <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-8 lg:gap-4">
                             <Link
-                                href="tel:+15551234567"
+                                href={`tel:${contactInfo.phoneHref}`}
                                 className="sm:justiwfy-start flex items-center justify-center gap-2"
                             >
                                 <Call className="h-5 w-5 fill-primary" />
                                 <span className="text-sm font-medium sm:text-base">
-                                    +1 (555) 123-4567
+                                    {contactInfo.phoneDisplay}
                                 </span>
                             </Link>
                             <Link
-                                href="mailto:info@accounting.com"
+                                href={`mailto:${contactInfo.emailHref}`}
                                 className="flex items-center justify-center gap-2 sm:justify-start"
                             >
                                 <Mail className="h-5 w-5 fill-primary" />
                                 <span className="text-sm font-medium sm:text-base">
-                                    info@accounting.com
+                                    {contactInfo.emailDisplay}
                                 </span>
                             </Link>
                         </div>
@@ -53,7 +55,7 @@ export default function ContactUsBanner() {
                         </Link>
                         <Link
                             href="/pricing"
-                            className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-primary bg-transparent px-6 py-3 text-base font-semibold text-primary transition-all sm:px-8 sm:py-4 sm:text-lg lg:w-sm"
+                            className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-base font-semibold text-primary transition-all sm:px-8 sm:py-4 sm:text-lg lg:w-sm"
                         >
                             View Pricing
                         </Link>

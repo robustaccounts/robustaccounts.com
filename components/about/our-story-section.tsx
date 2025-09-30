@@ -46,12 +46,12 @@ export default function OurStorySection() {
                     </div>
                 </div>
                 <div className="relative">
-                    <div className="aspect-square w-full overflow-hidden rounded-2xl bg-gray-100">
+                    <div className="aspect-[4/3] w-full overflow-hidden rounded-2xl bg-gray-100">
                         <Image
-                            src="/images/about-story.jpg"
+                            src="/assets/images/hero-section-bg.png"
                             alt="Our Story"
-                            width={600}
-                            height={600}
+                            width={1200}
+                            height={900}
                             className="h-full w-full object-cover"
                         />
                     </div>

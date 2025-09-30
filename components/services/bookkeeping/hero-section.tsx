@@ -5,7 +5,7 @@ import { Check } from '@/ui/icons/google-icons';
 import cn from '@/utils/cn';
 
 
-import GetStartedButton from '@/components/common/get-started-button';
+import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
 
 export default function BookkeepingHeroSection() {
     return (
@@ -33,7 +33,7 @@ export default function BookkeepingHeroSection() {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col justify-center gap-4 sm:flex-row sm:gap-6">
-                    <GetStartedButton className="w-xs" size="lg" />
+                    <ScheduleMyCallButton className="w-xs" size="lg" showSubtext={false} />
                 </div>
             </div>
 

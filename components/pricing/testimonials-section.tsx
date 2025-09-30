@@ -1,4 +1,7 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useRef } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
 
 const testimonials = [
     {
@@ -47,8 +50,38 @@ const testimonials = [
 ];
 
 export default function TestimonialsSection() {
+    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start', containScroll: 'trimSnaps' });
+    const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    useEffect(() => {
+        if (!emblaApi) return;
+        const start = () => {
+            autoplayRef.current = setInterval(() => emblaApi.scrollNext(), 4500);
+        };
+        const stop = () => {
+            if (autoplayRef.current) {
+                clearInterval(autoplayRef.current);
+                autoplayRef.current = null;
+            }
+        };
+
+        start();
+        emblaApi.on('pointerDown', stop);
+        emblaApi.on('destroy', stop);
+
+        const root = emblaApi.rootNode();
+        root.addEventListener('mouseenter', stop);
+        root.addEventListener('mouseleave', start);
+
+        return () => {
+            root.removeEventListener('mouseenter', stop);
+            root.removeEventListener('mouseleave', start);
+            if (autoplayRef.current) clearInterval(autoplayRef.current);
+        };
+    }, [emblaApi]);
+
     return (
-        <section className="container mx-auto flex h-full w-full flex-col items-center justify-center gap-12 px-4 py-16 sm:px-6 md:px-12 lg:px-16 lg:py-24 xl:min-h-screen xl:py-0">
+        <section className="container mx-auto flex h-full w-full flex-col items-center justify-center gap-12 px-4 py-16 sm:px-6 md:px-12 lg:px-16 lg:py-24">
             <div className="text-center">
                 <h2 className="mb-4 text-2xl font-bold sm:text-3xl lg:text-4xl">
                     What Our Clients Say
@@ -58,46 +91,45 @@ export default function TestimonialsSection() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {testimonials.map((testimonial, index) => (
-                    <div
-                        key={index}
-                        className="rounded-xl bg-secondary p-6 text-primary"
-                    >
-                        <div className="mb-4 flex flex-col gap-3">
-                            <div className="flex justify-between">
-                                <div className="h-min rounded-full bg-secondary px-2 py-1 text-xs text-primary">
-                                    {testimonial.plan}
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    {[...Array(5)].map((_, i) => (
-                                        <div
-                                            key={i}
-                                            className="bg-primary px-1"
-                                        >
-                                            <span className="text-white">
-                                                ★
-                                            </span>
+            <div className="w-full overflow-hidden" ref={emblaRef}>
+                <div className="flex">
+                    {testimonials.map((testimonial, index) => (
+                        <div
+                            key={index}
+                            className="min-w-0 shrink-0 grow-0 basis-full p-2 sm:basis-1/2 lg:basis-1/3"
+                        >
+                            <div className="h-full rounded-xl bg-secondary p-6 text-primary">
+                                <div className="mb-4 flex flex-col gap-3">
+                                    <div className="flex justify-between">
+                                        <div className="h-min rounded-full bg-secondary px-2 py-1 text-xs text-primary">
+                                            {testimonial.plan}
                                         </div>
-                                    ))}
+                                        <div className="flex items-center gap-1">
+                                            {[...Array(5)].map((_, i) => (
+                                                <div key={i} className="bg-primary px-1">
+                                                    <span className="text-white">★</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <p className="text-gray-600 italic">
+                                        "{testimonial.quote}"
+                                    </p>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <div className="font-semibold text-gray-900">
+                                            {testimonial.name}
+                                        </div>
+                                        <div className="text-sm text-gray-600">
+                                            {testimonial.role}, {testimonial.company}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <p className="text-gray-600 italic">
-                                "{testimonial.quote}"
-                            </p>
                         </div>
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <div className="font-semibold text-gray-900">
-                                    {testimonial.name}
-                                </div>
-                                <div className="text-sm text-gray-600">
-                                    {testimonial.role}, {testimonial.company}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </section>
     );

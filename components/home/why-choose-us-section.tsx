@@ -1,6 +1,9 @@
-import React from 'react';
+'use client';
 
-import { Check } from '@/ui/icons/google-icons';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef } from 'react';
+
+import { ArrowForward, Check } from '@/ui/icons/google-icons';
 import Link from '@/ui/link';
 
 import cn from '@/utils/cn';
@@ -38,13 +41,15 @@ function WhyChooseUsCard({
     return (
         <div className={cn('flex items-start gap-4')}>
             <div className="mt-1 flex-shrink-0">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary transition-colors group-hover:bg-secondary/80">
-                    <Check className="h-5 w-5 fill-accent" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary transition-colors group-hover:bg-secondary/80">
+                    <Check className="h-6 w-6 fill-accent" />
                 </div>
             </div>
             <div className="flex flex-col gap-2">
-                <h3 className="text-lg font-semibold sm:text-xl">{title}</h3>
-                <p className="text-sm leading-relaxed sm:text-base">
+                <h3 className="text-xl font-semibold text-accent sm:text-2xl">
+                    {title}
+                </h3>
+                <p className="text-base leading-relaxed text-gray-800 sm:text-lg">
                     {description}
                 </p>
             </div>
@@ -53,42 +58,60 @@ function WhyChooseUsCard({
 }
 
 export default function WhyChooseUsSection() {
+    // Section ref for scroll tracking
+    const sectionRef = useRef<HTMLDivElement>(null);
+    // Framer Motion scroll progress for this section
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ['start end', 'end start'],
+    });
+
+    // Parallax transforms (tweak values for desired effect)
+    const bgY = useTransform(scrollYProgress, [0, 1], ['0px', '80px']);
+    const overlayY = useTransform(scrollYProgress, [0, 1], ['0px', '50px']);
+    const contentY = useTransform(scrollYProgress, [0, 1], ['0px', '-30px']);
+
     return (
         <section
+            ref={sectionRef}
             className={cn(
-                'flex min-h-screen w-full flex-col items-center justify-center gap-12 px-4 py-16 sm:gap-16 sm:px-6 md:px-12 lg:px-16 xl:container xl:mx-auto xl:py-24',
+                'relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-white px-4 py-20 sm:px-8 md:px-16 lg:px-24 xl:py-32',
             )}
         >
-            <div className="flex flex-col items-center justify-center gap-6 text-center sm:gap-8">
-                <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl">
-                    Why Choose Our Accounting Services
-                </h2>
-                <p className="max-w-3xl text-base sm:text-lg">
-                    Transform your financial operations with efficiency and
-                    expertise. Join hundreds of successful businesses who trust
-                    us.
-                </p>
-            </div>
-            <div className="grid w-full max-w-4xl grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
-                {benefits.map((benefit, index) => (
-                    <WhyChooseUsCard
-                        key={index}
-                        title={benefit.title}
-                        description={benefit.description}
-                    />
-                ))}
-            </div>
-            <div className="flex flex-col items-center justify-center gap-6 text-center sm:gap-8">
-                <p className="text-base sm:text-lg">
-                    Ready to transform your business finances?
-                </p>
-                <Link
-                    href="/contact"
-                    className="flex transform cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-base font-semibold text-white transition-all hover:bg-accent focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:outline-none sm:px-8 sm:py-4 sm:text-lg"
-                >
-                    Get Started
-                </Link>
-            </div>
+            {/* Removed Parallax Background Image */}
+            {/* Parallax Overlay for better text contrast */}
+            {/* Optionally, you can remove the overlay as well, but keeping for subtle effect */}
+            <motion.div
+                className="pointer-events-none absolute inset-0 z-10 will-change-transform"
+                style={{ y: overlayY }}
+                aria-hidden="true"
+            />
+            <motion.div
+                className="relative z-20 flex w-full max-w-6xl flex-col gap-16 will-change-transform lg:flex-row lg:items-center lg:justify-center"
+                style={{ y: contentY }}
+            >
+                {/* Left: Heading and Description */}
+                <div className="flex w-full flex-col items-center justify-center gap-8 text-center sm:gap-10 lg:w-1/2 lg:items-start lg:text-left">
+                    <h2 className="text-3xl font-bold text-accent sm:text-4xl lg:text-5xl">
+                        Smarter Accounting. Better Results.
+                    </h2>
+                    <p className="max-w-3xl text-lg text-gray-700 sm:text-xl">
+                        We simplify bookkeeping with smart, expert
+                        solutions—saving you time, ensuring accuracy, and
+                        letting you focus on growing your business.
+                    </p>
+                </div>
+                {/* Right: Benefits List */}
+                <div className="grid w-full grid-cols-1 gap-10 lg:w-1/2 lg:gap-12">
+                    {benefits.map((benefit, index) => (
+                        <WhyChooseUsCard
+                            key={index}
+                            title={benefit.title}
+                            description={benefit.description}
+                        />
+                    ))}
+                </div>
+            </motion.div>
         </section>
     );
 }
