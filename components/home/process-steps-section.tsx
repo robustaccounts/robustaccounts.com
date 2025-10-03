@@ -47,7 +47,7 @@ export default function ProcessStepsSection() {
         <section
             ref={sectionRef}
             className={cn(
-                'relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden px-4 py-8 sm:px-8 sm:py-12 md:px-16 md:py-20 lg:px-24 xl:py-32',
+                'relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden px-5 py-12 sm:px-8 sm:py-14 md:px-12 md:py-16 lg:px-16 lg:py-20',
             )}
         >
             {/* Parallax Background Image */}
@@ -62,20 +62,21 @@ export default function ProcessStepsSection() {
             />
             {/* Parallax Overlay for better text contrast */}
             <motion.div
-                className="pointer-events-none absolute inset-0 z-10 bg-black/70 will-change-transform"
+                className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-black/75 via-black/70 to-black/75 will-change-transform"
                 style={{ y: overlayY }}
                 aria-hidden="true"
             />
             <motion.div
-                className="relative z-20 flex w-full max-w-6xl flex-col gap-8 will-change-transform md:gap-16"
+                className="relative z-20 flex w-full max-w-6xl flex-col gap-10 will-change-transform sm:gap-12 md:gap-16"
                 style={{ y: contentY }}
             >
-                <div className="pt-12 text-center">
-                    <h2 className="mb-4 text-4xl font-bold text-white sm:text-5xl">
-                        How It Works
+                <div className="text-center">
+                    <h2 className="mb-3 text-2xl leading-tight font-bold text-white sm:mb-4 sm:text-3xl md:text-4xl">
+                        How It <span className="text-accent">Works</span>
                     </h2>
-                    <p className="text-xl text-gray-200">
-                        Simple steps to get your accounting outsourced
+                    <p className="mx-auto max-w-2xl text-sm leading-relaxed text-gray-200 sm:text-base md:text-lg">
+                        Simple steps to get your accounting outsourced and
+                        transform your business
                     </p>
                 </div>
                 {/* Desktop Steps Grid - Hidden on mobile */}
@@ -141,30 +142,33 @@ export default function ProcessStepsSection() {
                         </div>
                     </div>
                 </div>
-                {/* Mobile Steps - No CTA */}
-                <div className="mt-8 md:mt-16 md:hidden">
-                    <div className="relative flex flex-col gap-8">
+                {/* Mobile Steps - Improved Design */}
+                <div className="md:hidden">
+                    <div className="relative flex flex-col gap-6 sm:gap-8">
                         {steps.map((item, index) => (
                             <div
                                 key={index}
                                 className="relative flex flex-col items-center text-center"
                             >
                                 {/* Step Circle */}
-                                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent text-2xl font-bold text-white shadow-lg ring-4 ring-accent/10">
+                                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent text-2xl font-bold text-white shadow-xl ring-4 ring-accent/20 sm:h-20 sm:w-20 sm:text-3xl">
                                     {item.step}
                                 </div>
-                                {/* Step Title */}
-                                <h3 className="mb-2 text-lg font-semibold text-white">
-                                    {item.title}
-                                </h3>
-                                {/* Step Description */}
-                                <p className="px-2 text-base text-gray-200">
-                                    {item.description}
-                                </p>
+                                {/* Step Content */}
+                                <div className="max-w-sm px-4">
+                                    <h3 className="mb-2 text-xl font-bold text-white sm:text-2xl">
+                                        {item.title}
+                                    </h3>
+                                    <p className="text-base leading-relaxed text-gray-200 sm:text-lg">
+                                        {item.description}
+                                    </p>
+                                </div>
                                 {/* Arrow (mobile, below step, except last) */}
                                 {index < steps.length - 1 && (
-                                    <div className="mt-4 mb-2 block">
-                                        <ArrowForward className="mx-auto h-6 w-6 rotate-90 text-accent" />
+                                    <div className="mt-6 block sm:mt-8">
+                                        <div className="rounded-full bg-accent/20 p-2">
+                                            <ArrowForward className="mx-auto h-6 w-6 rotate-90 text-accent sm:h-8 sm:w-8" />
+                                        </div>
                                     </div>
                                 )}
                             </div>

@@ -28,28 +28,41 @@
     }
 } */
 
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 body {
     background: var(--background);
     color: var(--foreground);
     font-family: var(--font-inter);
+    overflow-x: hidden;
 }
 
 /* removed landing-specific helpers per request */
 
 /* Global top spacing helper for pages with the fixed header */
 .hero-section {
-    /* Ensure content starts below the fixed header (which sits at top-8 with a pill height) */
-    padding-top: 6.5rem; /* ~104px on small screens */
+    /* Ensure content starts below the fixed header (which sits at top-4 with a pill height) */
+    padding-top: 5.5rem; /* ~88px on small screens */
+}
+
+@media (min-width: 640px) {
+    .hero-section {
+        padding-top: 6rem; /* ~96px on sm */
+    }
 }
 
 @media (min-width: 768px) {
     .hero-section {
-        padding-top: 7rem; /* ~112px on md */
+        padding-top: 6.5rem; /* ~104px on md */
     }
 }
 
 @media (min-width: 1024px) {
     .hero-section {
-        padding-top: 7.5rem; /* ~120px on lg+ */
+        padding-top: 7rem; /* ~112px on lg+ */
     }
 }

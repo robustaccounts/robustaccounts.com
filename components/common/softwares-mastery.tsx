@@ -61,17 +61,21 @@ function SoftwareCard({
     description: string;
 }>) {
     return (
-        <div className={cn('flex items-start gap-4')}>
+        <div
+            className={cn(
+                'group flex items-start gap-4 rounded-xl p-4 transition-all hover:bg-secondary/50 sm:gap-5',
+            )}
+        >
             <div className="mt-1 flex-shrink-0">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary transition-colors group-hover:bg-secondary/80">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary shadow-sm transition-all group-hover:scale-110 group-hover:shadow-md sm:h-16 sm:w-16">
                     {logo}
                 </div>
             </div>
-            <div className="flex flex-col gap-2">
-                <h3 className="text-xl font-semibold text-accent sm:text-2xl">
+            <div className="flex flex-col gap-2 sm:gap-3">
+                <h3 className="text-xl font-bold text-accent sm:text-2xl">
                     {name}
                 </h3>
-                <p className="text-base leading-relaxed text-gray-800 sm:text-lg">
+                <p className="text-base leading-relaxed text-gray-700 sm:text-lg">
                     {description}
                 </p>
             </div>
@@ -87,17 +91,17 @@ function ExpertiseCard({
     description: string;
 }>) {
     return (
-        <div className={cn('flex items-start gap-4')}>
+        <div className={cn('flex items-start gap-4 sm:gap-5')}>
             <div className="mt-1 flex-shrink-0">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary transition-colors group-hover:bg-secondary/80">
-                    <Check className="h-6 w-6 fill-accent" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 transition-colors sm:h-12 sm:w-12">
+                    <Check className="h-5 w-5 fill-accent sm:h-6 sm:w-6" />
                 </div>
             </div>
             <div className="flex flex-col gap-2">
-                <h3 className="text-xl font-semibold text-accent sm:text-2xl">
+                <h3 className="text-lg font-bold text-primary sm:text-xl">
                     {title}
                 </h3>
-                <p className="text-base leading-relaxed text-gray-800 sm:text-lg">
+                <p className="text-sm leading-relaxed text-gray-700 sm:text-base">
                     {description}
                 </p>
             </div>
@@ -122,7 +126,7 @@ export default function SoftwaresMasterySection() {
         <section
             ref={sectionRef}
             className={cn(
-                'relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-white px-4 py-20 sm:px-8 md:px-16 lg:px-24 xl:py-32',
+                'relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-white px-5 py-12 sm:px-8 sm:py-14 md:px-12 md:py-16 lg:px-16 lg:py-20',
             )}
         >
             {/* Parallax Overlay for better text contrast */}
@@ -132,23 +136,23 @@ export default function SoftwaresMasterySection() {
                 aria-hidden="true"
             />
             <motion.div
-                className="relative z-20 flex w-full max-w-6xl flex-col gap-16 will-change-transform lg:flex-row lg:items-center lg:justify-center"
+                className="relative z-20 flex w-full max-w-6xl flex-col gap-12 will-change-transform sm:gap-16 lg:flex-row lg:items-center lg:justify-center"
                 style={{ y: contentY }}
             >
                 {/* Left: Heading and Description */}
-                <div className="flex w-full flex-col items-center justify-center gap-8 text-center sm:gap-10 lg:w-1/2 lg:items-start lg:text-left">
-                    <h2 className="text-3xl font-bold text-accent sm:text-4xl lg:text-5xl">
-                        Master of Leading{' '}
+                <div className="flex w-full flex-col items-center justify-center gap-4 text-center sm:gap-5 lg:w-1/2 lg:items-start lg:text-left">
+                    <h2 className="text-2xl leading-tight font-bold text-primary sm:text-3xl lg:text-4xl">
+                        Masters of Leading{' '}
                         <span className="text-accent">Accounting Software</span>
                     </h2>
-                    <p className="max-w-3xl text-lg text-gray-700 sm:text-xl">
+                    <p className="max-w-3xl text-sm leading-relaxed text-gray-700 sm:text-base lg:text-lg">
                         We're certified experts in the world's most trusted
                         accounting platforms. Your business deserves the best
                         tools, and we know how to use them effectively.
                     </p>
                 </div>
                 {/* Right: Software Platforms List */}
-                <div className="grid w-full grid-cols-1 gap-10 lg:w-1/2 lg:gap-12">
+                <div className="grid w-full grid-cols-1 gap-6 sm:gap-8 lg:w-1/2">
                     {softwarePlatforms.map((platform, index) => (
                         <SoftwareCard
                             key={index}
@@ -162,14 +166,15 @@ export default function SoftwaresMasterySection() {
 
             {/* Additional Expertise Section */}
             <motion.div
-                className="relative z-20 mt-16 w-full max-w-6xl will-change-transform"
+                className="relative z-20 mt-8 w-full max-w-6xl will-change-transform sm:mt-10"
                 style={{ y: contentY }}
             >
-                <div className="rounded-2xl bg-secondary p-8 md:p-12">
-                    <h3 className="mb-8 text-center text-2xl font-bold text-accent sm:text-3xl">
-                        Why Choose Our Software Expertise?
+                <div className="rounded-2xl bg-secondary/50 p-5 shadow-sm sm:p-6 md:p-8">
+                    <h3 className="mb-5 text-center text-xl font-bold text-primary sm:mb-6 sm:text-2xl lg:text-3xl">
+                        Why Choose Our{' '}
+                        <span className="text-accent">Software Expertise</span>?
                     </h3>
-                    <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2">
                         {expertiseBenefits.map((benefit, index) => (
                             <ExpertiseCard
                                 key={index}

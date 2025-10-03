@@ -10,23 +10,27 @@ import cn from '@/utils/cn';
 
 import ScheduleMyCallButton from '../ui/schedule-my-call-button';
 
-// Animation variants and speed matching the reference
+// Animation variants with improved timing
 const heroContainer = {
     hidden: { opacity: 0 },
     show: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.1,
+            staggerChildren: 0.15,
+            delayChildren: 0.1,
         },
     },
 };
 
 const heroItem = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 30 },
     show: {
         opacity: 1,
         y: 0,
-        transition: { duration: 0.5 },
+        transition: {
+            duration: 0.6,
+            ease: [0.25, 0.46, 0.45, 0.94],
+        },
     },
 };
 
@@ -57,7 +61,7 @@ export default function HeroSection() {
         <section
             ref={sectionRef}
             className={cn(
-                'hero-section relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden',
+                'hero-section relative flex min-h-[100svh] w-full flex-col items-center justify-center overflow-hidden',
             )}
         >
             {/* Optimized Background Image */}
@@ -67,28 +71,29 @@ export default function HeroSection() {
                 fill
                 priority
                 className="object-cover"
+                sizes="100vw"
+                quality={90}
                 aria-hidden="true"
             />
-            {/* Parallax Overlay for better text contrast */}
+            {/* Enhanced Parallax Overlay for better text contrast */}
             <motion.div
                 className={cn(
-                    'pointer-events-none absolute inset-0 z-10 bg-black/70 will-change-transform',
+                    'pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-black/60 via-black/70 to-black/80 will-change-transform',
                 )}
                 style={{
-                    // Use Tailwind for overlay, but keep parallax effect
                     transform: overlayParallax
                         ? `translateY(${overlayParallax}px)`
                         : undefined,
                 }}
                 aria-hidden="true"
             />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-black/40 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-32 bg-gradient-to-t from-black/50 to-transparent" />
             <motion.div
                 variants={heroContainer}
                 initial="hidden"
                 animate="show"
                 className={cn(
-                    'relative z-20 flex h-full w-full flex-col items-center justify-center gap-6 px-4 py-8 will-change-transform sm:gap-8 sm:px-6 sm:py-16 md:gap-10 md:px-12 lg:px-16',
+                    'relative z-20 flex h-full w-full flex-col items-center justify-center gap-8 px-5 py-12 will-change-transform sm:gap-10 sm:px-8 sm:py-16 md:gap-12 md:px-12 lg:px-16',
                 )}
                 style={{
                     transform: contentParallax
@@ -99,25 +104,28 @@ export default function HeroSection() {
                 {/* Main Content */}
                 <motion.div
                     variants={heroItem}
-                    className="flex w-full max-w-4xl flex-col items-center justify-center space-y-4 text-center sm:space-y-6"
+                    className="flex w-full max-w-5xl flex-col items-center justify-center space-y-4 text-center sm:space-y-5 md:space-y-6"
                 >
                     {/* Main Headline */}
                     <motion.h1
                         variants={heroItem}
-                        className="text-center text-4xl leading-tight font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl"
-                        transition={{ duration: 0.5 }}
+                        className="text-center text-3xl leading-[1.15] font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl"
                     >
                         Transform Your{' '}
-                        <span className="text-white">Business</span> with{' '}
-                        <span className="text-white">Expert Accounting</span>{' '}
-                        Solutions.
+                        <span className="bg-gradient-to-r from-white to-white/90 bg-clip-text text-transparent">
+                            Business
+                        </span>{' '}
+                        with{' '}
+                        <span className="bg-gradient-to-r from-accent via-accent/90 to-accent/80 bg-clip-text text-transparent">
+                            Expert Accounting
+                        </span>{' '}
+                        Solutions
                     </motion.h1>
 
                     {/* Subtitle */}
                     <motion.p
                         variants={heroItem}
-                        className="max-w-3xl text-center text-base leading-relaxed text-white/90 sm:text-lg lg:text-xl"
-                        transition={{ duration: 0.5 }}
+                        className="max-w-2xl px-2 text-center text-sm leading-relaxed text-white/95 sm:text-base md:text-lg lg:text-xl"
                     >
                         Save 40+ hours monthly and reduce costs by 60% with our
                         comprehensive accounting outsourcing services. Focus on
@@ -127,8 +135,7 @@ export default function HeroSection() {
                     {/* CTA Buttons */}
                     <motion.div
                         variants={heroItem}
-                        className="flex flex-col justify-center gap-3 sm:gap-4 md:flex-row md:gap-6"
-                        transition={{ duration: 0.5 }}
+                        className="flex w-full flex-col justify-center gap-3 pt-2 sm:w-auto sm:gap-4 md:flex-row"
                     >
                         <ScheduleMyCallButton size="lg" />
                     </motion.div>
@@ -137,21 +144,34 @@ export default function HeroSection() {
                 {/* Trust Indicators */}
                 <motion.div
                     variants={heroItem}
-                    className={cn('flex flex-col items-center gap-3 px-4 py-6 will-change-transform sm:gap-4 sm:py-8')}
-                    transition={{ duration: 0.5 }}
+                    className={cn(
+                        'flex flex-col items-center gap-3 px-4 py-4 will-change-transform sm:gap-4 sm:py-6',
+                    )}
                     style={{
                         transform: trustParallax
                             ? `translateY(-${trustParallax}px)`
                             : undefined,
                     }}
                 >
-                    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs text-white sm:gap-x-4 sm:text-sm md:text-base">
-                        <Check className="h-4 w-4 fill-white" />
-                        <span>No setup fees</span>
-                        <Check className="h-4 w-4 fill-white" />
-                        <span>Cancel anytime</span>
-                        <Check className="h-4 w-4 fill-white" />
-                        <span>24/7 support</span>
+                    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs text-white/95 sm:gap-x-4 sm:text-sm md:text-base">
+                        <div className="flex items-center gap-1.5">
+                            <div className="rounded-full bg-accent/20 p-1">
+                                <Check className="h-3 w-3 fill-accent sm:h-4 sm:w-4" />
+                            </div>
+                            <span className="font-medium">No setup fees</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                            <div className="rounded-full bg-accent/20 p-1">
+                                <Check className="h-3 w-3 fill-accent sm:h-4 sm:w-4" />
+                            </div>
+                            <span className="font-medium">Cancel anytime</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                            <div className="rounded-full bg-accent/20 p-1">
+                                <Check className="h-3 w-3 fill-accent sm:h-4 sm:w-4" />
+                            </div>
+                            <span className="font-medium">24/7 support</span>
+                        </div>
                     </div>
                 </motion.div>
             </motion.div>

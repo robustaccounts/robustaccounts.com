@@ -31,23 +31,23 @@ export default function FAQSection() {
     return (
         <section
             className={cn(
-                'container mx-auto flex h-full w-full flex-col items-center justify-center gap-12 px-4 py-16 sm:gap-16 sm:px-6 md:px-12 lg:px-16 lg:py-24 xl:min-h-screen xl:py-0',
+                'container mx-auto flex h-full w-full flex-col items-center justify-center gap-8 px-5 py-12 sm:gap-10 sm:px-8 sm:py-14 md:px-12 md:py-16 lg:px-16 lg:py-20',
             )}
         >
             {/* Header */}
-            <div className="flex flex-col items-center gap-6 text-center">
-                <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl">
+            <div className="flex flex-col items-center gap-3 text-center sm:gap-4">
+                <h2 className="text-2xl leading-tight font-bold sm:text-3xl lg:text-4xl">
                     Frequently Asked{' '}
                     <span className="text-accent">Questions</span>
                 </h2>
-                <p className="max-w-2xl text-base leading-relaxed">
+                <p className="max-w-2xl text-sm leading-relaxed text-gray-700 sm:text-base lg:text-lg">
                     Get answers to the most common questions about our
                     accounting outsourcing services.
                 </p>
             </div>
 
             {/* FAQ Items */}
-            <div className="w-full max-w-4xl space-y-4">
+            <div className="w-full max-w-4xl space-y-3 sm:space-y-4">
                 {faqs.map((faq, index) => (
                     <FrequentlyAskedQuestion
                         key={index}
@@ -58,13 +58,13 @@ export default function FAQSection() {
             </div>
 
             {/* CTA */}
-            <div className="flex flex-col items-center gap-6 text-center">
-                <p className="text-base sm:text-lg">
+            <div className="flex flex-col items-center gap-5 pt-4 text-center sm:gap-6">
+                <p className="text-base text-gray-700 sm:text-lg lg:text-xl">
                     Still have questions? We're here to help.
                 </p>
                 <Link
                     href="/faq"
-                    className="flex transform cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-base font-semibold text-white transition-all hover:bg-accent focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:outline-none sm:px-8 sm:py-4 sm:text-lg"
+                    className="flex cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:bg-accent/90 hover:shadow-xl focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:outline-none active:scale-95 sm:px-10 sm:text-lg"
                 >
                     View All FAQs
                 </Link>
