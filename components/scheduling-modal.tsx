@@ -75,8 +75,6 @@ export default function SchedulingModal({
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isBooking, setIsBooking] = useState(false);
     const [isBooked, setIsBooked] = useState(false);
-    const [smsOptOut, setSmsOptOut] = useState(false);
-    const [smsUpdates, setSmsUpdates] = useState(false);
     const overlayRef = React.useRef<HTMLDivElement>(null);
     const previouslyFocused = React.useRef<HTMLElement | null>(null);
 
@@ -98,8 +96,6 @@ export default function SchedulingModal({
         setErrors({});
         setIsBooking(false);
         setIsBooked(false);
-        setSmsOptOut(false);
-        setSmsUpdates(false);
     }, []);
 
     // Prevent body scrolling when modal is open; manage focus
@@ -370,8 +366,6 @@ export default function SchedulingModal({
                 industry: contactData.industry,
                 message: contactData.message,
                 appointmentDatetime: utcAppointmentDatetime,
-                smsOptOut,
-                smsUpdates,
             };
 
             const result = await saveLead(leadData);
@@ -1016,32 +1010,8 @@ export default function SchedulingModal({
                                                     . This includes permission
                                                     to communicate with you
                                                     about your appointments via
-                                                    phone, email, or SMS.
+                                                    phone and email.
                                                 </p>
-
-                                                <div className="space-y-4 sm:space-y-5">
-                                                    <Checkbox
-                                                        name="smsOptOut"
-                                                        label="If you prefer to opt-out of SMS communications you may uncheck this box"
-                                                        checked={smsOptOut}
-                                                        onChange={(checked) =>
-                                                            setSmsOptOut(
-                                                                checked,
-                                                            )
-                                                        }
-                                                    />
-
-                                                    <Checkbox
-                                                        name="smsUpdates"
-                                                        label="I'd like to receive SMS communications about upcoming tax deadlines and important tax updates"
-                                                        checked={smsUpdates}
-                                                        onChange={(checked) =>
-                                                            setSmsUpdates(
-                                                                checked,
-                                                            )
-                                                        }
-                                                    />
-                                                </div>
                                             </div>
 
                                             <div className="flex justify-center">

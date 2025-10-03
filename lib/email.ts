@@ -19,8 +19,6 @@ export type LeadNotification = {
     industry: string;
     message?: string | null;
     appointmentDatetimeISO: string; // ISO string
-    smsOptOut: boolean;
-    smsUpdates: boolean;
 };
 
 function getSmtpConfig() {
@@ -107,8 +105,6 @@ export async function sendLeadNotificationEmail(lead: LeadNotification) {
             `Business: ${lead.businessName}`,
             `Industry: ${lead.industry}`,
             `Appointment (UTC ISO): ${lead.appointmentDatetimeISO}`,
-            `SMS Updates: ${lead.smsUpdates ? 'Yes' : 'No'}`,
-            `SMS Opt-out: ${lead.smsOptOut ? 'Yes' : 'No'}`,
             '',
             'Message:',
             lead.message?.trim() ? lead.message : '(none)',
@@ -127,8 +123,6 @@ export async function sendLeadNotificationEmail(lead: LeadNotification) {
                   <tr><td><strong>Business</strong></td><td>${lead.businessName}</td></tr>
                   <tr><td><strong>Industry</strong></td><td>${lead.industry}</td></tr>
                   <tr><td><strong>Appointment (UTC ISO)</strong></td><td>${lead.appointmentDatetimeISO}</td></tr>
-                  <tr><td><strong>SMS Updates</strong></td><td>${lead.smsUpdates ? 'Yes' : 'No'}</td></tr>
-                  <tr><td><strong>SMS Opt-out</strong></td><td>${lead.smsOptOut ? 'Yes' : 'No'}</td></tr>
                 </tbody>
               </table>
               <div style="margin-top: 12px;">

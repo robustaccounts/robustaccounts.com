@@ -15,8 +15,6 @@ interface LeadFormData {
         industry: string;
         message: string;
     };
-    smsOptOut: boolean;
-    smsUpdates: boolean;
 }
 
 interface LeadFormContextType {
@@ -24,8 +22,6 @@ interface LeadFormContextType {
     setSelectedDate: (date: Date | null) => void;
     setSelectedTimeSlot: (slot: string | null) => void;
     setContactData: (data: Partial<LeadFormData['contactData']>) => void;
-    setSmsOptOut: (value: boolean) => void;
-    setSmsUpdates: (value: boolean) => void;
     resetForm: () => void;
 }
 
@@ -46,8 +42,6 @@ const initialFormData: LeadFormData = {
         industry: '',
         message: '',
     },
-    smsOptOut: false,
-    smsUpdates: false,
 };
 
 export function LeadFormProvider({ children }: { children: React.ReactNode }) {
@@ -71,14 +65,6 @@ export function LeadFormProvider({ children }: { children: React.ReactNode }) {
         [],
     );
 
-    const setSmsOptOut = useCallback((value: boolean) => {
-        setFormData((prev) => ({ ...prev, smsOptOut: value }));
-    }, []);
-
-    const setSmsUpdates = useCallback((value: boolean) => {
-        setFormData((prev) => ({ ...prev, smsUpdates: value }));
-    }, []);
-
     const resetForm = useCallback(() => {
         setFormData(initialFormData);
     }, []);
@@ -90,8 +76,6 @@ export function LeadFormProvider({ children }: { children: React.ReactNode }) {
                 setSelectedDate,
                 setSelectedTimeSlot,
                 setContactData,
-                setSmsOptOut,
-                setSmsUpdates,
                 resetForm,
             }}
         >

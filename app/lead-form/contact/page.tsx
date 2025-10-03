@@ -31,8 +31,7 @@ const industries: DropdownOption[] = [
 
 export default function ContactPage() {
     const router = useRouter();
-    const { formData, setContactData, setSmsOptOut, setSmsUpdates } =
-        useLeadForm();
+    const { formData, setContactData } = useLeadForm();
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -133,8 +132,6 @@ export default function ContactPage() {
                 industry: formData.contactData.industry,
                 message: formData.contactData.message,
                 appointmentDatetime: utcAppointmentDatetime,
-                smsOptOut: formData.smsOptOut,
-                smsUpdates: formData.smsUpdates,
             };
 
             // Format appointment details for customer email
@@ -297,20 +294,6 @@ export default function ContactPage() {
                             rows={4}
                         />
 
-                        {/* SMS Preferences */}
-                        {/* <div className="space-y-3 rounded-lg bg-gray-50 p-4">
-                            <Checkbox
-                                checked={formData.smsUpdates}
-                                onChange={(checked) => setSmsUpdates(checked)}
-                                label="Send me SMS updates about my appointment"
-                            />
-                            <Checkbox
-                                checked={formData.smsOptOut}
-                                onChange={(checked) => setSmsOptOut(checked)}
-                                label="I don't want to receive SMS messages"
-                            />
-                        </div> */}
-
                         {/* Terms Agreement */}
                         <div className="rounded-lg bg-gray-50 p-4">
                             <p className="text-xs text-gray-600 sm:text-sm">
@@ -332,8 +315,7 @@ export default function ContactPage() {
                                     Privacy Policy
                                 </Link>
                                 . This includes permission to communicate with
-                                you about your appointments via phone, email, or
-                                SMS.
+                                you about your appointments via phone and email.
                             </p>
                         </div>
 
