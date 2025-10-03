@@ -1,5 +1,7 @@
 'use client';
 
+import { sendGAEvent } from '@next/third-parties/google';
+
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -352,13 +354,11 @@ export default function SchedulingModal({
                 console.log('Lead saved successfully with ID:', result.leadId);
 
                 // Fire Google Ads conversion event for lead form submission
-                if (typeof window !== 'undefined' && (window as any).gtag) {
-                    (window as any).gtag('event', 'conversion', {
-                        send_to: 'AW-17600938444/jfkaCOHz5aEbEMyD5MhB',
-                        value: 1.0,
-                        currency: 'USD',
-                    });
-                }
+                sendGAEvent('event', 'conversion', {
+                    send_to: 'AW-17600938444/jfkaCOHz5aEbEMyD5MhB',
+                    value: 1.0,
+                    currency: 'USD',
+                });
 
                 setIsBooked(true);
             } else {
