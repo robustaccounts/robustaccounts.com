@@ -1,17 +1,10 @@
 import { Analytics } from '@vercel/analytics/next';
 
 import type { Metadata } from 'next';
-import Script from 'next/script';
 
 import { Providers } from '@/providers/providers';
 
 import GoogleTag from '@/components/analytics/google-tag';
-import ContactUsBanner from '@/components/contact-us-banner';
-import Footer from '@/components/footer/footer';
-import Header from '@/components/header/header';
-import NewsletterSubscription from '@/components/newsletter-subscription';
-
-// import StickyCtaMobile from '@/components/ui/sticky-cta-mobile';
 
 import './globals.css';
 
@@ -28,20 +21,10 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={'font-sans antialiased'}>
-                <Script
-                    src="//code.tidio.co/9itfrqnmmdew7a6oktqq4yb0mm6cqddb.js"
-                    strategy="beforeInteractive"
-                />
-                {/* Google Analytics/Ads via next/script (recommended) */}
                 <GoogleTag />
                 <Providers>
-                    <Header />
                     {children}
-                    <ContactUsBanner />
-                    {/* <StickyCtaMobile /> */}
-                    {/* <NewsletterSubscription /> */}
 
-                    <Footer />
                     <Analytics />
                 </Providers>
             </body>
