@@ -77,3 +77,16 @@ Both files are automatically generated at build time and follow the latest Next.
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Lead Email Notifications
+
+To receive an email whenever a lead form is submitted, configure SMTP in your environment. The server action that saves leads also triggers an email notification.
+
+- Required env vars (examples are commented in `.env`):
+  - `SMTP_HOST`, `SMTP_PORT` (defaults to 587), `SMTP_USER`, `SMTP_PASS`
+  - `EMAIL_FROM` sender address (falls back to `SMTP_USER`)
+  - `LEAD_NOTIFY_TO` recipient (falls back to `EMAIL_TO` or `consultations@robustaccounts.com`)
+
+Notes:
+- If SMTP variables are missing, sending is skipped with a server log warning.
+- This uses `nodemailer`. Install if needed: `pnpm add nodemailer` (or `npm i nodemailer`).

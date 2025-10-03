@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
-import Checkbox from '@/ui/checkbox';
 import Dropdown, { DropdownOption } from '@/ui/dropdown';
 import GoogleCalendar from '@/ui/icons/google-calendar';
 import { ArrowForward, ChevronRight, Close } from '@/ui/icons/google-icons';
@@ -28,6 +27,7 @@ interface ContactFormData {
     lastName: string;
     email: string;
     phone: string;
+    countryCode: string;
     businessName: string;
     industry: string;
     message: string;
@@ -66,6 +66,7 @@ export default function SchedulingModal({
         lastName: '',
         email: '',
         phone: '',
+        countryCode: '+1',
         businessName: '',
         industry: '',
         message: '',
@@ -73,8 +74,6 @@ export default function SchedulingModal({
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isBooking, setIsBooking] = useState(false);
     const [isBooked, setIsBooked] = useState(false);
-    const [smsOptOut, setSmsOptOut] = useState(false);
-    const [smsUpdates, setSmsUpdates] = useState(false);
     const overlayRef = React.useRef<HTMLDivElement>(null);
     const previouslyFocused = React.useRef<HTMLElement | null>(null);
 
@@ -88,6 +87,7 @@ export default function SchedulingModal({
             lastName: '',
             email: '',
             phone: '',
+            countryCode: '+1',
             businessName: '',
             industry: '',
             message: '',
@@ -95,8 +95,6 @@ export default function SchedulingModal({
         setErrors({});
         setIsBooking(false);
         setIsBooked(false);
-        setSmsOptOut(false);
-        setSmsUpdates(false);
     }, []);
 
     // Prevent body scrolling when modal is open; manage focus
@@ -130,28 +128,21 @@ export default function SchedulingModal({
         }
     }, [isOpen]);
 
-    // Generate dates from current day through Friday of current week
+    // Generate dates from current day for the next 2 weeks (14 days, excluding weekends)
     const getAvailableDates = () => {
         const dates = [];
         const today = new Date();
-        const currentDay = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-        const friday = 5; // Friday is day 5
 
-        // If today is Saturday or Sunday, start from next Monday
-        const startDate = new Date(today);
-        if (currentDay === 0) {
-            // Sunday
-            startDate.setDate(today.getDate() + 1); // Move to Monday
-        } else if (currentDay === 6) {
-            // Saturday
-            startDate.setDate(today.getDate() + 2); // Move to Monday
-        }
+        // Generate dates for the next 14 days
+        for (let i = 0; i < 14; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
 
-        // Add days from start date through Friday
-        for (let i = 0; i <= friday - startDate.getDay(); i++) {
-            const date = new Date(startDate);
-            date.setDate(startDate.getDate() + i);
-            dates.push(date);
+            // Skip weekends (Saturday = 6, Sunday = 0)
+            const dayOfWeek = date.getDay();
+            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                dates.push(date);
+            }
         }
 
         return dates;
@@ -182,50 +173,68 @@ export default function SchedulingModal({
         return new Date(utcBase.getTime() - offsetMs);
     };
 
-    // Convert a Los Angeles time (HH:MM) on a given date to user's local display (handles DST)
-    const convertLATimeToLocalDisplay = (
+    // Convert an EST time (HH:MM) to display format (always shows EST time)
+    const convertESTTimeToLocalDisplay = (
         date: Date,
-        laTime: string,
-    ): string => {
+        estTime: string,
+    ): { displayTime: string; utcDate: Date } => {
         try {
-            const laDateStr = new Intl.DateTimeFormat('en-CA', {
-                timeZone: 'America/Los_Angeles',
+            // Parse the EST time
+            const [h, m] = estTime.split(':').map(Number);
+
+            // Get the date components in EST timezone
+            const formatter = new Intl.DateTimeFormat('en-CA', {
+                timeZone: 'America/New_York',
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
-            }).format(date);
-            const [laYear, laMonth, laDay] = laDateStr
-                .split('-')
-                .map((n) => parseInt(n, 10));
-            const [h, m] = laTime.split(':').map(Number);
-            const startUtc = getUtcForTimeZone(
-                laYear,
-                laMonth,
-                laDay,
+            });
+            const estDateStr = formatter.format(date);
+            const [year, month, day] = estDateStr.split('-').map(Number);
+
+            // Use the helper function to get the proper UTC date for this EST time
+            const utcDate = getUtcForTimeZone(
+                year,
+                month,
+                day,
                 h,
                 m,
-                'America/Los_Angeles',
+                'America/New_York',
             );
-            const localHours = startUtc.getHours();
-            const localMinutes = startUtc.getMinutes();
-            const ampm = localHours >= 12 ? 'pm' : 'am';
-            const displayHours = localHours % 12 || 12;
-            return `${displayHours}:${localMinutes.toString().padStart(2, '0')}${ampm}`;
+
+            // Display the EST time as-is (not converted to local time)
+            const ampm = h >= 12 ? 'pm' : 'am';
+            const displayHours = h % 12 || 12;
+            const displayTime = `${displayHours}:${m.toString().padStart(2, '0')}${ampm}`;
+
+            return {
+                displayTime,
+                utcDate,
+            };
         } catch (error) {
             console.error('Time conversion error:', error);
-            const [hours, minutes] = laTime.split(':').map(Number);
+            const [hours, minutes] = estTime.split(':').map(Number);
             const ampm = hours >= 12 ? 'pm' : 'am';
             const displayHours = hours % 12 || 12;
-            return `${displayHours}:${minutes.toString().padStart(2, '0')}${ampm}`;
+            const utcDate = new Date(date);
+            utcDate.setHours(hours, minutes, 0, 0);
+            return {
+                displayTime: `${displayHours}:${minutes.toString().padStart(2, '0')}${ampm}`,
+                utcDate,
+            };
         }
     };
 
-    // Generate time slots for selected date (11 AM to 7 PM PST)
+    // Generate time slots for selected date (9:30 AM to 6:30 PM EST, 30-minute intervals)
     const getTimeSlots = (date: Date): TimeSlot[] => {
         const slots: TimeSlot[] = [];
+        const now = new Date();
 
-        // PST time slots from 11 AM to 7 PM (hourly and half-hourly)
-        const pstTimeSlots = [
+        // EST time slots from 9:30 AM to 6:30 PM (30-minute intervals)
+        const estTimeSlots = [
+            '09:30',
+            '10:00',
+            '10:30',
             '11:00',
             '11:30',
             '12:00',
@@ -242,17 +251,28 @@ export default function SchedulingModal({
             '17:30',
             '18:00',
             '18:30',
-            '19:00',
         ];
 
-        pstTimeSlots.forEach((pstTime, index) => {
-            const localTime = convertLATimeToLocalDisplay(date, pstTime);
-            slots.push({
-                id: `${date.toISOString().split('T')[0]}-${index}`,
-                time: localTime,
-                available: true,
-                pstTime: `${pstTime.includes(':') ? pstTime : pstTime + ':00'} PST`,
-            });
+        estTimeSlots.forEach((estTime, index) => {
+            const { displayTime, utcDate } = convertESTTimeToLocalDisplay(
+                date,
+                estTime,
+            );
+
+            // Check if this time slot has passed based on current time
+            // utcDate represents the actual moment in time for the EST slot
+            // now is the current time - comparing these correctly filters past slots
+            const isPast = utcDate < now;
+
+            // Only add slots that haven't passed
+            if (!isPast) {
+                slots.push({
+                    id: `${date.toISOString().split('T')[0]}-${index}`,
+                    time: displayTime,
+                    available: true,
+                    pstTime: `${estTime} EST`,
+                });
+            }
         });
 
         return slots;
@@ -314,25 +334,25 @@ export default function SchedulingModal({
 
             if (!selectedSlot) return;
 
-            // Use LA timezone to generate correct UTC (handles PST/PDT)
-            const laTime = selectedSlot.pstTime.split(' ')[0];
-            const [slotHour, slotMinute] = laTime.split(':').map(Number);
-            const laDateStr = new Intl.DateTimeFormat('en-CA', {
-                timeZone: 'America/Los_Angeles',
+            // Use EST timezone to generate correct UTC (handles EST/EDT)
+            const estTime = selectedSlot.pstTime.split(' ')[0];
+            const [slotHour, slotMinute] = estTime.split(':').map(Number);
+            const estDateStr = new Intl.DateTimeFormat('en-CA', {
+                timeZone: 'America/New_York',
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
             }).format(selectedDate);
-            const [laYear, laMonth, laDay] = laDateStr
+            const [estYear, estMonth, estDay] = estDateStr
                 .split('-')
                 .map((n) => parseInt(n, 10));
             const utcAppointmentDatetime = getUtcForTimeZone(
-                laYear,
-                laMonth,
-                laDay,
+                estYear,
+                estMonth,
+                estDay,
                 slotHour,
                 slotMinute,
-                'America/Los_Angeles',
+                'America/New_York',
             );
 
             const leadData = {
@@ -340,12 +360,11 @@ export default function SchedulingModal({
                 lastName: contactData.lastName,
                 email: contactData.email,
                 phone: contactData.phone,
+                countryCode: contactData.countryCode,
                 businessName: contactData.businessName,
                 industry: contactData.industry,
                 message: contactData.message,
                 appointmentDatetime: utcAppointmentDatetime,
-                smsOptOut,
-                smsUpdates,
             };
 
             const result = await saveLead(leadData);
@@ -550,22 +569,22 @@ export default function SchedulingModal({
                                                         .split(':')
                                                         .map(Number);
 
-                                                    const laDateStr =
+                                                    const estDateStr =
                                                         new Intl.DateTimeFormat(
                                                             'en-CA',
                                                             {
                                                                 timeZone:
-                                                                    'America/Los_Angeles',
+                                                                    'America/New_York',
                                                                 year: 'numeric',
                                                                 month: '2-digit',
                                                                 day: '2-digit',
                                                             },
                                                         ).format(selectedDate);
                                                     const [
-                                                        laYear,
-                                                        laMonth,
-                                                        laDay,
-                                                    ] = laDateStr
+                                                        estYear,
+                                                        estMonth,
+                                                        estDay,
+                                                    ] = estDateStr
                                                         .split('-')
                                                         .map((n) =>
                                                             parseInt(n, 10),
@@ -573,12 +592,12 @@ export default function SchedulingModal({
 
                                                     const startTimeUtc =
                                                         getUtcForTimeZone(
-                                                            laYear,
-                                                            laMonth,
-                                                            laDay,
+                                                            estYear,
+                                                            estMonth,
+                                                            estDay,
                                                             slotHour,
                                                             slotMinute,
-                                                            'America/Los_Angeles',
+                                                            'America/New_York',
                                                         );
                                                     const endTimeUtc = new Date(
                                                         startTimeUtc.getTime() +
@@ -883,7 +902,9 @@ export default function SchedulingModal({
                                                 <PhoneInput
                                                     label="Phone"
                                                     value={contactData.phone}
-                                                    countryCode="+1"
+                                                    countryCode={
+                                                        contactData.countryCode
+                                                    }
                                                     onChange={(value) => {
                                                         setContactData(
                                                             (prev) => ({
@@ -893,7 +914,15 @@ export default function SchedulingModal({
                                                         );
                                                         clearError('phone');
                                                     }}
-                                                    onCountryChange={() => {}}
+                                                    onCountryChange={(code) => {
+                                                        setContactData(
+                                                            (prev) => ({
+                                                                ...prev,
+                                                                countryCode:
+                                                                    code,
+                                                            }),
+                                                        );
+                                                    }}
                                                     required
                                                     error={errors.phone}
                                                 />
@@ -980,32 +1009,8 @@ export default function SchedulingModal({
                                                     . This includes permission
                                                     to communicate with you
                                                     about your appointments via
-                                                    phone, email, or SMS.
+                                                    phone and email.
                                                 </p>
-
-                                                <div className="space-y-4 sm:space-y-5">
-                                                    <Checkbox
-                                                        name="smsOptOut"
-                                                        label="If you prefer to opt-out of SMS communications you may uncheck this box"
-                                                        checked={smsOptOut}
-                                                        onChange={(checked) =>
-                                                            setSmsOptOut(
-                                                                checked,
-                                                            )
-                                                        }
-                                                    />
-
-                                                    <Checkbox
-                                                        name="smsUpdates"
-                                                        label="I'd like to receive SMS communications about upcoming tax deadlines and important tax updates"
-                                                        checked={smsUpdates}
-                                                        onChange={(checked) =>
-                                                            setSmsUpdates(
-                                                                checked,
-                                                            )
-                                                        }
-                                                    />
-                                                </div>
                                             </div>
 
                                             <div className="flex justify-center">

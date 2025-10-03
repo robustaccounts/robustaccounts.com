@@ -7,14 +7,6 @@ import { Providers } from '@/providers/providers';
 
 import { config } from '@/lib/config';
 
-import ContactUsBanner from '@/components/contact-us-banner';
-import Footer from '@/components/footer/footer';
-import Header from '@/components/header/header';
-
-// import NewsletterSubscription from '@/components/newsletter-subscription';
-
-// import StickyCtaMobile from '@/components/ui/sticky-cta-mobile';
-
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -39,13 +31,7 @@ export default function RootLayout({
         <html lang="en">
             <body className={`${inter.variable} font-sans antialiased`}>
                 <Providers>
-                    <Header />
                     {children}
-                    <ContactUsBanner />
-                    {/* <StickyCtaMobile /> */}
-                    {/* <NewsletterSubscription /> */}
-
-                    <Footer />
                     <Analytics />
                 </Providers>
             </body>
