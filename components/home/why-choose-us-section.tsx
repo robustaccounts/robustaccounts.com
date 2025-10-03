@@ -3,8 +3,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import React, { useRef } from 'react';
 
-import { ArrowForward, Check } from '@/ui/icons/google-icons';
-import Link from '@/ui/link';
+import { Check } from '@/ui/icons/google-icons';
 
 import cn from '@/utils/cn';
 
@@ -67,7 +66,6 @@ export default function WhyChooseUsSection() {
     });
 
     // Parallax transforms (tweak values for desired effect)
-    const bgY = useTransform(scrollYProgress, [0, 1], ['0px', '80px']);
     const overlayY = useTransform(scrollYProgress, [0, 1], ['0px', '50px']);
     const contentY = useTransform(scrollYProgress, [0, 1], ['0px', '-30px']);
 

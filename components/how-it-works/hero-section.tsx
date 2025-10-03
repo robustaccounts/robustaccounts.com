@@ -1,11 +1,9 @@
 'use client';
 
-import React from 'react';
 import Image from 'next/image';
+import React from 'react';
 
 import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
-
-import cn from '@/utils/cn';
 
 export function HeroSection() {
     return (

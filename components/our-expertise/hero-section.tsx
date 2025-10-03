@@ -1,11 +1,9 @@
 'use client';
 
-import React from 'react';
 import Image from 'next/image';
+import React from 'react';
 
 import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
-
-import cn from '@/utils/cn';
 
 export default function HeroSection() {
     return (
@@ -20,7 +18,10 @@ export default function HeroSection() {
                 aria-hidden="true"
             />
             {/* Overlay for better text contrast */}
-            <div className="absolute inset-0 z-10 bg-black/70" aria-hidden="true" />
+            <div
+                className="absolute inset-0 z-10 bg-black/70"
+                aria-hidden="true"
+            />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-black/40 to-transparent" />
 
             {/* Content Container */}

@@ -1,15 +1,17 @@
 import { Analytics } from '@vercel/analytics/next';
 
 import type { Metadata } from 'next';
-import { config } from '@/lib/config';
+import { Inter } from 'next/font/google';
 
 import { Providers } from '@/providers/providers';
-import { Inter } from 'next/font/google';
+
+import { config } from '@/lib/config';
 
 import ContactUsBanner from '@/components/contact-us-banner';
 import Footer from '@/components/footer/footer';
 import Header from '@/components/header/header';
-import NewsletterSubscription from '@/components/newsletter-subscription';
+
+// import NewsletterSubscription from '@/components/newsletter-subscription';
 
 // import StickyCtaMobile from '@/components/ui/sticky-cta-mobile';
 
@@ -21,7 +23,8 @@ export const metadata: Metadata = {
         default: 'Robust Accounts — Accounting Outsourcing Agency',
         template: '%s | Robust Accounts',
     },
-    description: 'Robust Accounts provides bookkeeping, payroll, and financial advisory services for growing businesses.',
+    description:
+        'Robust Accounts provides bookkeeping, payroll, and financial advisory services for growing businesses.',
     alternates: { canonical: '/' },
 };
 

@@ -14,7 +14,8 @@ export default function ConsentedAnalytics() {
     useEffect(() => {
         if (
             typeof navigator !== 'undefined' &&
-            (navigator as any).doNotTrack === '1'
+            'doNotTrack' in navigator &&
+            (navigator as { doNotTrack?: string }).doNotTrack === '1'
         ) {
             // no-op here; banner will still show but user can reject.
         }
