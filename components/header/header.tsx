@@ -123,26 +123,26 @@ export default function Header() {
         <>
             <header
                 className={cn(
-                    'fixed top-8 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-[100vw] -translate-x-1/2 transform rounded-full px-4 py-2 text-primary transition-all duration-300 md:container md:mx-auto md:w-full md:px-8',
+                    'fixed top-4 left-1/2 z-50 w-[calc(100vw-1.5rem)] max-w-[100vw] -translate-x-1/2 transform rounded-full px-4 py-2.5 text-primary shadow-sm transition-all duration-300 sm:top-6 sm:w-[calc(100vw-2rem)] md:top-8 md:container md:mx-auto md:w-full md:px-8 md:py-3',
                     isScrolled
-                        ? 'bg-secondary/60 backdrop-blur-sm'
+                        ? 'bg-secondary/95 shadow-md backdrop-blur-md'
                         : 'bg-secondary',
                 )}
             >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                     {/* Logo */}
                     <Link
                         href="/"
-                        className="group flex items-center justify-between object-contain"
+                        className="group flex items-center gap-2 object-contain sm:gap-2.5"
                     >
                         <Image
                             src="/assets/logo.png"
                             alt="Robust Accounts Logo"
                             width={64}
                             height={64}
-                            className="h-10 w-10 object-contain md:h-14 md:w-14"
+                            className="h-9 w-9 object-contain sm:h-10 sm:w-10 md:h-12 md:w-12"
                         />
-                        <span className="text-xl font-bold sm:text-xl">
+                        <span className="text-base font-bold sm:text-lg md:text-xl">
                             Robust Accounts
                         </span>
                     </Link>
@@ -164,42 +164,47 @@ export default function Header() {
                             <Link
                                 key={item.name}
                                 href={item.href}
-                                className="rounded-md px-1 font-medium transition-all hover:text-primary/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                                className="rounded-md px-1 font-medium transition-all hover:text-primary/60 focus-visible:outline-2 focus-visible:outline-accent"
                             >
                                 {item.name}
                             </Link>
                         ))}
                     </nav>
 
-                    {/* Phone CTA: mobile shows icon, desktop shows number */}
-                    <Link
-                        href={`tel:${contactInfo.phoneHref}`}
-                        className="inline text-primary lg:hidden"
-                        aria-label={`Call us at ${contactInfo.phoneDisplay}`}
-                    >
-                        <Call className="h-6 w-6 fill-primary" />
-                    </Link>
-                    <Link
-                        href={`tel:${contactInfo.phoneHref}`}
-                        className="hidden text-lg font-semibold text-primary lg:inline"
-                    >
-                        {contactInfo.phoneDisplay}
-                    </Link>
+                    {/* Right side actions */}
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        {/* Phone CTA: mobile shows icon, desktop shows number */}
+                        <Link
+                            href={`tel:${contactInfo.phoneHref}`}
+                            className="inline rounded-full p-2 text-primary transition-colors hover:bg-accent/10 lg:hidden"
+                            aria-label={`Call us at ${contactInfo.phoneDisplay}`}
+                        >
+                            <Call className="h-5 w-5 fill-primary sm:h-6 sm:w-6" />
+                        </Link>
+                        <Link
+                            href={`tel:${contactInfo.phoneHref}`}
+                            className="hidden text-base font-semibold text-primary transition-colors hover:text-accent lg:inline lg:text-lg"
+                        >
+                            {contactInfo.phoneDisplay}
+                        </Link>
 
-                    {/* Mobile Menu Button */}
-                    <button
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="rounded-md p-2 transition-colors hover:text-primary/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent lg:hidden"
-                        aria-label="Toggle mobile menu"
-                        aria-expanded={isMobileMenuOpen}
-                        aria-controls="mobile-menu"
-                    >
-                        {isMobileMenuOpen ? (
-                            <Close className="h-7 w-7 fill-primary transition-transform duration-200" />
-                        ) : (
-                            <Menu className="h-7 w-7 fill-primary transition-transform duration-200" />
-                        )}
-                    </button>
+                        {/* Mobile Menu Button */}
+                        <button
+                            onClick={() =>
+                                setIsMobileMenuOpen(!isMobileMenuOpen)
+                            }
+                            className="rounded-full p-2 transition-colors hover:bg-accent/10 focus-visible:outline-2 focus-visible:outline-accent lg:hidden"
+                            aria-label="Toggle mobile menu"
+                            aria-expanded={isMobileMenuOpen}
+                            aria-controls="mobile-menu"
+                        >
+                            {isMobileMenuOpen ? (
+                                <Close className="h-6 w-6 fill-primary transition-transform duration-200 sm:h-7 sm:w-7" />
+                            ) : (
+                                <Menu className="h-6 w-6 fill-primary transition-transform duration-200 sm:h-7 sm:w-7" />
+                            )}
+                        </button>
+                    </div>
                 </div>
             </header>
             <AnimatePresence>
@@ -210,34 +215,34 @@ export default function Header() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.18 }}
+                        transition={{ duration: 0.2 }}
                         id="mobile-menu"
                         role="dialog"
                         aria-modal="true"
                         aria-label="Main navigation"
-                        className="fixed inset-0 top-0 z-40 h-screen w-screen bg-white p-4 backdrop-blur-sm lg:hidden"
+                        className="fixed inset-0 top-0 z-40 h-screen w-screen overflow-y-auto bg-white p-5 lg:hidden"
                     >
                         <motion.button
-                            initial={{ opacity: 0, scale: 0.8, y: -10 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.8, y: -10 }}
-                            transition={{ duration: 0.18 }}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            transition={{ duration: 0.2 }}
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className="absolute top-8 right-6 z-50 rounded-full bg-white/80 p-2 text-primary shadow-md transition hover:bg-white"
+                            className="absolute top-6 right-6 z-50 rounded-full bg-accent/10 p-2.5 text-primary shadow-sm transition hover:bg-accent/20"
                             aria-label="Close mobile menu"
                         >
-                            <Close className="h-7 w-7 fill-primary" />
+                            <Close className="h-6 w-6 fill-primary" />
                         </motion.button>
                         {/* Header space */}
-                        <div className="h-24"></div>
+                        <div className="h-20"></div>
                         <motion.div
                             variants={menuVariants}
                             initial="hidden"
                             animate="visible"
                             exit="exit"
-                            className="flex flex-1 flex-col px-4"
+                            className="flex flex-1 flex-col px-2"
                         >
-                            <nav className="flex w-full flex-col gap-1">
+                            <nav className="flex w-full flex-col gap-2">
                                 {mobileMenuLinks.map((item) => (
                                     <motion.div
                                         key={item.name}
@@ -250,7 +255,7 @@ export default function Header() {
                                                     ? firstMobileLinkRef
                                                     : undefined
                                             }
-                                            className="flex w-full items-center rounded-lg px-2 py-3 text-2xl font-bold text-primary transition-all hover:bg-primary/10 focus:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                                            className="flex w-full items-center rounded-xl px-4 py-4 text-xl font-bold text-primary transition-all hover:bg-accent/10 focus:bg-accent/10 focus-visible:outline-2 focus-visible:outline-accent active:scale-95"
                                             style={{
                                                 justifyContent: 'flex-start',
                                             }}
@@ -265,16 +270,17 @@ export default function Header() {
                             </nav>
                         </motion.div>
                         <motion.div
-                            initial={{ opacity: 0, y: 32 }}
+                            initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 32 }}
-                            transition={{ delay: 0.18, duration: 0.22 }}
-                            className="fixed right-0 bottom-0 left-0 z-50 flex w-full justify-center bg-white px-4 pt-4 pb-8"
+                            exit={{ opacity: 0, y: 20 }}
+                            transition={{ delay: 0.2, duration: 0.25 }}
+                            className="fixed right-0 bottom-0 left-0 z-50 flex w-full justify-center border-t border-gray-200 bg-white px-5 pt-5 pb-8 shadow-lg"
                         >
                             <Link
                                 href={`tel:${contactInfo.phoneHref}`}
-                                className="text-2xl font-bold text-primary"
+                                className="flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-xl font-bold text-white shadow-lg transition-all hover:bg-accent/90 active:scale-95"
                             >
+                                <Call className="h-6 w-6 fill-white" />
                                 {contactInfo.phoneDisplay}
                             </Link>
                         </motion.div>

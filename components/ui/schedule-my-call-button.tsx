@@ -52,7 +52,7 @@ export default function ScheduleMyCallButton({
             <Link
                 href="/lead-form/schedule"
                 className={cn(
-                    'flex w-full cursor-pointer items-center justify-center gap-2 rounded-full font-semibold backdrop-blur-2xl transition-all sm:w-auto',
+                    'flex cursor-pointer items-center justify-start gap-2 rounded-full font-semibold backdrop-blur-2xl transition-all sm:w-auto',
                     sizeClasses[size],
                     variantClasses[variant],
                     className,
