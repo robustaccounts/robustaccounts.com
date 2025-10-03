@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
-import Checkbox from '@/ui/checkbox';
 import Dropdown, { DropdownOption } from '@/ui/dropdown';
 import GoogleCalendar from '@/ui/icons/google-calendar';
 import { ArrowForward, ChevronRight, Close } from '@/ui/icons/google-icons';

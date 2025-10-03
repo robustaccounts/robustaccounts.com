@@ -35,10 +35,13 @@ export default function ConsentedAnalytics() {
                 tidioWidget.style.display = 'none';
             }
             // Also try to hide via Tidio API if available
-            if ((window as any).tidioChatApi) {
+            const tidioApi = (
+                window as Window & { tidioChatApi?: { hide: () => void } }
+            ).tidioChatApi;
+            if (tidioApi) {
                 try {
-                    (window as any).tidioChatApi.hide();
-                } catch (e) {
+                    tidioApi.hide();
+                } catch {
                     // Silently fail if API is not available
                 }
             }
@@ -48,10 +51,13 @@ export default function ConsentedAnalytics() {
             if (tidioWidget) {
                 tidioWidget.style.display = '';
             }
-            if ((window as any).tidioChatApi) {
+            const tidioApi = (
+                window as Window & { tidioChatApi?: { show: () => void } }
+            ).tidioChatApi;
+            if (tidioApi) {
                 try {
-                    (window as any).tidioChatApi.show();
-                } catch (e) {
+                    tidioApi.show();
+                } catch {
                     // Silently fail if API is not available
                 }
             }

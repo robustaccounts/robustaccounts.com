@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import Checkbox from '@/ui/checkbox';
 import Dropdown, { DropdownOption } from '@/ui/dropdown';
 import { Close } from '@/ui/icons/google-icons';
 import Input from '@/ui/input';
