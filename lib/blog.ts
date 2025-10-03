@@ -1,8 +1,5 @@
-import fs from 'fs';
-import matter from 'gray-matter';
-import path from 'path';
-
-const contentDirectory = path.join(process.cwd(), 'content/blog');
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { sql } from '@/lib/db';
 
 export interface BlogPost {
     id: string;
@@ -31,290 +28,282 @@ export interface BlogPostMeta {
     tags: string[];
 }
 
-export function getAllBlogPosts(): BlogPostMeta[] {
+interface BlogPostRow {
+    id: string;
+    slug: string;
+    title: string;
+    excerpt: string;
+    category: string;
+    read_time: string | null;
+    display_date: string | null;
+    author: string | null;
+    featured: boolean | null;
+    tags: string[] | null;
+    blob_url: string;
+    published_at: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+function rowToMeta(row: BlogPostRow): BlogPostMeta {
+    return {
+        id: row.id,
+        slug: row.slug,
+        title: row.title,
+        excerpt: row.excerpt,
+        category: row.category,
+        readTime: row.read_time ?? '5 min read',
+        date: deriveDisplayDate(row),
+        author: row.author ?? 'Robust Accounts Team',
+        featured: Boolean(row.featured),
+        tags: Array.isArray(row.tags) ? row.tags.filter(Boolean) : [],
+    };
+}
+
+async function fetchContentFromBlob(url: string): Promise<string> {
+    if (!url) {
+        return '';
+    }
+
     try {
-        // Check if content directory exists
-        if (!fs.existsSync(contentDirectory)) {
-            console.warn(`Blog content directory does not exist: ${contentDirectory}`);
-            return [];
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            console.error(
+                'Failed to fetch blog content',
+                response.status,
+                response.statusText,
+            );
+            return '';
         }
 
-        const fileNames = fs.readdirSync(contentDirectory);
-        
-        if (!fileNames || fileNames.length === 0) {
-            console.warn('No files found in blog content directory');
-            return [];
-        }
-
-        const allPostsData = fileNames
-            .filter((fileName) => fileName && fileName.endsWith('.mdx'))
-            .map((fileName) => {
-                try {
-                    const slug = fileName.replace(/\.mdx$/, '');
-                    const fullPath = path.join(contentDirectory, fileName);
-                    
-                    if (!fs.existsSync(fullPath)) {
-                        console.warn(`Blog post file not found: ${fullPath}`);
-                        return null;
-                    }
-
-                    const fileContents = fs.readFileSync(fullPath, 'utf8');
-                    
-                    if (!fileContents || fileContents.trim() === '') {
-                        console.warn(`Blog post file is empty: ${fullPath}`);
-                        return null;
-                    }
-
-                    const { data } = matter(fileContents);
-                    
-                    if (!data) {
-                        console.warn(`No frontmatter found in: ${fullPath}`);
-                        return null;
-                    }
-
-                    // Validate required fields
-                    if (!data.title || !data.excerpt || !data.category || !data.date || !data.author) {
-                        console.warn(`Missing required fields in: ${fullPath}`);
-                        return null;
-                    }
-
-                    return {
-                        id: slug,
-                        slug,
-                        title: String(data.title || '').trim(),
-                        excerpt: String(data.excerpt || '').trim(),
-                        category: String(data.category || '').trim(),
-                        readTime: String(data.readTime || '5 min read').trim(),
-                        date: String(data.date || '').trim(),
-                        author: String(data.author || '').trim(),
-                        featured: Boolean(data.featured),
-                        tags: Array.isArray(data.tags) ? data.tags.filter(tag => tag && String(tag).trim()) : [],
-                    };
-                } catch (fileError) {
-                    console.error(`Error processing file ${fileName}:`, fileError);
-                    return null;
-                }
-            })
-            .filter((post): post is BlogPostMeta => post !== null);
-
-        // Sort posts by date (newest first) with null checks
-        return allPostsData.sort((a, b) => {
-            if (!a.date || !b.date) return 0;
-            const dateA = new Date(a.date);
-            const dateB = new Date(b.date);
-            
-            // Check for invalid dates
-            if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) return 0;
-            
-            return dateB.getTime() - dateA.getTime();
-        });
+        return await response.text();
     } catch (error) {
-        console.error('Error reading blog posts:', error);
-        return [];
+        console.error('Error fetching blog content from blob storage', error);
+        return '';
     }
 }
 
-export function getBlogPostBySlug(slug: string): BlogPost | null {
-    try {
-        // Validate input
-        if (!slug || typeof slug !== 'string' || slug.trim() === '') {
-            console.warn('Invalid slug provided to getBlogPostBySlug');
-            return null;
-        }
+function deriveDisplayDate(row: {
+    display_date: string | null;
+    published_at: string | null;
+}): string {
+    if (row.display_date && row.display_date.trim()) {
+        return row.display_date;
+    }
 
-        // Check if content directory exists
-        if (!fs.existsSync(contentDirectory)) {
-            console.warn(`Blog content directory does not exist: ${contentDirectory}`);
-            return null;
-        }
+    if (!row.published_at) {
+        return '';
+    }
 
-        const sanitizedSlug = slug.trim();
-        const fullPath = path.join(contentDirectory, `${sanitizedSlug}.mdx`);
-        
-        if (!fs.existsSync(fullPath)) {
-            return null;
-        }
+    const parsed = new Date(row.published_at);
+    if (Number.isNaN(parsed.getTime())) {
+        return '';
+    }
 
-        const fileContents = fs.readFileSync(fullPath, 'utf8');
-        
-        if (!fileContents || fileContents.trim() === '') {
-            console.warn(`Blog post file is empty: ${fullPath}`);
-            return null;
-        }
+    return new Intl.DateTimeFormat('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+    }).format(parsed);
+}
 
-        const { data, content } = matter(fileContents);
-        
-        if (!data) {
-            console.warn(`No frontmatter found in: ${fullPath}`);
-            return null;
-        }
+export async function getAllBlogPosts(): Promise<BlogPostMeta[]> {
+    const rows =
+        (await sql`
+        SELECT
+            id,
+            slug,
+            title,
+            excerpt,
+            category,
+            read_time,
+            display_date,
+            author,
+            featured,
+            tags,
+            blob_url,
+            published_at,
+            created_at,
+            updated_at
+        FROM blog_posts
+        WHERE deleted_at IS NULL
+        ORDER BY COALESCE(published_at, created_at) DESC
+    `) ?? [];
 
-        // Validate required fields
-        if (!data.title || !data.excerpt || !data.category || !data.date || !data.author) {
-            console.warn(`Missing required fields in: ${fullPath}`);
-            return null;
-        }
+    return rows.map((row) => rowToMeta(row as BlogPostRow));
+}
 
-        return {
-            id: sanitizedSlug,
-            slug: sanitizedSlug,
-            title: String(data.title || '').trim(),
-            excerpt: String(data.excerpt || '').trim(),
-            category: String(data.category || '').trim(),
-            readTime: String(data.readTime || '5 min read').trim(),
-            date: String(data.date || '').trim(),
-            author: String(data.author || '').trim(),
-            featured: Boolean(data.featured),
-            tags: Array.isArray(data.tags) ? data.tags.filter(tag => tag && String(tag).trim()) : [],
-            content: String(content || '').trim(),
-        };
-    } catch (error) {
-        console.error(`Error reading blog post ${slug}:`, error);
+export async function getBlogPostBySlug(
+    slug: string,
+): Promise<BlogPost | null> {
+    if (!slug || typeof slug !== 'string') {
         return null;
     }
+
+    const rows = await sql`
+        SELECT
+            id,
+            slug,
+            title,
+            excerpt,
+            category,
+            read_time,
+            display_date,
+            author,
+            featured,
+            tags,
+            blob_url,
+            published_at,
+            created_at,
+            updated_at
+        FROM blog_posts
+        WHERE slug = ${slug} AND deleted_at IS NULL
+        LIMIT 1
+    `;
+
+    const row = rows?.[0];
+
+    if (!row) {
+        return null;
+    }
+
+    const content = await fetchContentFromBlob(row.blob_url);
+
+    return {
+        ...rowToMeta(row as BlogPostRow),
+        content,
+    };
 }
 
-export function getFeaturedPosts(): BlogPostMeta[] {
-    try {
-        const allPosts = getAllBlogPosts();
-        
-        if (!allPosts || !Array.isArray(allPosts) || allPosts.length === 0) {
-            return [];
-        }
+export async function getFeaturedPosts(): Promise<BlogPostMeta[]> {
+    const rows =
+        (await sql`
+        SELECT
+            id,
+            slug,
+            title,
+            excerpt,
+            category,
+            read_time,
+            display_date,
+            author,
+            featured,
+            tags,
+            blob_url,
+            published_at,
+            created_at,
+            updated_at
+        FROM blog_posts
+        WHERE deleted_at IS NULL AND featured = true
+        ORDER BY COALESCE(published_at, created_at) DESC
+    `) ?? [];
 
-        return allPosts.filter((post) => post && post.featured === true);
-    } catch (error) {
-        console.error('Error getting featured posts:', error);
+    return rows.map((row) => rowToMeta(row as BlogPostRow));
+}
+
+export async function getRecentPosts(
+    limit: number = 6,
+): Promise<BlogPostMeta[]> {
+    const rows =
+        (await sql`
+        SELECT
+            id,
+            slug,
+            title,
+            excerpt,
+            category,
+            read_time,
+            display_date,
+            author,
+            featured,
+            tags,
+            blob_url,
+            published_at,
+            created_at,
+            updated_at
+        FROM blog_posts
+        WHERE deleted_at IS NULL AND (featured IS NULL OR featured = false)
+        ORDER BY COALESCE(published_at, created_at) DESC
+        LIMIT ${Math.max(1, Math.min(limit, 12))}
+    `) ?? [];
+
+    return rows.map((row) => rowToMeta(row as BlogPostRow));
+}
+
+export async function getRelatedPosts(
+    currentPost: BlogPostMeta | null,
+    limit: number = 3,
+): Promise<BlogPostMeta[]> {
+    if (!currentPost?.category || !currentPost?.id) {
         return [];
     }
+
+    const rows =
+        (await sql`
+        SELECT
+            id,
+            slug,
+            title,
+            excerpt,
+            category,
+            read_time,
+            display_date,
+            author,
+            featured,
+            tags,
+            blob_url,
+            published_at,
+            created_at,
+            updated_at
+        FROM blog_posts
+        WHERE deleted_at IS NULL
+          AND category = ${currentPost.category}
+          AND id <> ${currentPost.id}
+        ORDER BY COALESCE(published_at, created_at) DESC
+        LIMIT ${Math.max(1, Math.min(limit, 10))}
+    `) ?? [];
+
+    return rows.map((row) => rowToMeta(row as BlogPostRow));
 }
 
-export function getRecentPosts(): BlogPostMeta[] {
-    try {
-        const allPosts = getAllBlogPosts();
-        
-        if (!allPosts || !Array.isArray(allPosts) || allPosts.length === 0) {
-            return [];
-        }
+export async function getBlogCategories() {
+    const rows = await sql`
+        SELECT category, COUNT(*)::int AS count
+        FROM blog_posts
+        WHERE deleted_at IS NULL
+        GROUP BY category
+        ORDER BY category
+    `;
 
-        return allPosts.filter((post) => post && post.featured !== true);
-    } catch (error) {
-        console.error('Error getting recent posts:', error);
-        return [];
-    }
+    const validRows = rows ?? [];
+    const totalCount = validRows.reduce(
+        (acc, row) => acc + ((row as any)?.count ?? 0),
+        0,
+    );
+
+    return [
+        { name: 'All Articles', count: totalCount, active: true },
+        ...validRows
+            .filter((row) => (row as any)?.category)
+            .map((row) => ({
+                name: (row as any).category,
+                count: (row as any).count,
+                active: false,
+            })),
+    ];
 }
 
-export function getRelatedPosts(currentPost: BlogPostMeta | null, limit: number = 3): BlogPostMeta[] {
-    try {
-        if (!currentPost || !currentPost.category || !currentPost.id) {
-            console.warn('Invalid currentPost provided to getRelatedPosts');
-            return [];
-        }
+export async function getBlogStats() {
+    const rows = await sql`
+        SELECT category, read_time, COUNT(*) OVER ()::int AS count
+        FROM blog_posts
+        WHERE deleted_at IS NULL
+    `;
 
-        const allPosts = getAllBlogPosts();
-        
-        if (!allPosts || !Array.isArray(allPosts) || allPosts.length === 0) {
-            return [];
-        }
+    const validRows = rows ?? [];
 
-        const validLimit = Math.max(0, Math.min(limit || 3, 10)); // Cap at 10 related posts
-
-        return allPosts
-            .filter(
-                (post) =>
-                    post &&
-                    post.category &&
-                    post.id &&
-                    post.category === currentPost.category &&
-                    post.id !== currentPost.id,
-            )
-            .slice(0, validLimit);
-    } catch (error) {
-        console.error('Error getting related posts:', error);
-        return [];
-    }
-}
-
-// Get unique categories from all posts
-export function getBlogCategories() {
-    try {
-        const allPosts = getAllBlogPosts();
-        
-        if (!allPosts || !Array.isArray(allPosts) || allPosts.length === 0) {
-            return [{ name: 'All Articles', count: 0, active: true }];
-        }
-
-        const validPosts = allPosts.filter(post => post && post.category && String(post.category).trim());
-        const categories = new Set(validPosts.map((post) => String(post.category).trim()).filter(Boolean));
-        
-        const categoryList = [
-            { name: 'All Articles', count: validPosts.length, active: true },
-            ...Array.from(categories)
-                .filter(Boolean)
-                .map((category) => ({
-                    name: category,
-                    count: validPosts.filter((post) => post && post.category === category).length,
-                    active: false,
-                })),
-        ];
-
-        return categoryList;
-    } catch (error) {
-        console.error('Error getting blog categories:', error);
-        return [{ name: 'All Articles', count: 0, active: true }];
-    }
-}
-
-export function getBlogStats() {
-    try {
-        const allPosts = getAllBlogPosts();
-        
-        if (!allPosts || !Array.isArray(allPosts) || allPosts.length === 0) {
-            return [
-                { number: '0', label: 'Expert Articles' },
-                { number: '0', label: 'Topics' },
-                { number: '0 min', label: 'Avg Read Time' },
-                { number: '24/7', label: 'Knowledge Access' },
-            ];
-        }
-
-        const validPosts = allPosts.filter(post => post && post.category && post.readTime);
-        const categories = new Set(
-            validPosts
-                .map(post => String(post.category).trim())
-                .filter(Boolean)
-        );
-        
-        const totalReadTime = validPosts.reduce((acc, post) => {
-            if (!post.readTime || typeof post.readTime !== 'string') return acc;
-            
-            const timeMatch = post.readTime.match(/\d+/);
-            const minutes = timeMatch ? parseInt(timeMatch[0], 10) : 0;
-            return acc + (isNaN(minutes) ? 0 : minutes);
-        }, 0);
-
-        const avgReadTime = validPosts.length > 0 ? Math.round(totalReadTime / validPosts.length) : 0;
-
-        return [
-            { 
-                number: validPosts.length.toString(), 
-                label: validPosts.length === 1 ? 'Expert Article' : 'Expert Articles' 
-            },
-            { 
-                number: categories.size.toString(), 
-                label: categories.size === 1 ? 'Topic' : 'Topics' 
-            },
-            { 
-                number: `${avgReadTime} min`, 
-                label: 'Avg Read Time' 
-            },
-            { 
-                number: '24/7', 
-                label: 'Knowledge Access' 
-            },
-        ];
-    } catch (error) {
-        console.error('Error getting blog stats:', error);
+    if (validRows.length === 0) {
         return [
             { number: '0', label: 'Expert Articles' },
             { number: '0', label: 'Topics' },
@@ -322,4 +311,46 @@ export function getBlogStats() {
             { number: '24/7', label: 'Knowledge Access' },
         ];
     }
+
+    const uniqueCategories = new Set<string>();
+    let totalReadTime = 0;
+    let readTimeCount = 0;
+
+    for (const row of validRows) {
+        if ((row as any)?.category) {
+            uniqueCategories.add((row as any).category);
+        }
+
+        if ((row as any)?.read_time) {
+            const match = (row as any).read_time.match(/\d+/);
+            const minutes = match ? Number.parseInt(match[0]!, 10) : 0;
+            if (!Number.isNaN(minutes) && minutes > 0) {
+                totalReadTime += minutes;
+                readTimeCount += 1;
+            }
+        }
+    }
+
+    const articleCount = (validRows[0] as any)?.count ?? validRows.length;
+    const avgReadTime =
+        readTimeCount > 0 ? Math.round(totalReadTime / readTimeCount) : 0;
+
+    return [
+        {
+            number: articleCount.toString(),
+            label: articleCount === 1 ? 'Expert Article' : 'Expert Articles',
+        },
+        {
+            number: uniqueCategories.size.toString(),
+            label: uniqueCategories.size === 1 ? 'Topic' : 'Topics',
+        },
+        {
+            number: `${avgReadTime} min`,
+            label: 'Avg Read Time',
+        },
+        {
+            number: '24/7',
+            label: 'Knowledge Access',
+        },
+    ];
 }

@@ -3,7 +3,7 @@ import { MetadataRoute } from 'next';
 import { getAllBlogPosts } from '@/lib/blog';
 import { config } from '@/lib/config';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = config.baseUrl;
 
     // Static routes
@@ -33,13 +33,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }));
 
     // Blog posts from content folder
-    const blogPosts = getAllBlogPosts();
-    const blogPostRoutes = blogPosts.map((post) => ({
-        url: `${baseUrl}/blog/${post.slug}`,
-        lastModified: new Date(post.date),
-        changeFrequency: 'monthly' as const,
-        priority: 0.6,
-    }));
+    const blogPosts = await getAllBlogPosts();
+    const blogPostRoutes = blogPosts.map((post) => {
+        const parsedDate = post?.date ? new Date(post.date) : new Date();
+
+        return {
+            url: `${baseUrl}/blog/${post.slug}`,
+            lastModified: Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate,
+            changeFrequency: 'monthly' as const,
+            priority: 0.6,
+        };
+    });
 
     return [...staticRoutes, ...blogPostRoutes];
 }

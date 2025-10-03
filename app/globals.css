@@ -66,3 +66,89 @@ body {
         padding-top: 7rem; /* ~112px on lg+ */
     }
 }
+
+/* MDX Editor Light Theme Customization */
+.mdx-editor {
+    --accentColor: var(--accent);
+    --backgroundColor: #ffffff;
+    --foregroundColor: #111827;
+    --borderColor: #e5e7eb;
+}
+
+.mdx-editor [role='toolbar'] {
+    background: linear-gradient(to right, #f9fafb, #ffffff);
+    border-bottom: 2px solid #e5e7eb;
+    padding: 0.75rem 1rem;
+}
+
+.mdx-editor button[aria-label],
+.mdx-editor select {
+    color: #374151;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+}
+
+.mdx-editor button[aria-label]:hover {
+    background: #f3f4f6;
+    color: var(--accent);
+}
+
+.mdx-editor button[aria-label][data-state='on'] {
+    background: #dcfce7;
+    color: var(--accent);
+}
+
+.mdx-editor [contenteditable] {
+    color: #111827;
+    line-height: 1.75;
+}
+
+.mdx-editor [contenteditable]:focus {
+    outline: none;
+}
+
+.mdx-editor pre {
+    background: #f9fafb;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1rem;
+}
+
+.mdx-editor code {
+    background: #f3f4f6;
+    color: var(--accent);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.375rem;
+    font-size: 0.875em;
+}
+
+.mdx-editor table {
+    border: 2px solid #e5e7eb;
+}
+
+.mdx-editor th,
+.mdx-editor td {
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem 0.75rem;
+}
+
+.mdx-editor th {
+    background: #f9fafb;
+    font-weight: 600;
+}
+
+.mdx-editor blockquote {
+    border-left: 4px solid var(--accent);
+    background: #f0fdf4;
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.mdx-editor a {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.mdx-editor a:hover {
+    color: #1e6f4c;
+}
