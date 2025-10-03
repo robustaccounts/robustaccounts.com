@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 
 import HeroSection from '@/components/services/hero-section';
 import IndustriesSection from '@/components/services/industries-section';
@@ -13,3 +14,10 @@ export default function ServicesPage() {
         </main>
     );
 }
+
+export const metadata: Metadata = {
+    title: 'Services',
+    description:
+        'Comprehensive bookkeeping, payroll, financial and business advisory services tailored to your needs.',
+    alternates: { canonical: '/services' },
+};

@@ -185,9 +185,9 @@ export default function Footer() {
                 <div className="pt-4 mt-6 border-t border-gray-200 md:col-span-5">
                     <div className="flex w-full flex-col gap-2 text-center md:text-left">
                         <span className="text-sm">
-                            © 2025 Robust Accounts. All rights reserved.
+                            © {new Date().getFullYear()} Robust Accounts. All rights reserved.
                         </span>
-                        <p className="w-full text-sm leading-relaxed">
+                        <p className="w-full text-sm leading-relaxed text-gray-600">
                             Disclaimer: Robustaccounts.com is a part of KY Books
                             Inc. We are an independent entity and are not
                             affiliated with, endorsed by, or connected to any

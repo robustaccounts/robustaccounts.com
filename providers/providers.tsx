@@ -1,12 +1,15 @@
 'use client';
 
 import { ModalProvider, useModal } from '@/contexts/modal-context';
+import { ConsentProvider, useConsent } from '@/contexts/consent-context';
 
 import React, { useEffect } from 'react';
 
 import { initializeAmplitude } from '@/lib/amplitude';
 
 import SchedulingModal from '@/components/scheduling-modal';
+import CookieBanner from '@/components/consent/cookie-banner';
+import ConsentedAnalytics from '@/components/analytics/consented-analytics';
 
 function ModalWrapper() {
     const { isSchedulingModalOpen, setSchedulingModalOpen } = useModal();
@@ -19,17 +22,26 @@ function ModalWrapper() {
     );
 }
 
-export function Providers({
-    children,
-}: Readonly<{ children: React.ReactNode }>) {
+function ConsentAmplitudeInit() {
+    const { state } = useConsent();
     useEffect(() => {
-        initializeAmplitude();
-    }, []);
+        if (state === 'accepted') {
+            initializeAmplitude();
+        }
+    }, [state]);
+    return null;
+}
 
+export function Providers({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
-        <ModalProvider>
-            {children}
-            <ModalWrapper />
-        </ModalProvider>
+        <ConsentProvider>
+            <ConsentAmplitudeInit />
+            <ModalProvider>
+                {children}
+                <ModalWrapper />
+                <CookieBanner />
+                <ConsentedAnalytics />
+            </ModalProvider>
+        </ConsentProvider>
     );
 }

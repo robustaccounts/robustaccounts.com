@@ -25,7 +25,7 @@ export default function ContactUsBanner() {
                         <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-8 lg:gap-4">
                             <Link
                                 href={`tel:${contactInfo.phoneHref}`}
-                                className="sm:justiwfy-start flex items-center justify-center gap-2"
+                                className="flex items-center justify-center gap-2 sm:justify-start"
                             >
                                 <Call className="h-5 w-5 fill-primary" />
                                 <span className="text-sm font-medium sm:text-base">

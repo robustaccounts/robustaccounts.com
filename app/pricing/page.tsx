@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 
 import AdditionalServicesSection from '@/components/pricing/additional-services-section';
 import ComparisonTableSection from '@/components/pricing/comparison-table-section';
@@ -17,3 +18,10 @@ export default function PricingPage() {
         </main>
     );
 }
+
+export const metadata: Metadata = {
+    title: 'Pricing',
+    description:
+        'Transparent, scalable pricing for bookkeeping, payroll, and advisory services. Find the right plan for your business.',
+    alternates: { canonical: '/pricing' },
+};

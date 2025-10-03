@@ -1,24 +1,34 @@
 import { Analytics } from '@vercel/analytics/next';
 
 import type { Metadata } from 'next';
-import Script from 'next/script';
+import { Inter } from 'next/font/google';
 
 import { Providers } from '@/providers/providers';
 
-import GoogleTag from '@/components/analytics/google-tag';
+import { config } from '@/lib/config';
+
 import ContactUsBanner from '@/components/contact-us-banner';
 import Footer from '@/components/footer/footer';
 import Header from '@/components/header/header';
-import NewsletterSubscription from '@/components/newsletter-subscription';
+
+// import NewsletterSubscription from '@/components/newsletter-subscription';
 
 // import StickyCtaMobile from '@/components/ui/sticky-cta-mobile';
 
 import './globals.css';
 
 export const metadata: Metadata = {
-    title: 'Accounting Outsourcing Agency',
-    description: 'Accounting Outsourcing Agency',
+    metadataBase: new URL(config.baseUrl),
+    title: {
+        default: 'Robust Accounts — Accounting Outsourcing Agency',
+        template: '%s | Robust Accounts',
+    },
+    description:
+        'Robust Accounts provides bookkeeping, payroll, and financial advisory services for growing businesses.',
+    alternates: { canonical: '/' },
 };
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export default function RootLayout({
     children,
@@ -27,13 +37,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={'font-sans antialiased'}>
-                <Script
-                    src="//code.tidio.co/9itfrqnmmdew7a6oktqq4yb0mm6cqddb.js"
-                    strategy="beforeInteractive"
-                />
-                {/* Google Analytics/Ads via next/script (recommended) */}
-                <GoogleTag />
+            <body className={`${inter.variable} font-sans antialiased`}>
                 <Providers>
                     <Header />
                     {children}

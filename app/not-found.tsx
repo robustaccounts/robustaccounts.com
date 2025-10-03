@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import contactInfo from '@/data/contact-info';
 
 export default function NotFound() {
     return (
@@ -48,11 +49,11 @@ export default function NotFound() {
                     <p className="mt-1">
                         Call us at{' '}
                         <a
-                            href="tel:+1234567890"
+                            href={`tel:${contactInfo.phoneHref}`}
                             style={{ color: 'var(--primary)' }}
                             className="hover:underline"
                         >
-                            +1 (234) 567-890
+                            {contactInfo.phoneDisplay}
                         </a>
                     </p>
                 </div>

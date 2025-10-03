@@ -115,7 +115,6 @@ export default function SoftwaresMasterySection() {
     });
 
     // Parallax transforms (tweak values for desired effect)
-    const bgY = useTransform(scrollYProgress, [0, 1], ['0px', '80px']);
     const overlayY = useTransform(scrollYProgress, [0, 1], ['0px', '50px']);
     const contentY = useTransform(scrollYProgress, [0, 1], ['0px', '-30px']);
 

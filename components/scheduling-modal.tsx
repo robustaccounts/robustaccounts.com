@@ -1,5 +1,7 @@
 'use client';
 
+import { sendGAEvent } from '@next/third-parties/google';
+
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -12,8 +14,9 @@ import Input from '@/ui/input';
 import PhoneInput from '@/ui/phone-input';
 import Textarea from '@/ui/textarea';
 
-import cn from '@/utils/cn';
 import { saveLead } from '@/lib/save-lead';
+
+import cn from '@/utils/cn';
 
 interface SchedulingModalProps {
     isOpen: boolean;
@@ -72,6 +75,8 @@ export default function SchedulingModal({
     const [isBooked, setIsBooked] = useState(false);
     const [smsOptOut, setSmsOptOut] = useState(false);
     const [smsUpdates, setSmsUpdates] = useState(false);
+    const overlayRef = React.useRef<HTMLDivElement>(null);
+    const previouslyFocused = React.useRef<HTMLElement | null>(null);
 
     // Helper to reset all modal state
     const resetModalState = React.useCallback(() => {
@@ -94,10 +99,11 @@ export default function SchedulingModal({
         setSmsUpdates(false);
     }, []);
 
-
-    // Prevent body scrolling when modal is open
+    // Prevent body scrolling when modal is open; manage focus
     useEffect(() => {
         if (isOpen) {
+            previouslyFocused.current =
+                (document.activeElement as HTMLElement) || null;
             // Store the current scroll position
             const scrollY = window.scrollY;
 
@@ -107,13 +113,19 @@ export default function SchedulingModal({
             document.body.style.width = '100%';
             document.body.style.overflow = 'hidden';
 
-            // Cleanup function to restore scrolling
+            // Focus modal container when opened
+            setTimeout(() => {
+                overlayRef.current?.focus();
+            }, 0);
+
+            // Cleanup function to restore scrolling and focus
             return () => {
                 document.body.style.position = '';
                 document.body.style.top = '';
                 document.body.style.width = '';
                 document.body.style.overflow = '';
                 window.scrollTo(0, scrollY);
+                previouslyFocused.current?.focus?.();
             };
         }
     }, [isOpen]);
@@ -163,13 +175,18 @@ export default function SchedulingModal({
         timeZone: string,
     ): Date => {
         const utcBase = new Date(Date.UTC(year, month - 1, day, hour, minute));
-        const tzAsLocal = new Date(utcBase.toLocaleString('en-US', { timeZone }));
+        const tzAsLocal = new Date(
+            utcBase.toLocaleString('en-US', { timeZone }),
+        );
         const offsetMs = tzAsLocal.getTime() - utcBase.getTime();
         return new Date(utcBase.getTime() - offsetMs);
     };
 
     // Convert a Los Angeles time (HH:MM) on a given date to user's local display (handles DST)
-    const convertLATimeToLocalDisplay = (date: Date, laTime: string): string => {
+    const convertLATimeToLocalDisplay = (
+        date: Date,
+        laTime: string,
+    ): string => {
         try {
             const laDateStr = new Intl.DateTimeFormat('en-CA', {
                 timeZone: 'America/Los_Angeles',
@@ -332,9 +349,17 @@ export default function SchedulingModal({
             };
 
             const result = await saveLead(leadData);
-            
+
             if (result.success) {
                 console.log('Lead saved successfully with ID:', result.leadId);
+
+                // Fire Google Ads conversion event for lead form submission
+                sendGAEvent('event', 'conversion', {
+                    send_to: 'AW-17600938444/jfkaCOHz5aEbEMyD5MhB',
+                    value: 1.0,
+                    currency: 'USD',
+                });
+
                 setIsBooked(true);
             } else {
                 console.error('Failed to save lead:', result.error);
@@ -396,12 +421,23 @@ export default function SchedulingModal({
         <AnimatePresence>
             {isOpen && (
                 <motion.div
+                    ref={overlayRef}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="fixed inset-0 z-[9999] flex h-screen w-screen bg-black/50"
+                    className="fixed inset-0 z-[9999] flex h-screen w-screen bg-black/50 outline-none"
                     onClick={handleClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="scheduling-modal-title"
+                    tabIndex={-1}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Escape') {
+                            e.stopPropagation();
+                            handleClose();
+                        }
+                    }}
                 >
                     {isBooked ? (
                         <motion.div
@@ -422,7 +458,10 @@ export default function SchedulingModal({
                                 <div className="w-10"></div>{' '}
                                 {/* Spacer for centering */}
                                 <div className="px-2 text-center">
-                                    <h2 className="text-base font-bold text-foreground sm:text-lg">
+                                    <h2
+                                        id="scheduling-modal-title"
+                                        className="text-base font-bold text-foreground sm:text-lg"
+                                    >
                                         Consultation Scheduled!
                                     </h2>
                                 </div>
@@ -501,38 +540,49 @@ export default function SchedulingModal({
                                                     selectedSlot
                                                 ) {
                                                     const laTime =
-                                                        selectedSlot.pstTime
-                                                            .split(' ')[0];
-                                                    const [slotHour, slotMinute] =
-                                                        laTime
-                                                            .split(':')
-                                                            .map(Number);
+                                                        selectedSlot.pstTime.split(
+                                                            ' ',
+                                                        )[0];
+                                                    const [
+                                                        slotHour,
+                                                        slotMinute,
+                                                    ] = laTime
+                                                        .split(':')
+                                                        .map(Number);
 
-                                                    const laDateStr = new Intl.DateTimeFormat(
-                                                        'en-CA',
-                                                        {
-                                                            timeZone:
-                                                                'America/Los_Angeles',
-                                                            year: 'numeric',
-                                                            month: '2-digit',
-                                                            day: '2-digit',
-                                                        },
-                                                    ).format(selectedDate);
-                                                    const [laYear, laMonth, laDay] =
-                                                        laDateStr
-                                                            .split('-')
-                                                            .map((n) => parseInt(n, 10));
-
-                                                    const startTimeUtc = getUtcForTimeZone(
+                                                    const laDateStr =
+                                                        new Intl.DateTimeFormat(
+                                                            'en-CA',
+                                                            {
+                                                                timeZone:
+                                                                    'America/Los_Angeles',
+                                                                year: 'numeric',
+                                                                month: '2-digit',
+                                                                day: '2-digit',
+                                                            },
+                                                        ).format(selectedDate);
+                                                    const [
                                                         laYear,
                                                         laMonth,
                                                         laDay,
-                                                        slotHour,
-                                                        slotMinute,
-                                                        'America/Los_Angeles',
-                                                    );
+                                                    ] = laDateStr
+                                                        .split('-')
+                                                        .map((n) =>
+                                                            parseInt(n, 10),
+                                                        );
+
+                                                    const startTimeUtc =
+                                                        getUtcForTimeZone(
+                                                            laYear,
+                                                            laMonth,
+                                                            laDay,
+                                                            slotHour,
+                                                            slotMinute,
+                                                            'America/Los_Angeles',
+                                                        );
                                                     const endTimeUtc = new Date(
-                                                        startTimeUtc.getTime() + 60 * 60 * 1000,
+                                                        startTimeUtc.getTime() +
+                                                            60 * 60 * 1000,
                                                     );
 
                                                     // Set consultations@robustaccounts.com as the organizer, and the user as the guest
@@ -617,7 +667,10 @@ export default function SchedulingModal({
                                     <ChevronRight className="h-5 w-5 rotate-180 fill-foreground sm:h-7 sm:w-7" />
                                 </button>
                                 <div className="px-2 text-center">
-                                    <h2 className="text-base font-bold text-foreground sm:text-lg">
+                                    <h2
+                                        id="scheduling-modal-title"
+                                        className="text-base font-bold text-foreground sm:text-lg"
+                                    >
                                         {step === 'calendar'
                                             ? 'Select a time for your call.'
                                             : 'Enter your info to confirm.'}

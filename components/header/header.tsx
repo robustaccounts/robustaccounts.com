@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
-import { Close, Menu } from '@/ui/icons/google-icons';
+import { Call, Close, Menu } from '@/ui/icons/google-icons';
 import Link from '@/ui/link';
 
 import cn from '@/utils/cn';
@@ -48,6 +48,8 @@ export default function Header() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const { isSchedulingModalOpen } = useModal();
+    const mobileMenuRef = React.useRef<HTMLDivElement | null>(null);
+    const firstMobileLinkRef = React.useRef<HTMLAnchorElement | null>(null);
 
     // Handle scroll detection
     useEffect(() => {
@@ -64,6 +66,10 @@ export default function Header() {
         if (isMobileMenuOpen) {
             document.body.style.overflow = 'hidden';
             document.documentElement.style.overflow = 'hidden';
+            // Focus first link for accessibility
+            setTimeout(() => {
+                firstMobileLinkRef.current?.focus();
+            }, 0);
         } else {
             document.body.style.overflow = '';
             document.documentElement.style.overflow = '';
@@ -75,6 +81,40 @@ export default function Header() {
         };
     }, [isMobileMenuOpen]);
 
+    // Close on Escape and trap focus inside mobile menu
+    useEffect(() => {
+        if (!isMobileMenuOpen) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                setIsMobileMenuOpen(false);
+                return;
+            }
+            if (e.key === 'Tab' && mobileMenuRef.current) {
+                const focusable =
+                    mobileMenuRef.current.querySelectorAll<HTMLElement>(
+                        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+                    );
+                if (focusable.length === 0) return;
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                const active = document.activeElement as HTMLElement | null;
+                if (e.shiftKey) {
+                    if (active === first) {
+                        e.preventDefault();
+                        last.focus();
+                    }
+                } else {
+                    if (active === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                }
+            }
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [isMobileMenuOpen]);
+
     if (isSchedulingModalOpen) {
         return null;
     }
@@ -83,7 +123,7 @@ export default function Header() {
         <>
             <header
                 className={cn(
-                    'fixed top-8 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-[100vw] -translate-x-1/2 transform rounded-full px-4 py-3 text-primary transition-all duration-300 md:container md:mx-auto md:w-full md:px-8',
+                    'fixed top-8 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-[100vw] -translate-x-1/2 transform rounded-full px-4 py-2 text-primary transition-all duration-300 md:container md:mx-auto md:w-full md:px-8',
                     isScrolled
                         ? 'bg-secondary/60 backdrop-blur-sm'
                         : 'bg-secondary',
@@ -124,14 +164,21 @@ export default function Header() {
                             <Link
                                 key={item.name}
                                 href={item.href}
-                                className="font-medium transition-all hover:text-primary/60"
+                                className="rounded-md px-1 font-medium transition-all hover:text-primary/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                             >
                                 {item.name}
                             </Link>
                         ))}
                     </nav>
 
-                    {/* Only show phone number in header on lg or higher */}
+                    {/* Phone CTA: mobile shows icon, desktop shows number */}
+                    <Link
+                        href={`tel:${contactInfo.phoneHref}`}
+                        className="inline text-primary lg:hidden"
+                        aria-label={`Call us at ${contactInfo.phoneDisplay}`}
+                    >
+                        <Call className="h-6 w-6 fill-primary" />
+                    </Link>
                     <Link
                         href={`tel:${contactInfo.phoneHref}`}
                         className="hidden text-lg font-semibold text-primary lg:inline"
@@ -142,8 +189,10 @@ export default function Header() {
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="p-2 transition-colors hover:text-primary/60 lg:hidden"
+                        className="rounded-md p-2 transition-colors hover:text-primary/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent lg:hidden"
                         aria-label="Toggle mobile menu"
+                        aria-expanded={isMobileMenuOpen}
+                        aria-controls="mobile-menu"
                     >
                         {isMobileMenuOpen ? (
                             <Close className="h-7 w-7 fill-primary transition-transform duration-200" />
@@ -156,11 +205,16 @@ export default function Header() {
             <AnimatePresence>
                 {isMobileMenuOpen && (
                     <motion.div
+                        ref={mobileMenuRef}
                         key="mobile-menu"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.18 }}
+                        id="mobile-menu"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Main navigation"
                         className="fixed inset-0 top-0 z-40 h-screen w-screen bg-white p-4 backdrop-blur-sm lg:hidden"
                     >
                         <motion.button
@@ -191,7 +245,12 @@ export default function Header() {
                                     >
                                         <Link
                                             href={item.href}
-                                            className="flex w-full items-center rounded-lg px-2 py-3 text-2xl font-bold text-primary transition-all hover:bg-primary/10 focus:bg-primary/10"
+                                            ref={
+                                                item.name === 'Home'
+                                                    ? firstMobileLinkRef
+                                                    : undefined
+                                            }
+                                            className="flex w-full items-center rounded-lg px-2 py-3 text-2xl font-bold text-primary transition-all hover:bg-primary/10 focus:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                                             style={{
                                                 justifyContent: 'flex-start',
                                             }}

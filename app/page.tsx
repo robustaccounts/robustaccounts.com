@@ -1,6 +1,5 @@
-'use client';
-
 import React from 'react';
+import type { Metadata } from 'next';
 
 import SoftwaresMasterySection from '@/components/common/softwares-mastery';
 import FAQSection from '@/components/home/faq-section';
@@ -23,3 +22,10 @@ export default function Home() {
         </main>
     );
 }
+
+export const metadata: Metadata = {
+    title: 'Accounting Outsourcing for Growing Businesses',
+    description:
+        'Save time and reduce costs with expert bookkeeping, payroll, and financial advisory. Schedule a free consultation with Robust Accounts.',
+    alternates: { canonical: '/' },
+};
