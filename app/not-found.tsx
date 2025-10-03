@@ -1,5 +1,6 @@
-import Link from 'next/link';
 import contactInfo from '@/data/contact-info';
+
+import Link from 'next/link';
 
 export default function NotFound() {
     return (

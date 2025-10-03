@@ -1,8 +1,8 @@
 'use client';
 
-import { useModal } from '@/contexts/modal-context';
 import contactInfo from '@/data/contact-info';
 
+import Link from 'next/link';
 import React from 'react';
 
 import { ArrowForward } from '@/ui/icons/google-icons';
@@ -24,12 +24,6 @@ export default function ScheduleMyCallButton({
     variant = 'primary',
     subTextClassName,
 }: ScheduleMyCallButtonProps) {
-    const { setSchedulingModalOpen } = useModal();
-
-    const handleOpenModal = () => {
-        setSchedulingModalOpen(true);
-    };
-
     const sizeClasses = {
         sm: 'pl-1 pr-3 py-1 text-xs sm:text-sm',
         md: 'pl-1 pr-3 py-1 text-sm sm:text-base',
@@ -55,8 +49,8 @@ export default function ScheduleMyCallButton({
 
     return (
         <div className="flex flex-col items-center gap-3">
-            <button
-                onClick={handleOpenModal}
+            <Link
+                href="/lead-form/schedule"
                 className={cn(
                     'flex w-full cursor-pointer items-center justify-center gap-2 rounded-full font-semibold backdrop-blur-2xl transition-all sm:w-auto',
                     sizeClasses[size],
@@ -83,7 +77,7 @@ export default function ScheduleMyCallButton({
                 <span className="font-semibold whitespace-nowrap">
                     Schedule My Free Consultation
                 </span>
-            </button>
+            </Link>
             {showSubtext && (
                 <p
                     className={cn(
