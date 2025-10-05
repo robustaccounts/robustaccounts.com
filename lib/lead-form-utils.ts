@@ -2,7 +2,9 @@ export interface TimeSlot {
     id: string;
     time: string;
     available: boolean;
-    pstTime: string;
+    timezone: string;
+    timezoneAbbrev: string;
+    startDateUtc: string;
 }
 
 // Generate dates from current day for the next 2 weeks (14 days)
@@ -92,10 +94,27 @@ export const convertESTTimeToLocalDisplay = (
     }
 };
 
+const getTimeZoneAbbreviation = (date: Date, timeZone: string): string => {
+    try {
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone,
+            timeZoneName: 'short',
+        });
+        const parts = formatter.formatToParts(date);
+        return (
+            parts.find((part) => part.type === 'timeZoneName')?.value || 'ET'
+        );
+    } catch (error) {
+        console.error('Failed to determine time zone abbreviation:', error);
+        return 'ET';
+    }
+};
+
 // Generate time slots for selected date (9:30 AM to 6:30 PM EST, 30-minute intervals)
 export const getTimeSlots = (date: Date): TimeSlot[] => {
     const slots: TimeSlot[] = [];
     const now = new Date();
+    const timeZone = 'America/New_York';
 
     // EST time slots from 9:30 AM to 6:30 PM (30-minute intervals)
     const estTimeSlots = [
@@ -133,11 +152,14 @@ export const getTimeSlots = (date: Date): TimeSlot[] => {
 
         // Only add slots that haven't passed
         if (!isPast) {
+            const timezoneAbbrev = getTimeZoneAbbreviation(utcDate, timeZone);
             slots.push({
                 id: `${date.toISOString().split('T')[0]}-${index}`,
                 time: displayTime,
                 available: true,
-                pstTime: `${estTime} EST`,
+                timezone: timeZone,
+                timezoneAbbrev,
+                startDateUtc: utcDate.toISOString(),
             });
         }
     });

@@ -42,7 +42,7 @@ const defaultPricingTiers: PricingTier[] = [
             'No tax preparation',
         ],
         cta: 'Get Started',
-        href: '/getting-started?plan=starter',
+        href: '/lead-form/schedule?source=pricing&plan=starter',
     },
     {
         name: 'Professional',
@@ -65,7 +65,7 @@ const defaultPricingTiers: PricingTier[] = [
         ],
         limitations: ['Limited advisory hours', 'Standard reporting'],
         cta: 'Get Started',
-        href: '/getting-started?plan=professional',
+        href: '/lead-form/schedule?source=pricing&plan=professional',
     },
     {
         name: 'Enterprise',
@@ -88,7 +88,7 @@ const defaultPricingTiers: PricingTier[] = [
         ],
         limitations: [],
         cta: 'Get Started',
-        href: '/contact',
+        href: '/lead-form/schedule?source=pricing&plan=enterprise',
     },
 ];
 
@@ -258,6 +258,4 @@ export default function PricingTiersSection({
         </section>
     );
 }
-
-// Export the PricingTier type for use in other components
 export type { PricingTier };

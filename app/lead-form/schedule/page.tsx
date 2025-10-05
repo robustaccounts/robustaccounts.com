@@ -214,7 +214,8 @@ export default function SchedulePage() {
 
                             {/* Timezone Info */}
                             <div className="mt-4 text-center text-xs text-gray-500 sm:text-sm">
-                                Times displayed in EST • 30 minute consultation
+                                Times displayed in Eastern Time (ET) • 30 minute
+                                consultation
                             </div>
                         </div>
                     ) : (

@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function HeroSection() {
     return (
-        <section className="relative flex h-full min-h-[60vh] flex-col items-center justify-center px-5 py-16 sm:px-8 sm:py-20 md:px-12 md:py-24 lg:px-16">
+        <section className="relative my-16 flex h-full flex-col items-center justify-center px-5 py-16 sm:px-8 sm:py-20 md:px-12 md:pt-24 md:pb-8 lg:px-16">
             <div className="container mx-auto flex h-auto w-full flex-col items-center justify-center gap-6 sm:gap-8">
                 {/* Main Content */}
                 <div className="flex flex-col items-center justify-center space-y-4 sm:space-y-6">

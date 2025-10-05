@@ -13,7 +13,7 @@ import Input from '@/ui/input';
 import PhoneInput from '@/ui/phone-input';
 import Textarea from '@/ui/textarea';
 
-import { getTimeSlots, getUtcForTimeZone } from '@/lib/lead-form-utils';
+import { getTimeSlots } from '@/lib/lead-form-utils';
 import { saveLead } from '@/lib/save-lead';
 
 const industries: DropdownOption[] = [
@@ -100,26 +100,7 @@ export default function ContactPage() {
                 return;
             }
 
-            // Use EST timezone to generate correct UTC (handles EST/EDT)
-            const estTime = selectedSlot.pstTime.split(' ')[0];
-            const [slotHour, slotMinute] = estTime.split(':').map(Number);
-            const estDateStr = new Intl.DateTimeFormat('en-CA', {
-                timeZone: 'America/New_York',
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-            }).format(formData.selectedDate);
-            const [estYear, estMonth, estDay] = estDateStr
-                .split('-')
-                .map((n) => parseInt(n, 10));
-            const utcAppointmentDatetime = getUtcForTimeZone(
-                estYear,
-                estMonth,
-                estDay,
-                slotHour,
-                slotMinute,
-                'America/New_York',
-            );
+            const appointmentStart = new Date(selectedSlot.startDateUtc);
 
             const leadData = {
                 firstName: formData.contactData.firstName,
@@ -130,7 +111,7 @@ export default function ContactPage() {
                 businessName: formData.contactData.businessName,
                 industry: formData.contactData.industry,
                 message: formData.contactData.message,
-                appointmentDatetime: utcAppointmentDatetime,
+                appointmentDatetime: appointmentStart,
             };
 
             // Format appointment details for customer email
@@ -145,7 +126,7 @@ export default function ContactPage() {
                     },
                 ),
                 appointmentTime: selectedSlot.time,
-                appointmentTimezone: 'EST',
+                appointmentTimezone: selectedSlot.timezoneAbbrev,
             };
 
             const result = await saveLead(leadData, appointmentDetails);
@@ -352,9 +333,17 @@ export default function ContactPage() {
                         disabled={isSubmitting}
                         className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50 sm:text-base"
                     >
-                        {isSubmitting
-                            ? 'Submitting...'
-                            : 'Confirm My Appointment'}
+                        {isSubmitting ? (
+                            <>
+                                <span
+                                    className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"
+                                    aria-hidden="true"
+                                />
+                                <span className="sr-only">Submitting</span>
+                            </>
+                        ) : (
+                            'Confirm My Appointment'
+                        )}
                     </button>
                 </div>
             </div>

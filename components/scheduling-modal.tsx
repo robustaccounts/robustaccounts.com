@@ -14,6 +14,10 @@ import PhoneInput from '@/ui/phone-input';
 import Textarea from '@/ui/textarea';
 
 import { saveLead } from '@/lib/save-lead';
+import {
+    getAvailableDates,
+    getTimeSlots,
+} from '@/lib/lead-form-utils';
 
 import cn from '@/utils/cn';
 
@@ -31,13 +35,6 @@ interface ContactFormData {
     businessName: string;
     industry: string;
     message: string;
-}
-
-interface TimeSlot {
-    id: string;
-    time: string;
-    available: boolean;
-    pstTime: string;
 }
 
 const industries: DropdownOption[] = [
@@ -128,158 +125,22 @@ export default function SchedulingModal({
         }
     }, [isOpen]);
 
-    // Generate dates from current day for the next 2 weeks (14 days, excluding weekends)
-    const getAvailableDates = () => {
-        const dates = [];
-        const today = new Date();
+    const availableDates = React.useMemo(() => getAvailableDates(), []);
 
-        // Generate dates for the next 14 days
-        for (let i = 0; i < 14; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() + i);
-
-            // Skip weekends (Saturday = 6, Sunday = 0)
-            const dayOfWeek = date.getDay();
-            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-                dates.push(date);
-            }
-        }
-
-        return dates;
-    };
-
-    // Set default selected date to current day
     React.useEffect(() => {
-        const availableDates = getAvailableDates();
         if (availableDates.length > 0 && !selectedDate) {
             setSelectedDate(availableDates[0]);
         }
-    }, [selectedDate]);
+    }, [availableDates, selectedDate]);
 
-    // Helper: build a UTC Date for a given local time in a specific IANA timezone
-    const getUtcForTimeZone = (
-        year: number,
-        month: number,
-        day: number,
-        hour: number,
-        minute: number,
-        timeZone: string,
-    ): Date => {
-        const utcBase = new Date(Date.UTC(year, month - 1, day, hour, minute));
-        const tzAsLocal = new Date(
-            utcBase.toLocaleString('en-US', { timeZone }),
-        );
-        const offsetMs = tzAsLocal.getTime() - utcBase.getTime();
-        return new Date(utcBase.getTime() - offsetMs);
-    };
+    const timeSlots = React.useMemo(
+        () => (selectedDate ? getTimeSlots(selectedDate) : []),
+        [selectedDate],
+    );
 
-    // Convert an EST time (HH:MM) to display format (always shows EST time)
-    const convertESTTimeToLocalDisplay = (
-        date: Date,
-        estTime: string,
-    ): { displayTime: string; utcDate: Date } => {
-        try {
-            // Parse the EST time
-            const [h, m] = estTime.split(':').map(Number);
-
-            // Get the date components in EST timezone
-            const formatter = new Intl.DateTimeFormat('en-CA', {
-                timeZone: 'America/New_York',
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-            });
-            const estDateStr = formatter.format(date);
-            const [year, month, day] = estDateStr.split('-').map(Number);
-
-            // Use the helper function to get the proper UTC date for this EST time
-            const utcDate = getUtcForTimeZone(
-                year,
-                month,
-                day,
-                h,
-                m,
-                'America/New_York',
-            );
-
-            // Display the EST time as-is (not converted to local time)
-            const ampm = h >= 12 ? 'pm' : 'am';
-            const displayHours = h % 12 || 12;
-            const displayTime = `${displayHours}:${m.toString().padStart(2, '0')}${ampm}`;
-
-            return {
-                displayTime,
-                utcDate,
-            };
-        } catch (error) {
-            console.error('Time conversion error:', error);
-            const [hours, minutes] = estTime.split(':').map(Number);
-            const ampm = hours >= 12 ? 'pm' : 'am';
-            const displayHours = hours % 12 || 12;
-            const utcDate = new Date(date);
-            utcDate.setHours(hours, minutes, 0, 0);
-            return {
-                displayTime: `${displayHours}:${minutes.toString().padStart(2, '0')}${ampm}`,
-                utcDate,
-            };
-        }
-    };
-
-    // Generate time slots for selected date (9:30 AM to 6:30 PM EST, 30-minute intervals)
-    const getTimeSlots = (date: Date): TimeSlot[] => {
-        const slots: TimeSlot[] = [];
-        const now = new Date();
-
-        // EST time slots from 9:30 AM to 6:30 PM (30-minute intervals)
-        const estTimeSlots = [
-            '09:30',
-            '10:00',
-            '10:30',
-            '11:00',
-            '11:30',
-            '12:00',
-            '12:30',
-            '13:00',
-            '13:30',
-            '14:00',
-            '14:30',
-            '15:00',
-            '15:30',
-            '16:00',
-            '16:30',
-            '17:00',
-            '17:30',
-            '18:00',
-            '18:30',
-        ];
-
-        estTimeSlots.forEach((estTime, index) => {
-            const { displayTime, utcDate } = convertESTTimeToLocalDisplay(
-                date,
-                estTime,
-            );
-
-            // Check if this time slot has passed based on current time
-            // utcDate represents the actual moment in time for the EST slot
-            // now is the current time - comparing these correctly filters past slots
-            const isPast = utcDate < now;
-
-            // Only add slots that haven't passed
-            if (!isPast) {
-                slots.push({
-                    id: `${date.toISOString().split('T')[0]}-${index}`,
-                    time: displayTime,
-                    available: true,
-                    pstTime: `${estTime} EST`,
-                });
-            }
-        });
-
-        return slots;
-    };
-
-    const availableDates = getAvailableDates();
-    const timeSlots = selectedDate ? getTimeSlots(selectedDate) : [];
+    const selectedSlotDetails = selectedTimeSlot
+        ? timeSlots.find((slot) => slot.id === selectedTimeSlot)
+        : undefined;
 
     const validateContactForm = (): boolean => {
         const newErrors: Record<string, string> = {};
@@ -323,37 +184,12 @@ export default function SchedulingModal({
     };
 
     const handleBooking = async () => {
-        if (!selectedDate || !selectedTimeSlot) return;
+        if (!selectedSlotDetails) return;
 
         setIsBooking(true);
 
         try {
-            const selectedSlot = timeSlots.find(
-                (slot) => slot.id === selectedTimeSlot,
-            );
-
-            if (!selectedSlot) return;
-
-            // Use EST timezone to generate correct UTC (handles EST/EDT)
-            const estTime = selectedSlot.pstTime.split(' ')[0];
-            const [slotHour, slotMinute] = estTime.split(':').map(Number);
-            const estDateStr = new Intl.DateTimeFormat('en-CA', {
-                timeZone: 'America/New_York',
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-            }).format(selectedDate);
-            const [estYear, estMonth, estDay] = estDateStr
-                .split('-')
-                .map((n) => parseInt(n, 10));
-            const utcAppointmentDatetime = getUtcForTimeZone(
-                estYear,
-                estMonth,
-                estDay,
-                slotHour,
-                slotMinute,
-                'America/New_York',
-            );
+            const appointmentStart = new Date(selectedSlotDetails.startDateUtc);
 
             const leadData = {
                 firstName: contactData.firstName,
@@ -364,7 +200,7 @@ export default function SchedulingModal({
                 businessName: contactData.businessName,
                 industry: contactData.industry,
                 message: contactData.message,
-                appointmentDatetime: utcAppointmentDatetime,
+                appointmentDatetime: appointmentStart,
             };
 
             const result = await saveLead(leadData);
@@ -522,24 +358,10 @@ export default function SchedulingModal({
                                                     )}
                                             </div>
                                             <div className="mb-1 text-xl font-bold text-accent sm:text-2xl">
-                                                {
-                                                    timeSlots.find(
-                                                        (slot) =>
-                                                            slot.id ===
-                                                            selectedTimeSlot,
-                                                    )?.time
-                                                }
+                                                {selectedSlotDetails?.time}
                                             </div>
-                                            <div className="text-sm text-gray-500">
-                                                (
-                                                {
-                                                    timeSlots.find(
-                                                        (slot) =>
-                                                            slot.id ===
-                                                            selectedTimeSlot,
-                                                    )?.pstTime
-                                                }
-                                                )
+                                            <div className="text-sm font-semibold text-gray-600">
+                                                {selectedSlotDetails?.timezoneAbbrev}
                                             </div>
                                         </div>
                                     </div>
@@ -548,70 +370,18 @@ export default function SchedulingModal({
                                         <button
                                             type="button"
                                             onClick={() => {
-                                                const selectedSlot =
-                                                    timeSlots.find(
-                                                        (slot) =>
-                                                            slot.id ===
-                                                            selectedTimeSlot,
-                                                    );
-                                                if (
-                                                    selectedDate &&
-                                                    selectedSlot
-                                                ) {
-                                                    const laTime =
-                                                        selectedSlot.pstTime.split(
-                                                            ' ',
-                                                        )[0];
-                                                    const [
-                                                        slotHour,
-                                                        slotMinute,
-                                                    ] = laTime
-                                                        .split(':')
-                                                        .map(Number);
-
-                                                    const estDateStr =
-                                                        new Intl.DateTimeFormat(
-                                                            'en-CA',
-                                                            {
-                                                                timeZone:
-                                                                    'America/New_York',
-                                                                year: 'numeric',
-                                                                month: '2-digit',
-                                                                day: '2-digit',
-                                                            },
-                                                        ).format(selectedDate);
-                                                    const [
-                                                        estYear,
-                                                        estMonth,
-                                                        estDay,
-                                                    ] = estDateStr
-                                                        .split('-')
-                                                        .map((n) =>
-                                                            parseInt(n, 10),
-                                                        );
-
+                                                if (selectedSlotDetails) {
                                                     const startTimeUtc =
-                                                        getUtcForTimeZone(
-                                                            estYear,
-                                                            estMonth,
-                                                            estDay,
-                                                            slotHour,
-                                                            slotMinute,
-                                                            'America/New_York',
+                                                        new Date(
+                                                            selectedSlotDetails.startDateUtc,
                                                         );
                                                     const endTimeUtc = new Date(
                                                         startTimeUtc.getTime() +
-                                                            60 * 60 * 1000,
+                                                            30 * 60 * 1000,
                                                     );
 
-                                                    // Set consultations@robustaccounts.com as the organizer, and the user as the guest
-                                                    // Google Calendar web links do not support specifying the organizer directly,
-                                                    // but the event will be created by the user (the guest) in their calendar.
-                                                    // We'll add consultations@robustaccounts.com as a guest.
                                                     const guestEmail =
                                                         'consultations@robustaccounts.com';
-                                                    // The 'add' param is for guests, not organizer.
-                                                    // The event will be created in the user's calendar (the person clicking).
                                                     const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Free Accounting Consultation - Robust Accounts&dates=${startTimeUtc
                                                         .toISOString()
                                                         .replace(/[-:]/g, '')
@@ -624,7 +394,7 @@ export default function SchedulingModal({
                                                         .replace(
                                                             /\.\d{3}/,
                                                             '',
-                                                        )}&details=Free consultation with Robust Accounts to discuss your accounting needs. We'll call you at the scheduled time.&location=Phone Call&add=${guestEmail}`;
+                                                        )}&details=Free consultation with Robust Accounts to discuss your accounting needs. We'll call you at the scheduled time.&location=Phone Call&add=${guestEmail}&ctz=${selectedSlotDetails.timezone}`;
                                                     window.open(
                                                         googleUrl,
                                                         '_blank',
@@ -697,17 +467,12 @@ export default function SchedulingModal({
 
                                     {step === 'contact' &&
                                         selectedDate &&
-                                        selectedTimeSlot && (
+                                        selectedSlotDetails && (
                                             <p className="mt-2 text-xs text-gray-600 sm:text-sm">
                                                 {formatFullDate(selectedDate)}{' '}
                                                 at{' '}
-                                                {
-                                                    timeSlots.find(
-                                                        (slot) =>
-                                                            slot.id ===
-                                                            selectedTimeSlot,
-                                                    )?.time
-                                                }
+                                                {selectedSlotDetails.time}{' '}
+                                                {selectedSlotDetails.timezoneAbbrev}
                                             </p>
                                         )}
                                 </div>

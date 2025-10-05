@@ -49,17 +49,17 @@ function getSmtpConfig() {
 export async function sendLeadNotificationEmail(lead: LeadNotification) {
     try {
         const cfg = getSmtpConfig();
+        const debugEnabled = process.env.EMAIL_DEBUG === '1';
 
-        // Debug: Log configuration (without password)
-        console.log('SMTP Config:', {
-            host: cfg.host,
-            port: cfg.port,
-            user: cfg.user,
-            hasPassword: !!cfg.auth?.pass,
-            hasAuth: !!cfg.auth,
-            from: cfg.from,
-            to: cfg.to,
-        });
+        if (debugEnabled) {
+            console.log('SMTP config verified for lead notifications', {
+                hasHost: Boolean(cfg.host),
+                port: cfg.port,
+                hasAuth: Boolean(cfg.auth),
+                from: cfg.from,
+                to: cfg.to,
+            });
+        }
 
         if (!cfg.host || !cfg.from || !cfg.to) {
             console.warn(
@@ -85,12 +85,9 @@ export async function sendLeadNotificationEmail(lead: LeadNotification) {
             port: cfg.port,
             secure: cfg.secure,
             auth: cfg.auth,
-            requireTLS: !cfg.secure, // Only require TLS for non-secure connections (port 587)
-            tls: {
-                rejectUnauthorized: false, // Allow self-signed certificates (can be more strict in production)
-            },
-            logger: process.env.EMAIL_DEBUG === '1',
-            debug: process.env.EMAIL_DEBUG === '1',
+            requireTLS: !cfg.secure,
+            logger: debugEnabled,
+            debug: debugEnabled,
         });
 
         const subject = `New lead #${lead.id}: ${lead.firstName} ${lead.lastName} — ${lead.businessName}`;
@@ -134,15 +131,18 @@ export async function sendLeadNotificationEmail(lead: LeadNotification) {
             </div>
         `;
 
-        // Use the authenticated user email as the envelope sender
-        const envelopeFrom = cfg.user || extractAddress(cfg.from || '');
+        const envelopeFrom = extractAddress(cfg.from || cfg.user || '');
 
         await transporter.sendMail({
-            from: `Robust Accounts <${envelopeFrom}>`, // Use authenticated email address
+            from: cfg.from,
             to: cfg.to,
             subject,
             text: textBody,
             html: htmlBody,
+            envelope: {
+                from: envelopeFrom,
+                to: cfg.to,
+            },
         });
 
         return { sent: true } as const;
@@ -183,7 +183,7 @@ export async function sendCustomerConfirmationEmail(
         // Check if customer emails are enabled
         const sendCustomerEmails =
             process.env.SEND_CUSTOMER_CONFIRMATION_EMAILS === 'true';
-
+        const debugEnabled = process.env.EMAIL_DEBUG === '1';
         if (!sendCustomerEmails) {
             console.log('Customer confirmation emails are disabled');
             return { sent: false, reason: 'disabled' } as const;
@@ -216,11 +216,8 @@ export async function sendCustomerConfirmationEmail(
             secure: cfg.secure,
             auth: cfg.auth,
             requireTLS: !cfg.secure,
-            tls: {
-                rejectUnauthorized: false,
-            },
-            logger: process.env.EMAIL_DEBUG === '1',
-            debug: process.env.EMAIL_DEBUG === '1',
+            logger: debugEnabled,
+            debug: debugEnabled,
         });
 
         const subject = `Consultation Confirmed - ${confirmation.appointmentDate}`;
@@ -377,14 +374,18 @@ export async function sendCustomerConfirmationEmail(
             </html>
         `;
 
-        const envelopeFrom = cfg.user || extractAddress(cfg.from || '');
+        const envelopeFrom = extractAddress(cfg.from || cfg.user || '');
 
         await transporter.sendMail({
-            from: `Robust Accounts <${envelopeFrom}>`,
+            from: cfg.from,
             to: confirmation.email,
             subject,
             text: textBody,
             html: htmlBody,
+            envelope: {
+                from: envelopeFrom,
+                to: confirmation.email,
+            },
         });
 
         console.log(

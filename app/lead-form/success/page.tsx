@@ -36,28 +36,10 @@ export default function SuccessPage() {
     };
 
     const handleAddToCalendar = () => {
-        if (!selectedSlot || !formData.selectedDate) return;
+        if (!selectedSlot) return;
 
-        const estTime = selectedSlot.pstTime.split(' ')[0];
-        const [slotHour, slotMinute] = estTime.split(':').map(Number);
-        const estDateStr = new Intl.DateTimeFormat('en-CA', {
-            timeZone: 'America/New_York',
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-        }).format(formData.selectedDate);
-        const [estYear, estMonth, estDay] = estDateStr
-            .split('-')
-            .map((n) => parseInt(n, 10));
-
-        const startDate = new Date(
-            estYear,
-            estMonth - 1,
-            estDay,
-            slotHour,
-            slotMinute,
-        );
-        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
+        const startDate = new Date(selectedSlot.startDateUtc);
+        const endDate = new Date(startDate.getTime() + 30 * 60 * 1000);
 
         const formatGoogleCalendarDate = (date: Date) => {
             return date
@@ -74,7 +56,7 @@ export default function SuccessPage() {
         );
         const dates = `${formatGoogleCalendarDate(startDate)}/${formatGoogleCalendarDate(endDate)}`;
 
-        const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${description}&ctz=America/New_York`;
+        const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${description}&ctz=${selectedSlot.timezone}`;
 
         window.open(googleCalendarUrl, '_blank');
     };
@@ -118,7 +100,9 @@ export default function SuccessPage() {
                                 {formatDate(formData.selectedDate)}
                             </p>
                             <p>
-                                <strong>Time:</strong> {selectedSlot?.time} EST
+                                <strong>Time:</strong>{' '}
+                                {selectedSlot?.time}{' '}
+                                {selectedSlot?.timezoneAbbrev}
                             </p>
                             <p>
                                 <strong>Duration:</strong> 30 minutes

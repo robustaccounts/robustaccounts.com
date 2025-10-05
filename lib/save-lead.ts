@@ -60,46 +60,40 @@ export async function saveLead(
         const leadId = result[0].id;
 
         // Fire-and-forget email notifications; don't block user if they fail
-        try {
-            // Send internal notification email
-            await sendLeadNotificationEmail({
-                id: leadId,
-                firstName: leadData.firstName,
-                lastName: leadData.lastName,
-                email: leadData.email,
-                phone: leadData.phone,
-                countryCode: leadData.countryCode,
-                businessName: leadData.businessName,
-                industry: leadData.industry,
-                message: leadData.message || null,
-                appointmentDatetimeISO:
-                    leadData.appointmentDatetime.toISOString(),
-            });
-        } catch (notifyErr) {
+        void sendLeadNotificationEmail({
+            id: leadId,
+            firstName: leadData.firstName,
+            lastName: leadData.lastName,
+            email: leadData.email,
+            phone: leadData.phone,
+            countryCode: leadData.countryCode,
+            businessName: leadData.businessName,
+            industry: leadData.industry,
+            message: leadData.message || null,
+            appointmentDatetimeISO: leadData.appointmentDatetime.toISOString(),
+        }).catch((notifyErr) => {
             console.error(
                 'Lead saved but internal notification email failed:',
                 notifyErr,
             );
-        }
+        });
 
         // Send customer confirmation email if appointment details are provided
         if (appointmentDetails) {
-            try {
-                await sendCustomerConfirmationEmail({
-                    firstName: leadData.firstName,
-                    lastName: leadData.lastName,
-                    email: leadData.email,
-                    businessName: leadData.businessName,
-                    appointmentDate: appointmentDetails.appointmentDate,
-                    appointmentTime: appointmentDetails.appointmentTime,
-                    appointmentTimezone: appointmentDetails.appointmentTimezone,
-                });
-            } catch (confirmErr) {
+            void sendCustomerConfirmationEmail({
+                firstName: leadData.firstName,
+                lastName: leadData.lastName,
+                email: leadData.email,
+                businessName: leadData.businessName,
+                appointmentDate: appointmentDetails.appointmentDate,
+                appointmentTime: appointmentDetails.appointmentTime,
+                appointmentTimezone: appointmentDetails.appointmentTimezone,
+            }).catch((confirmErr) => {
                 console.error(
                     'Lead saved but customer confirmation email failed:',
                     confirmErr,
                 );
-            }
+            });
         }
 
         return { success: true, leadId };
