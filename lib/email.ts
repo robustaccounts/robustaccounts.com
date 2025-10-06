@@ -246,131 +246,295 @@ export async function sendCustomerConfirmationEmail(
         ].join('\n');
 
         const htmlBody = `
-            <!DOCTYPE html>
+            <!doctype html>
             <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Consultation Confirmed</title>
-            </head>
-            <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6;">
-                <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f3f4f6;">
-                    <tr>
-                        <td align="center" style="padding: 40px 20px;">
-                            <!-- Main Container -->
-                            <table role="presentation" style="width: 100%; max-width: 600px; border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                                <!-- Header -->
-                                <tr>
-                                    <td style="padding: 40px 40px 30px; text-align: center; background: linear-gradient(135deg, #1a4d3a 0%, #2d7a5f 100%); border-radius: 12px 12px 0 0;">
-                                        <div style="width: 64px; height: 64px; margin: 0 auto 16px; background-color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" fill="#1a4d3a"/>
-                                            </svg>
-                                        </div>
-                                        <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; line-height: 1.3;">
-                                            Consultation Confirmed! ✓
-                                        </h1>
-                                    </td>
-                                </tr>
-                                
-                                <!-- Content -->
-                                <tr>
-                                    <td style="padding: 40px;">
-                                        <p style="margin: 0 0 20px; color: #111827; font-size: 16px; line-height: 1.6;">
-                                            Hi <strong>${escapeHtml(confirmation.firstName)}</strong>,
-                                        </p>
-                                        <p style="margin: 0 0 30px; color: #4b5563; font-size: 16px; line-height: 1.6;">
-                                            Your consultation with Robust Accounts has been successfully scheduled! We're excited to discuss your accounting needs and help your business thrive.
-                                        </p>
-                                        
-                                        <!-- Appointment Details Card -->
-                                        <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f0fdf4; border: 2px solid #1a4d3a; border-radius: 8px; margin-bottom: 30px;">
-                                            <tr>
-                                                <td style="padding: 24px;">
-                                                    <h2 style="margin: 0 0 16px; color: #1a4d3a; font-size: 18px; font-weight: 600;">
-                                                        📅 Appointment Details
-                                                    </h2>
-                                                    <table role="presentation" style="width: 100%; border-collapse: collapse;">
-                                                        <tr>
-                                                            <td style="padding: 8px 0; color: #1f2937; font-size: 15px;">
-                                                                <strong>Date:</strong>
-                                                            </td>
-                                                            <td style="padding: 8px 0; color: #1f2937; font-size: 15px; text-align: right;">
-                                                                ${escapeHtml(confirmation.appointmentDate)}
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td style="padding: 8px 0; color: #1f2937; font-size: 15px;">
-                                                                <strong>Time:</strong>
-                                                            </td>
-                                                            <td style="padding: 8px 0; color: #1f2937; font-size: 15px; text-align: right;">
-                                                                ${escapeHtml(confirmation.appointmentTime)} ${escapeHtml(confirmation.appointmentTimezone)}
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td style="padding: 8px 0; color: #1f2937; font-size: 15px;">
-                                                                <strong>Duration:</strong>
-                                                            </td>
-                                                            <td style="padding: 8px 0; color: #1f2937; font-size: 15px; text-align: right;">
-                                                                30 minutes
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                        
-                                        <!-- Call to Action -->
-                                        <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
-                                            <tr>
-                                                <td align="center" style="padding: 0;">
-                                                    <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=Accounting+Consultation+-+Robust+Accounts&details=Consultation+with+Robust+Accounts" target="_blank" style="display: inline-block; padding: 14px 32px; background-color: #1a4d3a; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: 600;">
-                                                        📆 Add to Calendar
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                        
-                                        <!-- What to Expect -->
-                                        <div style="background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 4px; margin-bottom: 30px;">
-                                            <h3 style="margin: 0 0 12px; color: #1e40af; font-size: 16px; font-weight: 600;">
-                                                📋 What to Expect
-                                            </h3>
-                                            <ul style="margin: 0; padding-left: 20px; color: #1e40af;">
-                                                <li style="margin-bottom: 8px;">We'll discuss your business's unique accounting needs</li>
-                                                <li style="margin-bottom: 8px;">Review our services and how we can help</li>
-                                                <li style="margin-bottom: 0;">Answer any questions you may have</li>
-                                            </ul>
-                                        </div>
-                                        
-                                        <p style="margin: 0 0 20px; color: #4b5563; font-size: 15px; line-height: 1.6;">
-                                            If you need to make any changes to your appointment, please don't hesitate to contact us at <a href="mailto:consultations@robustaccounts.com" style="color: #1a4d3a; text-decoration: none; font-weight: 600;">consultations@robustaccounts.com</a>
-                                        </p>
-                                        
-                                        <p style="margin: 0; color: #111827; font-size: 16px; line-height: 1.6;">
-                                            Best regards,<br>
-                                            <strong>The Robust Accounts Team</strong>
-                                        </p>
-                                    </td>
-                                </tr>
-                                
-                                <!-- Footer -->
-                                <tr>
-                                    <td style="padding: 30px 40px; text-align: center; background-color: #f9fafb; border-radius: 0 0 12px 12px; border-top: 1px solid #e5e7eb;">
-                                        <p style="margin: 0 0 12px; color: #6b7280; font-size: 14px;">
-                                            <strong>Robust Accounts</strong><br>
-                                            Professional Accounting Services
-                                        </p>
-                                        <p style="margin: 0; color: #6b7280; font-size: 14px;">
-                                            <a href="https://robustaccounts.com" style="color: #1a4d3a; text-decoration: none;">robustaccounts.com</a>
-                                        </p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </body>
+                <head>
+                    <meta charset="UTF-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <title>Consultation Confirmed - Robust Accounts</title>
+                </head>
+                <body
+                    style="
+                        margin: 0;
+                        font-family:
+                            -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                            'Helvetica Neue', Arial, sans-serif;
+                    "
+                >
+                    <table
+                        role="presentation"
+                        style="
+                            width: 100%;
+                            border-collapse: collapse;
+                            background-color: #f3f4f6;
+                        "
+                    >
+                        <tr>
+                            <td align="center" style="padding: 40px 20px">
+                                <table
+                                    role="presentation"
+                                    style="
+                                        width: 100%;
+                                        max-width: 600px;
+                                        border-collapse: collapse;
+                                        background-color: #ffffff;
+                                        border-radius: 12px;
+                                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                                    "
+                                >
+                                    <!-- Header -->
+                                    <tr>
+                                        <td
+                                            style="
+                                                padding: 40px 40px 30px;
+                                                text-align: center;
+                                                background: linear-gradient(
+                                                    135deg,
+                                                    #1a4d3a 0%,
+                                                    #2d7a5f 100%
+                                                );
+                                                border-radius: 12px 12px 0 0;
+                                            "
+                                        >
+                                            <img
+                                                src="https://robustaccounts.com/assets/logo.png"
+                                                alt="Robust Accounts Logo"
+                                                width="120"
+                                            />
+                                            <h1
+                                                style="
+                                                    margin: 20px 0 0;
+                                                    color: #ffffff;
+                                                    font-size: 28px;
+                                                    font-weight: 700;
+                                                "
+                                            >
+                                                Your Consultation Is Confirmed!
+                                            </h1>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Content -->
+                                    <tr>
+                                        <td style="padding: 40px">
+                                            <p
+                                                style="
+                                                    margin: 0 0 20px;
+                                                    color: #111827;
+                                                    font-size: 16px;
+                                                "
+                                            >
+                                                Hi <strong>${escapeHtml(confirmation.firstName)}</strong>,
+                                            </p>
+
+                                            <p
+                                                style="
+                                                    margin: 0 0 30px;
+                                                    color: #4b5563;
+                                                    font-size: 16px;
+                                                    line-height: 1.6;
+                                                "
+                                            >
+                                                Great news — your consultation with
+                                                <strong>Robust Accounts</strong> has been
+                                                scheduled successfully! We're looking
+                                                forward to learning more about your
+                                                accounting needs and exploring how we can
+                                                help your business grow.
+                                            </p>
+
+                                            <!-- Appointment Details -->
+                                            <div style="margin-bottom: 30px">
+                                                <h2
+                                                    style="
+                                                        margin: 0 0 16px;
+                                                        color: #1a4d3a;
+                                                        font-size: 18px;
+                                                        font-weight: 600;
+                                                    "
+                                                >
+                                                    Appointment Details
+                                                </h2>
+
+                                                <div style="margin-bottom: 12px">
+                                                    <strong
+                                                        style="
+                                                            color: #1f2937;
+                                                            font-size: 15px;
+                                                        "
+                                                        >Date:</strong
+                                                    >
+                                                    <span
+                                                        style="
+                                                            color: #1f2937;
+                                                            font-size: 15px;
+                                                            float: right;
+                                                        "
+                                                        >${escapeHtml(confirmation.appointmentDate)}</span
+                                                    >
+                                                    <div style="clear: both"></div>
+                                                </div>
+
+                                                <div style="margin-bottom: 12px">
+                                                    <strong
+                                                        style="
+                                                            color: #1f2937;
+                                                            font-size: 15px;
+                                                        "
+                                                        >Time:</strong
+                                                    >
+                                                    <span
+                                                        style="
+                                                            color: #1f2937;
+                                                            font-size: 15px;
+                                                            float: right;
+                                                        "
+                                                        >${escapeHtml(confirmation.appointmentTime)}
+                                                        ${escapeHtml(confirmation.appointmentTimezone)}</span
+                                                    >
+                                                    <div style="clear: both"></div>
+                                                </div>
+
+                                                <div style="margin-bottom: 12px">
+                                                    <strong
+                                                        style="
+                                                            color: #1f2937;
+                                                            font-size: 15px;
+                                                        "
+                                                        >Duration:</strong
+                                                    >
+                                                    <span
+                                                        style="
+                                                            color: #1f2937;
+                                                            font-size: 15px;
+                                                            float: right;
+                                                        "
+                                                        >30 minutes</span
+                                                    >
+                                                    <div style="clear: both"></div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Call to Action -->
+                                            <table
+                                                role="presentation"
+                                                style="
+                                                    width: 100%;
+                                                    border-collapse: collapse;
+                                                    margin-bottom: 30px;
+                                                "
+                                            >
+                                                <tr>
+                                                    <td align="center">
+                                                        <a
+                                                            href="https://www.google.com/calendar/render?action=TEMPLATE&text=Accounting+Consultation+-+Robust+Accounts&details=Consultation+with+Robust+Accounts"
+                                                            target="_blank"
+                                                            style="
+                                                                display: inline-flex;
+                                                                align-items: center;
+                                                                padding: 14px 18px;
+                                                                border: 2px solid #1a4d3a;
+                                                                color: #1a4d3a;
+                                                                text-decoration: none;
+                                                                border-radius: 8px;
+                                                                font-size: 16px;
+                                                                font-weight: 600;
+                                                            "
+                                                        >
+                                                            <img
+                                                                src="https://www.robustaccounts.com/assets/google-calendar.svg"
+                                                                alt="Google Calendar"
+                                                                width="28"
+                                                                height="28"
+                                                                style="margin-right: 10px"
+                                                            />
+                                                            Add to Google Calendar
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+
+                                            <p
+                                                style="
+                                                    margin: 0 0 20px;
+                                                    color: #4b5563;
+                                                    font-size: 15px;
+                                                    line-height: 1.6;
+                                                "
+                                            >
+                                                If you'd like to make changes or reschedule
+                                                your appointment, just reply to this email
+                                                or reach us directly at
+                                                <a
+                                                    href="mailto:consultations@robustaccounts.com"
+                                                    style="
+                                                        color: #1a4d3a;
+                                                        text-decoration: none;
+                                                        font-weight: 600;
+                                                    "
+                                                    >consultations@robustaccounts.com</a
+                                                >.
+                                            </p>
+
+                                            <p
+                                                style="
+                                                    margin: 0;
+                                                    color: #111827;
+                                                    font-size: 16px;
+                                                    line-height: 1.6;
+                                                "
+                                            >
+                                                Looking forward to speaking with you
+                                                soon!<br />
+                                                <strong>The Robust Accounts Team</strong>
+                                            </p>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Footer -->
+                                    <tr>
+                                        <td
+                                            style="
+                                                padding: 30px 40px;
+                                                text-align: center;
+                                                background-color: #f9fafb;
+                                                border-radius: 0 0 12px 12px;
+                                                border-top: 1px solid #e5e7eb;
+                                            "
+                                        >
+                                            <p
+                                                style="
+                                                    margin: 0 0 12px;
+                                                    color: #6b7280;
+                                                    font-size: 14px;
+                                                "
+                                            >
+                                                <strong>Robust Accounts</strong><br />
+                                                Professional Accounting & Advisory Services
+                                            </p>
+                                            <p
+                                                style="
+                                                    margin: 0;
+                                                    color: #6b7280;
+                                                    font-size: 14px;
+                                                "
+                                            >
+                                                <a
+                                                    href="https://robustaccounts.com"
+                                                    style="
+                                                        color: #1a4d3a;
+                                                        text-decoration: none;
+                                                    "
+                                                    >robustaccounts.com</a
+                                                >
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
             </html>
         `;
 

@@ -74,15 +74,17 @@ export default function Footer() {
     return (
         <footer className="bg-secondary/30">
             <div className="flex flex-col gap-10 px-5 py-12 sm:gap-12 sm:px-8 sm:py-14 md:grid md:grid-cols-5 md:gap-12 lg:px-16 lg:py-16">
-                <div className="col-span-2 flex flex-col gap-5 lg:max-w-4/5">
-                    <span className="text-xl font-bold text-primary sm:text-2xl">
-                        Robust Accounts
-                    </span>
-                    <p className="text-sm leading-relaxed font-medium text-gray-700 sm:text-base">
-                        Transform your business with expert accounting
-                        outsourcing services. We provide comprehensive financial
-                        solutions tailored to your needs.
-                    </p>
+                <div className="col-span-2 flex flex-col gap-4 lg:max-w-4/5">
+                    <div className="flex flex-col gap-2">
+                        <span className="text-xl font-bold text-primary sm:text-2xl">
+                            Robust Accounts
+                        </span>
+                        <p className="text-sm leading-relaxed font-medium text-gray-700 sm:text-base">
+                            Transform your business with expert accounting
+                            outsourcing services. We provide comprehensive
+                            financial solutions tailored to your needs.
+                        </p>
+                    </div>
                     {/* phone email and address */}
                     <div className="flex flex-col gap-3 sm:gap-4">
                         <Link

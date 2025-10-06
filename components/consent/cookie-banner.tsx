@@ -18,8 +18,9 @@ export default function CookieBanner() {
         >
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-sm text-gray-700">
-                    We use cookies to enhance site navigation, analyze usage,
-                    and assist in our marketing efforts. See our{' '}
+                    We use cookies to enhance your experience and understand how
+                    you use our site. By continuing to browse, you agree to our
+                    use of cookies. You can opt out anytime. See our{' '}
                     <a
                         href="/privacy-policy"
                         className="text-accent underline underline-offset-2"
@@ -40,13 +41,13 @@ export default function CookieBanner() {
                         onClick={reject}
                         className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
                     >
-                        Reject
+                        Opt Out
                     </button>
                     <button
                         onClick={accept}
                         className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent/90"
                     >
-                        Accept
+                        Got It
                     </button>
                 </div>
             </div>

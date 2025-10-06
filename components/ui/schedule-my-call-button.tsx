@@ -25,22 +25,22 @@ export default function ScheduleMyCallButton({
     subTextClassName,
 }: ScheduleMyCallButtonProps) {
     const sizeClasses = {
-        sm: 'pl-1 pr-3 py-1 text-xs sm:text-sm',
-        md: 'pl-1 pr-3 py-1 text-sm sm:text-base',
-        lg: 'pl-1 pr-3 py-1 text-sm sm:text-base md:text-lg',
+        sm: 'px-4 py-3 text-xs sm:text-sm',
+        md: 'px-4 py-3 text-sm sm:text-base',
+        lg: 'px-4 py-3 text-sm sm:text-base md:text-lg',
     };
 
-    const iconSizes = {
-        sm: 'h-4 w-4',
-        md: 'h-5 w-5',
-        lg: 'h-6 w-6',
-    };
+    // const iconSizes = {
+    //     sm: 'h-4 w-4',
+    //     md: 'h-5 w-5',
+    //     lg: 'h-6 w-6',
+    // };
 
-    const iconPadding = {
-        sm: 'p-1.5 sm:p-2',
-        md: 'p-2 sm:p-2.5',
-        lg: 'p-2 sm:p-2.5 md:p-3',
-    };
+    // const iconPadding = {
+    //     sm: 'p-1.5 sm:p-2',
+    //     md: 'p-2 sm:p-2.5',
+    //     lg: 'p-2 sm:p-2.5 md:p-3',
+    // };
 
     const variantClasses = {
         primary: 'bg-accent hover:bg-accent/80 text-white',
@@ -58,7 +58,7 @@ export default function ScheduleMyCallButton({
                     className,
                 )}
             >
-                <div
+                {/* <div
                     className={cn(
                         'rounded-full',
                         iconPadding[size],
@@ -73,7 +73,7 @@ export default function ScheduleMyCallButton({
                                 : 'fill-white',
                         )}
                     />
-                </div>
+                </div> */}
                 <span className="font-semibold whitespace-nowrap">
                     Schedule My Free Consultation
                 </span>
