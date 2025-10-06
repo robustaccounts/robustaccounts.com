@@ -32,11 +32,11 @@ function getPageRoutes(dir: string, baseRoute: string = ''): string[] {
                 }
 
                 // Check if directory has a page.tsx file
-                const hasPage =
-                    items.includes('page.tsx') ||
-                    items.includes('page.ts') ||
-                    items.includes('page.jsx') ||
-                    items.includes('page.js');
+                // const hasPage =
+                //     items.includes('page.tsx') ||
+                //     items.includes('page.ts') ||
+                //     items.includes('page.jsx') ||
+                //     items.includes('page.js');
 
                 // Add the directory as a route
                 const newRoute = baseRoute

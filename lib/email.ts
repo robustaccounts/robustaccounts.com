@@ -3,8 +3,6 @@
 import contactInfo from '@/data/contact-info';
 
 // Lazy import to avoid loading in environments that don't need it.
-// Intentionally typed as unknown and imported via eval to avoid a hard TS dependency
-// on the 'nodemailer' package unless it's actually installed.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let nodemailer: any | null = null;
 
@@ -77,7 +75,9 @@ export async function sendLeadNotificationEmail(lead: LeadNotification) {
 
         if (!nodemailer) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            nodemailer = await (eval('import("nodemailer")') as Promise<any>);
+            const mod: any = await import('nodemailer');
+            // Support both CommonJS and ESM default export shapes
+            nodemailer = mod?.default ?? mod;
         }
 
         const transporter = nodemailer.createTransport({
@@ -207,7 +207,9 @@ export async function sendCustomerConfirmationEmail(
 
         if (!nodemailer) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            nodemailer = await (eval('import("nodemailer")') as Promise<any>);
+            const mod: any = await import('nodemailer');
+            // Support both CommonJS and ESM default export shapes
+            nodemailer = mod?.default ?? mod;
         }
 
         const transporter = nodemailer.createTransport({

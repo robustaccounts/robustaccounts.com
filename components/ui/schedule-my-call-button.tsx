@@ -5,8 +5,6 @@ import contactInfo from '@/data/contact-info';
 import Link from 'next/link';
 import React from 'react';
 
-import { ArrowForward } from '@/ui/icons/google-icons';
-
 import cn from '@/utils/cn';
 
 interface ScheduleMyCallButtonProps {
