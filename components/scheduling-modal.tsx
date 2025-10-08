@@ -13,11 +13,8 @@ import Input from '@/ui/input';
 import PhoneInput from '@/ui/phone-input';
 import Textarea from '@/ui/textarea';
 
+import { getAvailableDates, getTimeSlots } from '@/lib/lead-form-utils';
 import { saveLead } from '@/lib/save-lead';
-import {
-    getAvailableDates,
-    getTimeSlots,
-} from '@/lib/lead-form-utils';
 
 import cn from '@/utils/cn';
 
@@ -184,7 +181,7 @@ export default function SchedulingModal({
     };
 
     const handleBooking = async () => {
-        if (!selectedSlotDetails) return;
+        if (!selectedSlotDetails || !selectedDate) return;
 
         setIsBooking(true);
 
@@ -203,7 +200,19 @@ export default function SchedulingModal({
                 appointmentDatetime: appointmentStart,
             };
 
-            const result = await saveLead(leadData);
+            // Format appointment details for customer email
+            const appointmentDetails = {
+                appointmentDate: selectedDate.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                }),
+                appointmentTime: selectedSlotDetails.time,
+                appointmentTimezone: selectedSlotDetails.timezoneAbbrev,
+            };
+
+            const result = await saveLead(leadData, appointmentDetails);
 
             if (result.success) {
                 console.log('Lead saved successfully with ID:', result.leadId);
@@ -361,7 +370,9 @@ export default function SchedulingModal({
                                                 {selectedSlotDetails?.time}
                                             </div>
                                             <div className="text-sm font-semibold text-gray-600">
-                                                {selectedSlotDetails?.timezoneAbbrev}
+                                                {
+                                                    selectedSlotDetails?.timezoneAbbrev
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -470,9 +481,10 @@ export default function SchedulingModal({
                                         selectedSlotDetails && (
                                             <p className="mt-2 text-xs text-gray-600 sm:text-sm">
                                                 {formatFullDate(selectedDate)}{' '}
-                                                at{' '}
-                                                {selectedSlotDetails.time}{' '}
-                                                {selectedSlotDetails.timezoneAbbrev}
+                                                at {selectedSlotDetails.time}{' '}
+                                                {
+                                                    selectedSlotDetails.timezoneAbbrev
+                                                }
                                             </p>
                                         )}
                                 </div>

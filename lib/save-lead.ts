@@ -60,7 +60,7 @@ export async function saveLead(
         const leadId = result[0].id;
 
         // Fire-and-forget email notifications; don't block user if they fail
-        void sendLeadNotificationEmail({
+        sendLeadNotificationEmail({
             id: leadId,
             firstName: leadData.firstName,
             lastName: leadData.lastName,
@@ -71,16 +71,20 @@ export async function saveLead(
             industry: leadData.industry,
             message: leadData.message || null,
             appointmentDatetimeISO: leadData.appointmentDatetime.toISOString(),
-        }).catch((notifyErr) => {
-            console.error(
-                'Lead saved but internal notification email failed:',
-                notifyErr,
-            );
-        });
+        })
+            .then((result) => {
+                console.log('Lead notification email result:', result);
+            })
+            .catch((notifyErr) => {
+                console.error(
+                    'Lead saved but internal notification email failed:',
+                    notifyErr,
+                );
+            });
 
         // Send customer confirmation email if appointment details are provided
         if (appointmentDetails) {
-            void sendCustomerConfirmationEmail({
+            sendCustomerConfirmationEmail({
                 firstName: leadData.firstName,
                 lastName: leadData.lastName,
                 email: leadData.email,
@@ -88,12 +92,16 @@ export async function saveLead(
                 appointmentDate: appointmentDetails.appointmentDate,
                 appointmentTime: appointmentDetails.appointmentTime,
                 appointmentTimezone: appointmentDetails.appointmentTimezone,
-            }).catch((confirmErr) => {
-                console.error(
-                    'Lead saved but customer confirmation email failed:',
-                    confirmErr,
-                );
-            });
+            })
+                .then((result) => {
+                    console.log('Customer confirmation email result:', result);
+                })
+                .catch((confirmErr) => {
+                    console.error(
+                        'Lead saved but customer confirmation email failed:',
+                        confirmErr,
+                    );
+                });
         }
 
         return { success: true, leadId };

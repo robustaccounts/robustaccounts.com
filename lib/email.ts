@@ -88,6 +88,9 @@ export async function sendLeadNotificationEmail(lead: LeadNotification) {
             requireTLS: !cfg.secure,
             logger: debugEnabled,
             debug: debugEnabled,
+            connectionTimeout: 10000, // 10 second timeout
+            greetingTimeout: 10000,
+            socketTimeout: 10000,
         });
 
         const subject = `New lead #${lead.id}: ${lead.firstName} ${lead.lastName} — ${lead.businessName}`;
@@ -133,7 +136,7 @@ export async function sendLeadNotificationEmail(lead: LeadNotification) {
 
         const envelopeFrom = extractAddress(cfg.from || cfg.user || '');
 
-        await transporter.sendMail({
+        const info = await transporter.sendMail({
             from: cfg.from,
             to: cfg.to,
             subject,
@@ -144,6 +147,14 @@ export async function sendLeadNotificationEmail(lead: LeadNotification) {
                 to: cfg.to,
             },
         });
+
+        if (debugEnabled) {
+            console.log('Lead notification email sent successfully:', {
+                messageId: info.messageId,
+                accepted: info.accepted,
+                rejected: info.rejected,
+            });
+        }
 
         return { sent: true } as const;
     } catch (err) {
@@ -191,6 +202,14 @@ export async function sendCustomerConfirmationEmail(
 
         const cfg = getSmtpConfig();
 
+        // Get asset URLs from environment or use defaults
+        const logoUrl =
+            process.env.EMAIL_LOGO_URL ||
+            'https://zqjl1difgpgsu6cq.public.blob.vercel-storage.com/email-assets/logo.png';
+        const calendarIconUrl =
+            process.env.EMAIL_GOOGLE_CALENDAR_ICON_URL ||
+            'https://zqjl1difgpgsu6cq.public.blob.vercel-storage.com/email-assets/google-calendar-icon.png';
+
         if (!cfg.host || !cfg.from) {
             console.warn(
                 'Customer confirmation email skipped: missing SMTP_HOST/EMAIL_FROM.',
@@ -220,6 +239,9 @@ export async function sendCustomerConfirmationEmail(
             requireTLS: !cfg.secure,
             logger: debugEnabled,
             debug: debugEnabled,
+            connectionTimeout: 10000, // 10 second timeout
+            greetingTimeout: 10000,
+            socketTimeout: 10000,
         });
 
         const subject = `Consultation Confirmed - ${confirmation.appointmentDate}`;
@@ -299,7 +321,7 @@ export async function sendCustomerConfirmationEmail(
                                             "
                                         >
                                             <img
-                                                src="https://robustaccounts.com/assets/logo.png"
+                                                src="${logoUrl}"
                                                 alt="Robust Accounts Logo"
                                                 width="120"
                                             />
@@ -444,7 +466,7 @@ export async function sendCustomerConfirmationEmail(
                                                             "
                                                         >
                                                             <img
-                                                                src="https://www.robustaccounts.com/assets/google-calendar.svg"
+                                                                src="${calendarIconUrl}"
                                                                 alt="Google Calendar"
                                                                 width="28"
                                                                 height="28"
@@ -542,7 +564,7 @@ export async function sendCustomerConfirmationEmail(
 
         const envelopeFrom = extractAddress(cfg.from || cfg.user || '');
 
-        await transporter.sendMail({
+        const info = await transporter.sendMail({
             from: cfg.from,
             to: confirmation.email,
             subject,
@@ -556,6 +578,13 @@ export async function sendCustomerConfirmationEmail(
 
         console.log(
             `Customer confirmation email sent to ${confirmation.email}`,
+            debugEnabled
+                ? {
+                      messageId: info.messageId,
+                      accepted: info.accepted,
+                      rejected: info.rejected,
+                  }
+                : '',
         );
         return { sent: true } as const;
     } catch (err) {
