@@ -6,6 +6,7 @@ import {
     sendCustomerConfirmationEmail,
     sendLeadNotificationEmail,
 } from '@/lib/email';
+import { databaseConfig } from '@/lib/env';
 
 interface LeadData {
     firstName: string;
@@ -30,7 +31,7 @@ export async function saveLead(
     appointmentDetails?: AppointmentDetails,
 ) {
     try {
-        const sql = neon(process.env.DATABASE_URL!);
+        const sql = neon(databaseConfig.url);
 
         const result = await sql`
             INSERT INTO leads (

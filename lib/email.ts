@@ -1,6 +1,6 @@
 'use server';
 
-import contactInfo from '@/data/contact-info';
+import { emailConfig, smtpConfig } from '@/lib/env';
 
 // Lazy import to avoid loading in environments that don't need it.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,58 +19,35 @@ export type LeadNotification = {
     appointmentDatetimeISO: string; // ISO string
 };
 
+/**
+ * Get SMTP configuration from validated environment variables
+ * @deprecated Use smtpConfig and emailConfig from env.ts directly
+ */
 function getSmtpConfig() {
-    const host = process.env.SMTP_HOST;
-    const portRaw = process.env.SMTP_PORT;
-    const user = process.env.SMTP_USER;
-    const pass = process.env.SMTP_PASS;
-    const from = process.env.EMAIL_FROM || user || undefined;
-    const to =
-        process.env.LEAD_NOTIFY_TO ||
-        process.env.EMAIL_TO ||
-        contactInfo.emailHref;
-
-    const port = portRaw ? Number(portRaw) : 587;
-    const secure = port === 465; // true for 465, false for everything else
-
     return {
-        host,
-        port,
-        secure,
-        auth: user && pass ? { user, pass } : undefined,
-        user,
-        from,
-        to,
+        host: smtpConfig.host,
+        port: smtpConfig.port,
+        secure: smtpConfig.secure,
+        auth: { user: smtpConfig.user, pass: smtpConfig.pass },
+        user: smtpConfig.user,
+        from: emailConfig.from,
+        to: emailConfig.notifyTo,
     } as const;
 }
 
 export async function sendLeadNotificationEmail(lead: LeadNotification) {
     try {
         const cfg = getSmtpConfig();
-        const debugEnabled = process.env.EMAIL_DEBUG === '1';
+        const debugEnabled = emailConfig.debug;
 
         if (debugEnabled) {
             console.log('SMTP config verified for lead notifications', {
-                hasHost: Boolean(cfg.host),
+                host: cfg.host,
                 port: cfg.port,
-                hasAuth: Boolean(cfg.auth),
+                secure: cfg.secure,
                 from: cfg.from,
                 to: cfg.to,
             });
-        }
-
-        if (!cfg.host || !cfg.from || !cfg.to) {
-            console.warn(
-                'Email notification skipped: missing SMTP_HOST/EMAIL_FROM/EMAIL_TO (or LEAD_NOTIFY_TO).',
-            );
-            return { sent: false, reason: 'missing_config' } as const;
-        }
-
-        if (!cfg.auth) {
-            console.error(
-                'Email notification failed: SMTP authentication credentials (SMTP_USER and SMTP_PASS) are missing!',
-            );
-            return { sent: false, reason: 'missing_auth' } as const;
         }
 
         if (!nodemailer) {
@@ -159,6 +136,14 @@ export async function sendLeadNotificationEmail(lead: LeadNotification) {
         return { sent: true } as const;
     } catch (err) {
         console.error('Failed to send lead notification email:', err);
+        // Log additional details about the error
+        if (err instanceof Error) {
+            console.error('Error details:', {
+                message: err.message,
+                name: err.name,
+                stack: err.stack,
+            });
+        }
         return { sent: false, reason: 'send_failed' } as const;
     }
 }
@@ -192,9 +177,9 @@ export async function sendCustomerConfirmationEmail(
 ) {
     try {
         // Check if customer emails are enabled
-        const sendCustomerEmails =
-            process.env.SEND_CUSTOMER_CONFIRMATION_EMAILS === 'true';
-        const debugEnabled = process.env.EMAIL_DEBUG === '1';
+        const sendCustomerEmails = emailConfig.sendCustomerConfirmations;
+        const debugEnabled = emailConfig.debug;
+
         if (!sendCustomerEmails) {
             console.log('Customer confirmation emails are disabled');
             return { sent: false, reason: 'disabled' } as const;
@@ -202,27 +187,9 @@ export async function sendCustomerConfirmationEmail(
 
         const cfg = getSmtpConfig();
 
-        // Get asset URLs from environment or use defaults
-        const logoUrl =
-            process.env.EMAIL_LOGO_URL ||
-            'https://zqjl1difgpgsu6cq.public.blob.vercel-storage.com/email-assets/logo.png';
-        const calendarIconUrl =
-            process.env.EMAIL_GOOGLE_CALENDAR_ICON_URL ||
-            'https://zqjl1difgpgsu6cq.public.blob.vercel-storage.com/email-assets/google-calendar-icon.png';
-
-        if (!cfg.host || !cfg.from) {
-            console.warn(
-                'Customer confirmation email skipped: missing SMTP_HOST/EMAIL_FROM.',
-            );
-            return { sent: false, reason: 'missing_config' } as const;
-        }
-
-        if (!cfg.auth) {
-            console.error(
-                'Customer confirmation email failed: SMTP authentication credentials are missing!',
-            );
-            return { sent: false, reason: 'missing_auth' } as const;
-        }
+        // Get asset URLs from validated config
+        const logoUrl = emailConfig.logoUrl;
+        const calendarIconUrl = emailConfig.calendarIconUrl;
 
         if (!nodemailer) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -589,6 +556,14 @@ export async function sendCustomerConfirmationEmail(
         return { sent: true } as const;
     } catch (err) {
         console.error('Failed to send customer confirmation email:', err);
+        // Log additional details about the error
+        if (err instanceof Error) {
+            console.error('Error details:', {
+                message: err.message,
+                name: err.name,
+                stack: err.stack,
+            });
+        }
         return { sent: false, reason: 'send_failed' } as const;
     }
 }
