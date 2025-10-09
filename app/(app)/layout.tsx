@@ -16,7 +16,9 @@ export default function Layout({
                 strategy="beforeInteractive"
             />
             <Header />
-            {children}
+            <main id="main-content" role="main">
+                {children}
+            </main>
             <ContactUsBanner />
             <Footer />
         </>

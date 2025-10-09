@@ -16,6 +16,8 @@ const mobileMenuLinks = [
     { name: 'Home', href: '/' },
     { name: 'About', href: '/about' },
     { name: 'Services', href: '/services' },
+    { name: 'Accounting Services', href: '/accounting-services' },
+    { name: 'Non-Profit & Church', href: '/nonprofit-accounting' },
     { name: 'How It Works', href: '/how-it-works' },
     { name: 'Our Expertise', href: '/our-expertise' },
     { name: 'Testimonials', href: '/testimonials' },

@@ -1,5 +1,5 @@
-import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import React from 'react';
 
 import Link from '@/ui/link';
@@ -213,13 +213,26 @@ export default async function BlogPost({
     );
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateStaticParams() {
+    const { getAllBlogPosts } = await import('@/lib/blog');
+    const posts = getAllBlogPosts();
+
+    return posts.map((post) => ({
+        slug: post.slug,
+    }));
+}
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
     const { slug } = await params;
     const post = await getBlogPostBySlug(slug);
     if (!post) {
         return {
             title: 'Article',
-            description: 'Read expert insights from Robust Accounts.'
+            description: 'Read expert insights from Robust Accounts.',
         };
     }
 

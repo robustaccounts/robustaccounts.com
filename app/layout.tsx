@@ -4,6 +4,8 @@ import type { Metadata } from 'next';
 
 import { Providers } from '@/providers/providers';
 
+import SkipToContent from '@/components/common/skip-to-content';
+
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -19,6 +21,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={'font-sans antialiased'}>
+                <SkipToContent />
                 <Providers>
                     {children}
 

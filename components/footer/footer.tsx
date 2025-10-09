@@ -7,6 +7,10 @@ import Link from '@/ui/link';
 
 const services = [
     {
+        title: 'Accounting Services',
+        href: '/accounting-services',
+    },
+    {
         title: 'Bookkeeping',
         href: '/services/bookkeeping',
     },
@@ -21,6 +25,10 @@ const services = [
     {
         title: 'Business Advisory',
         href: '/services/business-advisory',
+    },
+    {
+        title: 'Non-Profit & Church',
+        href: '/nonprofit-accounting',
     },
 ];
 
