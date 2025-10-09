@@ -318,6 +318,8 @@ export async function sendCustomerConfirmationEmail(
                             .email-container {
                                 width: 100% !important;
                                 min-width: 100% !important;
+                                border-radius: 0 !important;
+                                box-shadow: none !important;
                             }
                             
                             .mobile-padding {
@@ -326,6 +328,7 @@ export async function sendCustomerConfirmationEmail(
                             
                             .mobile-header-padding {
                                 padding: 30px 20px 20px !important;
+                                border-radius: 0 !important;
                             }
                             
                             .mobile-font-size {
@@ -373,7 +376,11 @@ export async function sendCustomerConfirmationEmail(
                             }
                             
                             .mobile-outer-padding {
-                                padding: 20px 10px !important;
+                                padding: 0 !important;
+                            }
+                            
+                            .mobile-footer-padding {
+                                border-radius: 0 !important;
                             }
                         }
                         
@@ -649,7 +656,7 @@ export async function sendCustomerConfirmationEmail(
                                     <!-- Footer -->
                                     <tr>
                                         <td
-                                            class="mobile-padding"
+                                            class="mobile-padding mobile-footer-padding"
                                             style="
                                                 padding: 30px 40px;
                                                 text-align: center;
