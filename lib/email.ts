@@ -88,27 +88,69 @@ export async function sendLeadNotificationEmail(lead: LeadNotification) {
         ].join('\n');
 
         const htmlBody = `
-            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif; line-height: 1.5; color: #111827;">
-              <h2 style="margin: 0 0 12px;">New Lead Submitted</h2>
-              <p style="margin: 0 0 12px;">A new lead has been submitted on <strong>robustaccounts.com</strong>.</p>
-              <table cellpadding="6" cellspacing="0" style="border-collapse: collapse;">
-                <tbody>
-                  <tr><td><strong>Lead ID</strong></td><td>${lead.id}</td></tr>
-                  <tr><td><strong>Name</strong></td><td>${lead.firstName} ${lead.lastName}</td></tr>
-                  <tr><td><strong>Email</strong></td><td>${lead.email}</td></tr>
-                  <tr><td><strong>Phone</strong></td><td>${lead.countryCode} ${lead.phone}</td></tr>
-                  <tr><td><strong>Business</strong></td><td>${lead.businessName}</td></tr>
-                  <tr><td><strong>Industry</strong></td><td>${lead.industry}</td></tr>
-                  <tr><td><strong>Appointment (UTC ISO)</strong></td><td>${lead.appointmentDatetimeISO}</td></tr>
-                </tbody>
-              </table>
-              <div style="margin-top: 12px;">
-                <strong>Message</strong>
-                <div style="white-space: pre-wrap; margin-top: 6px;">${
-                    lead.message?.trim() ? escapeHtml(lead.message) : '(none)'
-                }</div>
-              </div>
-            </div>
+            <!doctype html>
+            <html lang="en">
+                <head>
+                    <meta charset="UTF-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <title>New Lead Submitted</title>
+                    <style type="text/css">
+                        body {
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            -webkit-text-size-adjust: 100%;
+                            -ms-text-size-adjust: 100%;
+                        }
+                        table, td {
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                        }
+                        table {
+                            border-collapse: collapse !important;
+                        }
+                        @media only screen and (max-width: 600px) {
+                            .mobile-padding {
+                                padding: 15px !important;
+                            }
+                            .mobile-table td {
+                                display: block !important;
+                                width: 100% !important;
+                                padding: 4px 0 !important;
+                            }
+                            .mobile-table strong {
+                                display: block !important;
+                                margin-bottom: 2px !important;
+                            }
+                        }
+                    </style>
+                </head>
+                <body style="margin: 0; padding: 0; width: 100%;">
+                    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif; line-height: 1.5; color: #111827; padding: 20px;" class="mobile-padding">
+                      <h2 style="margin: 0 0 12px; font-size: 24px;">New Lead Submitted</h2>
+                      <p style="margin: 0 0 16px; font-size: 16px;">A new lead has been submitted on <strong>robustaccounts.com</strong>.</p>
+                      <table cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 600px;" class="mobile-table">
+                        <tbody>
+                          <tr><td style="padding: 6px;"><strong>Lead ID</strong></td><td style="padding: 6px;">${lead.id}</td></tr>
+                          <tr><td style="padding: 6px;"><strong>Name</strong></td><td style="padding: 6px;">${lead.firstName} ${lead.lastName}</td></tr>
+                          <tr><td style="padding: 6px;"><strong>Email</strong></td><td style="padding: 6px;"><a href="mailto:${lead.email}" style="color: #1a4d3a; text-decoration: none;">${lead.email}</a></td></tr>
+                          <tr><td style="padding: 6px;"><strong>Phone</strong></td><td style="padding: 6px;"><a href="tel:${lead.countryCode}${lead.phone}" style="color: #1a4d3a; text-decoration: none;">${lead.countryCode} ${lead.phone}</a></td></tr>
+                          <tr><td style="padding: 6px;"><strong>Business</strong></td><td style="padding: 6px;">${lead.businessName}</td></tr>
+                          <tr><td style="padding: 6px;"><strong>Industry</strong></td><td style="padding: 6px;">${lead.industry}</td></tr>
+                          <tr><td style="padding: 6px;"><strong>Appointment (UTC ISO)</strong></td><td style="padding: 6px;">${lead.appointmentDatetimeISO}</td></tr>
+                        </tbody>
+                      </table>
+                      <div style="margin-top: 16px;">
+                        <strong>Message</strong>
+                        <div style="white-space: pre-wrap; margin-top: 8px; padding: 12px; background-color: #f9fafb; border-radius: 6px; border-left: 3px solid #1a4d3a;">${
+                            lead.message?.trim()
+                                ? escapeHtml(lead.message)
+                                : '(none)'
+                        }</div>
+                      </div>
+                    </div>
+                </body>
+            </html>
         `;
 
         const envelopeFrom = extractAddress(cfg.from || cfg.user || '');
@@ -242,14 +284,120 @@ export async function sendCustomerConfirmationEmail(
                 <head>
                     <meta charset="UTF-8" />
                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="format-detection" content="telephone=no" />
+                    <meta name="x-apple-disable-message-reformatting" />
                     <title>Consultation Confirmed - Robust Accounts</title>
+                    <!--[if mso]>
+                    <style type="text/css">
+                        body, table, td {font-family: Arial, sans-serif !important;}
+                    </style>
+                    <![endif]-->
+                    <style type="text/css">
+                        /* Base styles */
+                        body {
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            -webkit-text-size-adjust: 100%;
+                            -ms-text-size-adjust: 100%;
+                        }
+                        
+                        /* Prevent WebKit and Windows mobile from changing default text sizes */
+                        table, td {
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                        }
+                        
+                        /* Remove spacing between tables in Outlook 2007 and up */
+                        table {
+                            border-collapse: collapse !important;
+                        }
+                        
+                        /* Mobile styles */
+                        @media only screen and (max-width: 600px) {
+                            .email-container {
+                                width: 100% !important;
+                                min-width: 100% !important;
+                            }
+                            
+                            .mobile-padding {
+                                padding: 20px !important;
+                            }
+                            
+                            .mobile-header-padding {
+                                padding: 30px 20px 20px !important;
+                            }
+                            
+                            .mobile-font-size {
+                                font-size: 24px !important;
+                                line-height: 1.3 !important;
+                            }
+                            
+                            .mobile-details-row {
+                                display: block !important;
+                                width: 100% !important;
+                            }
+                            
+                            .mobile-details-label,
+                            .mobile-details-value {
+                                display: block !important;
+                                float: none !important;
+                                width: 100% !important;
+                                text-align: left !important;
+                                margin-bottom: 4px !important;
+                            }
+                            
+                            .mobile-details-value {
+                                margin-bottom: 12px !important;
+                            }
+                            
+                            .mobile-button {
+                                width: 100% !important;
+                                display: block !important;
+                                text-align: center !important;
+                            }
+                            
+                            .mobile-button a {
+                                display: block !important;
+                                width: 100% !important;
+                            }
+                            
+                            .mobile-logo {
+                                width: 100px !important;
+                                height: auto !important;
+                            }
+                            
+                            .mobile-icon {
+                                width: 24px !important;
+                                height: 24px !important;
+                            }
+                            
+                            .mobile-outer-padding {
+                                padding: 20px 10px !important;
+                            }
+                        }
+                        
+                        /* Dark mode support */
+                        @media (prefers-color-scheme: dark) {
+                            .dark-mode-bg {
+                                background-color: #1f2937 !important;
+                            }
+                            .dark-mode-text {
+                                color: #f9fafb !important;
+                            }
+                        }
+                    </style>
                 </head>
                 <body
                     style="
                         margin: 0;
+                        padding: 0;
                         font-family:
                             -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
                             'Helvetica Neue', Arial, sans-serif;
+                        width: 100%;
+                        -webkit-text-size-adjust: 100%;
+                        -ms-text-size-adjust: 100%;
                     "
                 >
                     <table
@@ -261,9 +409,10 @@ export async function sendCustomerConfirmationEmail(
                         "
                     >
                         <tr>
-                            <td align="center" style="padding: 40px 20px">
+                            <td align="center" style="padding: 40px 20px" class="mobile-outer-padding">
                                 <table
                                     role="presentation"
+                                    class="email-container"
                                     style="
                                         width: 100%;
                                         max-width: 600px;
@@ -276,6 +425,7 @@ export async function sendCustomerConfirmationEmail(
                                     <!-- Header -->
                                     <tr>
                                         <td
+                                            class="mobile-header-padding"
                                             style="
                                                 padding: 40px 40px 30px;
                                                 text-align: center;
@@ -291,13 +441,17 @@ export async function sendCustomerConfirmationEmail(
                                                 src="${logoUrl}"
                                                 alt="Robust Accounts Logo"
                                                 width="120"
+                                                class="mobile-logo"
+                                                style="max-width: 120px; height: auto; display: block; margin: 0 auto;"
                                             />
                                             <h1
+                                                class="mobile-font-size"
                                                 style="
                                                     margin: 20px 0 0;
                                                     color: #ffffff;
                                                     font-size: 28px;
                                                     font-weight: 700;
+                                                    line-height: 1.2;
                                                 "
                                             >
                                                 Your Consultation Is Confirmed!
@@ -307,7 +461,7 @@ export async function sendCustomerConfirmationEmail(
 
                                     <!-- Content -->
                                     <tr>
-                                        <td style="padding: 40px">
+                                        <td style="padding: 40px" class="mobile-padding">
                                             <p
                                                 style="
                                                     margin: 0 0 20px;
@@ -347,8 +501,9 @@ export async function sendCustomerConfirmationEmail(
                                                     Appointment Details
                                                 </h2>
 
-                                                <div style="margin-bottom: 12px">
+                                                <div style="margin-bottom: 12px" class="mobile-details-row">
                                                     <strong
+                                                        class="mobile-details-label"
                                                         style="
                                                             color: #1f2937;
                                                             font-size: 15px;
@@ -356,6 +511,7 @@ export async function sendCustomerConfirmationEmail(
                                                         >Date:</strong
                                                     >
                                                     <span
+                                                        class="mobile-details-value"
                                                         style="
                                                             color: #1f2937;
                                                             font-size: 15px;
@@ -366,8 +522,9 @@ export async function sendCustomerConfirmationEmail(
                                                     <div style="clear: both"></div>
                                                 </div>
 
-                                                <div style="margin-bottom: 12px">
+                                                <div style="margin-bottom: 12px" class="mobile-details-row">
                                                     <strong
+                                                        class="mobile-details-label"
                                                         style="
                                                             color: #1f2937;
                                                             font-size: 15px;
@@ -375,6 +532,7 @@ export async function sendCustomerConfirmationEmail(
                                                         >Time:</strong
                                                     >
                                                     <span
+                                                        class="mobile-details-value"
                                                         style="
                                                             color: #1f2937;
                                                             font-size: 15px;
@@ -386,8 +544,9 @@ export async function sendCustomerConfirmationEmail(
                                                     <div style="clear: both"></div>
                                                 </div>
 
-                                                <div style="margin-bottom: 12px">
+                                                <div style="margin-bottom: 12px" class="mobile-details-row">
                                                     <strong
+                                                        class="mobile-details-label"
                                                         style="
                                                             color: #1f2937;
                                                             font-size: 15px;
@@ -395,6 +554,7 @@ export async function sendCustomerConfirmationEmail(
                                                         >Duration:</strong
                                                     >
                                                     <span
+                                                        class="mobile-details-value"
                                                         style="
                                                             color: #1f2937;
                                                             font-size: 15px;
@@ -416,13 +576,14 @@ export async function sendCustomerConfirmationEmail(
                                                 "
                                             >
                                                 <tr>
-                                                    <td align="center">
+                                                    <td align="center" class="mobile-button">
                                                         <a
                                                             href="https://www.google.com/calendar/render?action=TEMPLATE&text=Accounting+Consultation+-+Robust+Accounts&details=Consultation+with+Robust+Accounts"
                                                             target="_blank"
                                                             style="
                                                                 display: inline-flex;
                                                                 align-items: center;
+                                                                justify-content: center;
                                                                 padding: 14px 18px;
                                                                 border: 2px solid #1a4d3a;
                                                                 color: #1a4d3a;
@@ -430,6 +591,8 @@ export async function sendCustomerConfirmationEmail(
                                                                 border-radius: 8px;
                                                                 font-size: 16px;
                                                                 font-weight: 600;
+                                                                box-sizing: border-box;
+                                                                max-width: 100%;
                                                             "
                                                         >
                                                             <img
@@ -437,9 +600,10 @@ export async function sendCustomerConfirmationEmail(
                                                                 alt="Google Calendar"
                                                                 width="28"
                                                                 height="28"
-                                                                style="margin-right: 10px"
+                                                                class="mobile-icon"
+                                                                style="margin-right: 10px; display: inline-block; vertical-align: middle;"
                                                             />
-                                                            Add to Google Calendar
+                                                            <span style="display: inline-block; vertical-align: middle;">Add to Google Calendar</span>
                                                         </a>
                                                     </td>
                                                 </tr>
@@ -485,6 +649,7 @@ export async function sendCustomerConfirmationEmail(
                                     <!-- Footer -->
                                     <tr>
                                         <td
+                                            class="mobile-padding"
                                             style="
                                                 padding: 30px 40px;
                                                 text-align: center;

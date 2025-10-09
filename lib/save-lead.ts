@@ -61,7 +61,7 @@ export async function saveLead(
         const leadId = result[0].id;
 
         // Fire-and-forget email notifications; don't block user if they fail
-        sendLeadNotificationEmail({
+        await sendLeadNotificationEmail({
             id: leadId,
             firstName: leadData.firstName,
             lastName: leadData.lastName,
@@ -85,7 +85,7 @@ export async function saveLead(
 
         // Send customer confirmation email if appointment details are provided
         if (appointmentDetails) {
-            sendCustomerConfirmationEmail({
+            await sendCustomerConfirmationEmail({
                 firstName: leadData.firstName,
                 lastName: leadData.lastName,
                 email: leadData.email,
