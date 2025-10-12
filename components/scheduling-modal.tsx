@@ -594,9 +594,8 @@ export default function SchedulingModal({
 
                                         {/* Timezone Display */}
                                         <div className="mt-4 px-2 text-center text-xs text-gray-500 sm:mt-6 sm:text-sm">
-                                            Times shown in your local timezone (
-                                            {getUserTimezone()}) • Available 11
-                                            AM - 7 PM PST
+                                            All times shown in Eastern Time (ET)
+                                            • 30 minute consultation
                                         </div>
 
                                         <div className="mt-4 flex justify-center sm:mt-6">
