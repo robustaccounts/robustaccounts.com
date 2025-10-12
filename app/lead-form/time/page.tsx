@@ -120,9 +120,9 @@ export default function TimePage() {
                         {/* Info Text */}
                         <div className="mb-6 rounded-lg bg-blue-50 p-4">
                             <p className="text-sm text-blue-900">
-                                <strong>Note:</strong> Times are displayed in
-                                your local timezone. Your consultation will be
-                                60 minutes.
+                                <strong>Note:</strong> All times shown in
+                                Eastern Time (ET). Your consultation will be 30
+                                minutes.
                             </p>
                         </div>
 

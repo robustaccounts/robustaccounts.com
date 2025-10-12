@@ -28,6 +28,8 @@ export const getAvailableDates = (): Date[] => {
 };
 
 // Helper: build a UTC Date for a given local time in a specific IANA timezone
+// Takes a local time (e.g., 1:00 PM ET) and returns the corresponding UTC Date
+// Automatically handles EST/EDT conversion based on the date
 export const getUtcForTimeZone = (
     year: number,
     month: number,
@@ -36,32 +38,61 @@ export const getUtcForTimeZone = (
     minute: number,
     timeZone: string,
 ): Date => {
-    const utcBase = new Date(Date.UTC(year, month - 1, day, hour, minute));
-    const tzAsLocal = new Date(utcBase.toLocaleString('en-US', { timeZone }));
-    const offsetMs = tzAsLocal.getTime() - utcBase.getTime();
-    return new Date(utcBase.getTime() - offsetMs);
+    // Start with an estimate: treat the input as if it were UTC
+    let utcDate = new Date(Date.UTC(year, month - 1, day, hour, minute));
+
+    // Check what this UTC time displays as in the target timezone
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+    });
+
+    const parts = formatter.formatToParts(utcDate);
+    const displayHour = parseInt(
+        parts.find((p) => p.type === 'hour')?.value || '0',
+    );
+    const displayMinute = parseInt(
+        parts.find((p) => p.type === 'minute')?.value || '0',
+    );
+
+    // Calculate the difference between what we want (hour:minute) and what we got
+    const targetMinutes = hour * 60 + minute;
+    const displayMinutes = displayHour * 60 + displayMinute;
+    const diffMinutes = targetMinutes - displayMinutes;
+
+    // Adjust the UTC date by this difference
+    // This gives us the UTC time that will display as hour:minute in the target timezone
+    utcDate = new Date(utcDate.getTime() + diffMinutes * 60 * 1000);
+
+    return utcDate;
 };
 
-// Convert an EST time (HH:MM) to display format (always shows EST time)
+// Convert an ET time (HH:MM) to display format
+// Automatically handles EST/EDT based on the date
 export const convertESTTimeToLocalDisplay = (
     date: Date,
     estTime: string,
 ): { displayTime: string; utcDate: Date } => {
     try {
-        // Parse the EST time
+        // Parse the ET time (24-hour format)
         const [h, m] = estTime.split(':').map(Number);
 
-        // Get the date components in EST timezone
+        // Get the date components in ET timezone
         const formatter = new Intl.DateTimeFormat('en-CA', {
             timeZone: 'America/New_York',
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
         });
-        const estDateStr = formatter.format(date);
-        const [year, month, day] = estDateStr.split('-').map(Number);
+        const etDateStr = formatter.format(date);
+        const [year, month, day] = etDateStr.split('-').map(Number);
 
-        // Use the helper function to get the proper UTC date for this EST time
+        // Use the helper function to get the proper UTC date for this ET time
         const utcDate = getUtcForTimeZone(
             year,
             month,
@@ -71,7 +102,7 @@ export const convertESTTimeToLocalDisplay = (
             'America/New_York',
         );
 
-        // Display the EST time as-is (not converted to local time)
+        // Display the ET time in 12-hour format (e.g., 1:00pm)
         const ampm = h >= 12 ? 'pm' : 'am';
         const displayHours = h % 12 || 12;
         const displayTime = `${displayHours}:${m.toString().padStart(2, '0')}${ampm}`;
@@ -95,29 +126,20 @@ export const convertESTTimeToLocalDisplay = (
 };
 
 const getTimeZoneAbbreviation = (date: Date, timeZone: string): string => {
-    try {
-        const formatter = new Intl.DateTimeFormat('en-US', {
-            timeZone,
-            timeZoneName: 'short',
-        });
-        const parts = formatter.formatToParts(date);
-        return (
-            parts.find((part) => part.type === 'timeZoneName')?.value || 'ET'
-        );
-    } catch (error) {
-        console.error('Failed to determine time zone abbreviation:', error);
-        return 'ET';
-    }
+    // Always return "ET" (Eastern Time) for consistency
+    // This covers both EST and EDT without confusing users
+    return 'ET';
 };
 
-// Generate time slots for selected date (9:30 AM to 6:30 PM EST, 30-minute intervals)
+// Generate time slots for selected date (9:30 AM to 6:30 PM ET, 30-minute intervals)
+// Automatically handles EST (winter) and EDT (summer) conversion
 export const getTimeSlots = (date: Date): TimeSlot[] => {
     const slots: TimeSlot[] = [];
     const now = new Date();
     const timeZone = 'America/New_York';
 
-    // EST time slots from 9:30 AM to 6:30 PM (30-minute intervals)
-    const estTimeSlots = [
+    // ET time slots from 9:30 AM to 6:30 PM (30-minute intervals)
+    const etTimeSlots = [
         '09:30', // 9:30 AM
         '10:00', // 10:00 AM
         '10:30', // 10:30 AM
@@ -139,14 +161,14 @@ export const getTimeSlots = (date: Date): TimeSlot[] => {
         '18:30', // 6:30 PM
     ];
 
-    estTimeSlots.forEach((estTime, index) => {
+    etTimeSlots.forEach((etTime, index) => {
         const { displayTime, utcDate } = convertESTTimeToLocalDisplay(
             date,
-            estTime,
+            etTime,
         );
 
         // Check if this time slot has passed based on current time
-        // utcDate represents the actual moment in time for the EST slot
+        // utcDate represents the actual moment in time for the ET slot
         // now is the current time - comparing these correctly filters past slots
         const isPast = utcDate < now;
 
