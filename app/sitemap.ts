@@ -63,7 +63,7 @@ function getPageRoutes(dir: string, baseRoute: string = ''): string[] {
     return routes;
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = config.baseUrl;
 
     // Dynamically get all routes from app directory
@@ -123,7 +123,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
 
     // Blog posts from content folder
-    const blogPosts = getAllBlogPosts();
+    const blogPosts = await getAllBlogPosts();
     const blogPostRoutes = blogPosts.map((post) => ({
         url: `${baseUrl}/blog/${post.slug}`,
         lastModified: new Date(post.date),
