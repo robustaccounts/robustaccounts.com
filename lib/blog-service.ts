@@ -36,39 +36,39 @@ export interface BlogPostMeta {
 }
 
 // Convert database row to BlogMetadata
-function dbRowToMetadata(row: any): BlogMetadata {
+function dbRowToMetadata(row: Record<string, unknown>): BlogMetadata {
     // Format date as YYYY-MM-DD string
-    const formatDate = (dateValue: any): string => {
+    const formatDate = (dateValue: unknown): string => {
         if (!dateValue) return new Date().toISOString().split('T')[0];
         if (dateValue instanceof Date) {
             return dateValue.toISOString().split('T')[0];
         }
         // If it's already a string, parse it and format it
-        const date = new Date(dateValue);
+        const date = new Date(dateValue as string | number);
         return date.toISOString().split('T')[0];
     };
 
     return {
-        id: row.id,
-        slug: row.slug,
-        title: row.title,
-        excerpt: row.excerpt,
-        category: row.category,
-        author: row.author,
+        id: row.id as number,
+        slug: row.slug as string,
+        title: row.title as string,
+        excerpt: row.excerpt as string,
+        category: row.category as string,
+        author: row.author as string,
         date: formatDate(row.date),
-        readTime: row.read_time,
-        featured: row.featured,
-        tags: row.tags || [],
-        contentUrl: row.content_url,
-        createdAt: new Date(row.created_at),
-        updatedAt: new Date(row.updated_at),
+        readTime: row.read_time as string,
+        featured: row.featured as boolean,
+        tags: (row.tags as string[]) || [],
+        contentUrl: row.content_url as string,
+        createdAt: new Date(row.created_at as string | number),
+        updatedAt: new Date(row.updated_at as string | number),
     };
 }
 
 // Convert BlogMetadata to BlogPostMeta (for backwards compatibility)
-function metadataToPostMeta(metadata: BlogMetadata): BlogPostMeta {
+export function metadataToPostMeta(metadata: BlogMetadata): BlogPostMeta {
     return {
-        id: metadata.slug,
+        id: metadata.id.toString(),
         slug: metadata.slug,
         title: metadata.title,
         excerpt: metadata.excerpt,
@@ -88,7 +88,7 @@ export async function getAllBlogsFromDB(): Promise<BlogMetadata[]> {
             SELECT * FROM blogs 
             ORDER BY date DESC
         `;
-        return result.map(dbRowToMetadata);
+        return (result as Record<string, unknown>[]).map(dbRowToMetadata);
     } catch (error) {
         console.error('Error fetching blogs from database:', error);
         return [];
@@ -106,11 +106,12 @@ export async function getBlogBySlugFromDB(
             LIMIT 1
         `;
 
-        if (result.length === 0) {
+        const rows = result as Record<string, unknown>[];
+        if (rows.length === 0) {
             return null;
         }
 
-        return dbRowToMetadata(result[0]);
+        return dbRowToMetadata(rows[0]);
     } catch (error) {
         console.error(`Error fetching blog ${slug}:`, error);
         return null;
@@ -188,7 +189,8 @@ export async function createBlogInDB(data: {
             RETURNING *
         `;
 
-        return dbRowToMetadata(result[0]);
+        const rows = result as Record<string, unknown>[];
+        return dbRowToMetadata(rows[0]);
     } catch (error) {
         console.error('Error creating blog:', error);
         throw error;
@@ -253,7 +255,8 @@ export async function updateBlogInDB(
             RETURNING *
         `;
 
-        return dbRowToMetadata(result[0]);
+        const rows = result as Record<string, unknown>[];
+        return dbRowToMetadata(rows[0]);
     } catch (error) {
         console.error(`Error updating blog ${slug}:`, error);
         throw error;
@@ -297,48 +300,44 @@ export async function toggleBlogFeatured(
             RETURNING *
         `;
 
-        if (result.length === 0) {
+        const rows = result as Record<string, unknown>[];
+        if (rows.length === 0) {
             return null;
         }
 
-        return dbRowToMetadata(result[0]);
+        return dbRowToMetadata(rows[0]);
     } catch (error) {
         console.error(`Error toggling featured for blog ${slug}:`, error);
         throw error;
     }
 }
 
-// Get blogs by category
-export async function getBlogsByCategory(
-    category: string,
-): Promise<BlogMetadata[]> {
+// Get unique categories
+export async function getAllCategories(): Promise<string[]> {
     try {
         const result = await sql`
-            SELECT * FROM blogs 
-            WHERE category = ${category}
-            ORDER BY date DESC
+            SELECT DISTINCT category FROM blogs 
+            ORDER BY category ASC
         `;
-        return result.map(dbRowToMetadata);
+        const rows = result as Record<string, unknown>[];
+        return rows.map((row) => row.category as string);
     } catch (error) {
-        console.error(`Error fetching blogs for category ${category}:`, error);
+        console.error('Error fetching categories:', error);
         return [];
     }
 }
 
-// Get featured blogs
-export async function getFeaturedBlogs(): Promise<BlogMetadata[]> {
+// Get unique authors
+export async function getAllAuthors(): Promise<string[]> {
     try {
         const result = await sql`
-            SELECT * FROM blogs 
-            WHERE featured = true
-            ORDER BY date DESC
+            SELECT DISTINCT author FROM blogs 
+            ORDER BY author ASC
         `;
-        return result.map(dbRowToMetadata);
+        const rows = result as Record<string, unknown>[];
+        return rows.map((row) => row.author as string);
     } catch (error) {
-        console.error('Error fetching featured blogs:', error);
+        console.error('Error fetching authors:', error);
         return [];
     }
 }
-
-// Export for backwards compatibility
-export { metadataToPostMeta };

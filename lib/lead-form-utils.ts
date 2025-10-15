@@ -125,7 +125,7 @@ export const convertESTTimeToLocalDisplay = (
     }
 };
 
-const getTimeZoneAbbreviation = (date: Date, timeZone: string): string => {
+const getTimeZoneAbbreviation = (): string => {
     // Always return "ET" (Eastern Time) for consistency
     // This covers both EST and EDT without confusing users
     return 'ET';
@@ -174,7 +174,7 @@ export const getTimeSlots = (date: Date): TimeSlot[] => {
 
         // Only add slots that haven't passed
         if (!isPast) {
-            const timezoneAbbrev = getTimeZoneAbbreviation(utcDate, timeZone);
+            const timezoneAbbrev = getTimeZoneAbbreviation();
             slots.push({
                 id: `${date.toISOString().split('T')[0]}-${index}`,
                 time: displayTime,

@@ -276,10 +276,10 @@ export default function SchedulingModal({
         });
     };
 
-    // Get user's timezone
-    const getUserTimezone = () => {
-        return Intl.DateTimeFormat().resolvedOptions().timeZone;
-    };
+    // Get user's timezone (commented out as unused currently)
+    // const getUserTimezone = () => {
+    //     return Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // };
 
     return (
         <AnimatePresence>
