@@ -1,12 +1,27 @@
-import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import React from 'react';
+import { notFound } from 'next/navigation';
+import React, { Suspense } from 'react';
 
 import Link from '@/ui/link';
 
 import { type BlogPost, getBlogPostBySlug, getRelatedPosts } from '@/lib/blog';
 
 import MDXRenderer from '@/components/mdx-renderer';
+
+// Error boundary wrapper for MDX content
+function ErrorBoundaryWrapper({ children }: { children: React.ReactNode }) {
+    return (
+        <Suspense
+            fallback={
+                <div className="py-12 text-center text-gray-500">
+                    <p>Loading article content...</p>
+                </div>
+            }
+        >
+            {children}
+        </Suspense>
+    );
+}
 
 export default async function BlogPost({
     params,
@@ -123,7 +138,9 @@ export default async function BlogPost({
             <section className="container mx-auto px-4">
                 <div className="mx-auto max-w-4xl">
                     {post.content ? (
-                        <MDXRenderer content={post.content} />
+                        <ErrorBoundaryWrapper>
+                            <MDXRenderer content={post.content} />
+                        </ErrorBoundaryWrapper>
                     ) : (
                         <div className="py-12 text-center text-gray-500">
                             <p>Article content is not available.</p>
@@ -213,13 +230,17 @@ export default async function BlogPost({
     );
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
     const { slug } = await params;
     const post = await getBlogPostBySlug(slug);
     if (!post) {
         return {
             title: 'Article',
-            description: 'Read expert insights from Robust Accounts.'
+            description: 'Read expert insights from Robust Accounts.',
         };
     }
 

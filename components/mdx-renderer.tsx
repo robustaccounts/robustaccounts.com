@@ -1,5 +1,5 @@
-import { MDXRemote } from 'next-mdx-remote/rsc';
 import type { MDXComponents } from 'mdx/types';
+import { MDXRemote } from 'next-mdx-remote/rsc';
 
 import { mdxComponents } from '@/components/mdx/config';
 
@@ -7,7 +7,7 @@ interface MDXRendererProps {
     content: string;
 }
 
-export default function MDXRenderer({ content }: MDXRendererProps) {
+export default async function MDXRenderer({ content }: MDXRendererProps) {
     const trimmed = typeof content === 'string' ? content.trim() : '';
 
     if (!trimmed) {

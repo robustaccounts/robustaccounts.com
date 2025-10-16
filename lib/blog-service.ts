@@ -121,15 +121,90 @@ export async function getBlogBySlugFromDB(
 // Fetch content from Vercel Blob
 export async function fetchBlogContent(contentUrl: string): Promise<string> {
     try {
-        const response = await fetch(contentUrl);
+        const response = await fetch(contentUrl, { cache: 'force-cache' });
         if (!response.ok) {
             throw new Error(`Failed to fetch content: ${response.statusText}`);
         }
-        return await response.text();
+        let content = await response.text();
+
+        // Sanitize content to prevent MDX parsing errors
+        content = sanitizeBlogContent(content);
+
+        return content;
     } catch (error) {
         console.error('Error fetching blog content from Blob:', error);
         return '';
     }
+}
+
+/**
+ * Sanitize blog content to fix common MDX parsing issues
+ * This ensures content from the database can be safely rendered
+ */
+function sanitizeBlogContent(content: string): string {
+    // Remove any null bytes that might cause issues
+    let sanitized = content.replace(/\0/g, '');
+
+    // Preserve code blocks by temporarily replacing them
+    const codeBlocks: string[] = [];
+    sanitized = sanitized.replace(/```[\s\S]*?```/g, (match) => {
+        codeBlocks.push(match);
+        return `___CODE_BLOCK_PLACEHOLDER_${codeBlocks.length - 1}___`;
+    });
+
+    // Preserve inline code
+    const inlineCode: string[] = [];
+    sanitized = sanitized.replace(/`[^`\n]+?`/g, (match) => {
+        inlineCode.push(match);
+        return `___INLINE_CODE_PLACEHOLDER_${inlineCode.length - 1}___`;
+    });
+
+    // Preserve HTML/JSX components (don't escape braces in these)
+    const jsxComponents: string[] = [];
+    sanitized = sanitized.replace(
+        /<[A-Z][A-Za-z0-9]*[\s\S]*?(?:>[\s\S]*?<\/[A-Z][A-Za-z0-9]*>|\/\s*>)/g,
+        (match) => {
+            jsxComponents.push(match);
+            return `___JSX_COMPONENT_${jsxComponents.length - 1}___`;
+        },
+    );
+
+    // Fix dollar signs followed by curly braces (ES6 template literal syntax)
+    // These will be interpreted as expressions by MDX
+    sanitized = sanitized.replace(/\$\{/g, '\\$\\{');
+
+    // Escape ALL curly braces that aren't part of valid JSX expressions
+    // This is the most common cause of "Could not parse expression with acorn" errors
+
+    // Strategy: Be aggressive and escape ALL curly braces, then we'll unescape valid ones
+    sanitized = sanitized.replace(/\{/g, '\\{');
+    sanitized = sanitized.replace(/\}/g, '\\}');
+
+    // Restore JSX components (they may have braces in attributes)
+    jsxComponents.forEach((component, index) => {
+        sanitized = sanitized.replace(
+            `___JSX_COMPONENT_${index}___`,
+            component,
+        );
+    });
+
+    // Restore inline code
+    inlineCode.forEach((code, index) => {
+        sanitized = sanitized.replace(
+            `___INLINE_CODE_PLACEHOLDER_${index}___`,
+            code,
+        );
+    });
+
+    // Restore code blocks
+    codeBlocks.forEach((block, index) => {
+        sanitized = sanitized.replace(
+            `___CODE_BLOCK_PLACEHOLDER_${index}___`,
+            block,
+        );
+    });
+
+    return sanitized;
 }
 
 // Get blog with content

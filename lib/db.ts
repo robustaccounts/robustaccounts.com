@@ -1,4 +1,4 @@
-import { neon, neonConfig } from '@neondatabase/serverless';
+import { neon } from '@neondatabase/serverless';
 
 import { databaseConfig } from '@/lib/env';
 
@@ -8,8 +8,7 @@ let cachedClient: SqlClient | null = null;
 
 function getClient(): SqlClient {
     if (!cachedClient) {
-        // Reduce control plane round-trips in dev by caching fetch connections
-        neonConfig.fetchConnectionCache = true;
+        // fetchConnectionCache is now always true by default (no need to set)
         cachedClient = neon(databaseConfig.url);
     }
 
