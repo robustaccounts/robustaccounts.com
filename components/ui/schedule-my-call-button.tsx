@@ -1,11 +1,13 @@
 'use client';
 
-import contactInfo from '@/data/contact-info';
+import siteConfig from '@/siteconfig';
 
 import Link from 'next/link';
 import React from 'react';
 
 import cn from '@/utils/cn';
+
+const { contactInfo } = siteConfig;
 
 interface ScheduleMyCallButtonProps {
     className?: string;

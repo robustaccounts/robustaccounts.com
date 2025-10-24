@@ -1,9 +1,11 @@
-import contactInfo from '@/data/contact-info';
+import siteConfig from '@/siteconfig';
 
 import React from 'react';
 
 import { CalendarClock, Call, Mail } from '@/ui/icons/google-icons';
 import Link from '@/ui/link';
+
+const { contactInfo } = siteConfig;
 
 const ContactMethodsGrid = () => {
     const contactMethods = [

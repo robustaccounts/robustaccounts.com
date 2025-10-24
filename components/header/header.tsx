@@ -1,7 +1,7 @@
 'use client';
 
 import { useModal } from '@/contexts/modal-context';
-import contactInfo from '@/data/contact-info';
+import siteConfig from '@/siteconfig';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
@@ -45,6 +45,7 @@ const itemVariants = {
 };
 
 export default function Header() {
+    const { contactInfo, firm } = siteConfig;
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const { isSchedulingModalOpen } = useModal();
@@ -137,13 +138,13 @@ export default function Header() {
                     >
                         <Image
                             src="/assets/logo.png"
-                            alt="Robust Accounts Logo"
+                            alt={`${firm.name} Logo`}
                             width={64}
                             height={64}
                             className="h-9 w-9 object-contain sm:h-10 sm:w-10 md:h-12 md:w-12"
                         />
                         <span className="text-base font-bold sm:text-lg md:text-xl">
-                            Robust Accounts
+                            {firm.name}
                         </span>
                     </Link>
 

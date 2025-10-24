@@ -1,4 +1,4 @@
-import contactInfo from '@/data/contact-info';
+import siteConfig from '@/siteconfig';
 
 import React from 'react';
 
@@ -6,6 +6,8 @@ import { ArrowForward, Call, Mail } from '@/ui/icons/google-icons';
 import Link from '@/ui/link';
 
 export default function ContactUsBanner() {
+    const { contactInfo } = siteConfig;
+
     return (
         <section className="m-4 rounded-2xl bg-secondary text-primary lg:m-8">
             <div className="px-6 py-12 lg:px-12">

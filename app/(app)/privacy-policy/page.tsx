@@ -1,10 +1,23 @@
-import contactInfo from '@/data/contact-info';
+import siteConfig from '@/siteconfig';
 
 import React from 'react';
 
 import Link from '@/ui/link';
 
 export default function PrivacyPolicy() {
+    const { contactInfo } = siteConfig;
+    const { address } = contactInfo;
+    const cityStatePostal = [address.stateProvince, address.postalCode]
+        .filter(Boolean)
+        .join(' ');
+    const addressDisplay = [
+        address.street,
+        [address.city, cityStatePostal].filter(Boolean).join(', '),
+        address.country,
+    ]
+        .filter(Boolean)
+        .join(', ');
+
     return (
         <div className="mt-28 min-h-screen">
             <div className="px-4 py-8 sm:px-6 lg:px-8">
@@ -360,7 +373,7 @@ export default function PrivacyPolicy() {
                                             Address:{' '}
                                         </span>
                                         <span className="text-accent">
-                                            {contactInfo.addressDisplay}
+                                            {addressDisplay}
                                         </span>
                                     </div>
                                 </div>

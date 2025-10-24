@@ -1,10 +1,12 @@
-import contactInfo from '@/data/contact-info';
+import siteConfig from '@/siteconfig';
 
 import React from 'react';
 
 import cn from '@/utils/cn';
 
 import ScheduleMyCallButton from '../ui/schedule-my-call-button';
+
+const { contactInfo } = siteConfig;
 
 const stats = [
     { value: contactInfo.responseTime, label: 'Response Time' },

@@ -1,4 +1,4 @@
-import contactInfo from '@/data/contact-info';
+import siteConfig from '@/siteconfig';
 
 import Link from 'next/link';
 
@@ -6,6 +6,8 @@ import Footer from '@/components/footer/footer';
 import Header from '@/components/header/header';
 
 export default function NotFound() {
+    const { contactInfo } = siteConfig;
+
     return (
         <>
             <Header />

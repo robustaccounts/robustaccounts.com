@@ -1,4 +1,4 @@
-import contactInfo from '@/data/contact-info';
+import siteConfig from '@/siteconfig';
 
 import React from 'react';
 
@@ -71,13 +71,26 @@ const policies = [
 ];
 
 export default function Footer() {
+    const { contactInfo, firm } = siteConfig;
+    const { address } = contactInfo;
+    const cityStatePostal = [address.stateProvince, address.postalCode]
+        .filter(Boolean)
+        .join(' ');
+    const addressDisplay = [
+        address.street,
+        [address.city, cityStatePostal].filter(Boolean).join(', '),
+        address.country,
+    ]
+        .filter(Boolean)
+        .join(', ');
+
     return (
         <footer className="bg-secondary/30">
             <div className="flex flex-col gap-10 px-5 py-12 sm:gap-12 sm:px-8 sm:py-14 md:grid md:grid-cols-5 md:gap-12 lg:px-16 lg:py-16">
                 <div className="col-span-2 flex flex-col gap-4 lg:max-w-4/5">
                     <div className="flex flex-col gap-2">
                         <span className="text-xl font-bold text-primary sm:text-2xl">
-                            Robust Accounts
+                            {firm.name}
                         </span>
                         <p className="text-sm leading-relaxed font-medium text-gray-700 sm:text-base">
                             Transform your business with expert accounting
@@ -114,7 +127,7 @@ export default function Footer() {
                                 <LocationOn className="h-5 w-5 fill-accent" />
                             </div>
                             <span className="text-sm font-semibold sm:text-base">
-                                {contactInfo.addressDisplay}
+                                {addressDisplay}
                             </span>
                         </div>
                     </div>
@@ -193,8 +206,8 @@ export default function Footer() {
                 <div className="mt-6 border-t border-gray-200 pt-6 md:col-span-5">
                     <div className="flex w-full flex-col gap-3 text-center md:text-left">
                         <span className="text-sm font-semibold text-gray-700 sm:text-base">
-                            © {new Date().getFullYear()} Robust Accounts. All
-                            rights reserved.
+                            © {new Date().getFullYear()} {firm.name}. All rights
+                            reserved.
                         </span>
                         <p className="w-full text-xs leading-relaxed text-gray-600 sm:text-sm">
                             Disclaimer: Robust Accounts is a part of KY Books

@@ -1,7 +1,9 @@
 import React from "react";
 
 import FrequentlyAskedQuestion from "@/components/common/faq";
-import contactInfo from "@/data/contact-info";
+import siteConfig from "@/siteconfig";
+
+const { contactInfo } = siteConfig;
 
 const faqCategories = [
   {
