@@ -10,6 +10,9 @@ import {
 
 import BlogPageClient from './blog-page-client';
 
+// Revalidate every 60 seconds
+export const revalidate = 60;
+
 export default async function BlogPage() {
     const featuredArticles = (await getFeaturedPosts()) || [];
     const recentArticles = (await getRecentPosts()) || [];

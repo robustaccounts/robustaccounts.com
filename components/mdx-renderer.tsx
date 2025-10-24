@@ -1,5 +1,6 @@
 import type { MDXComponents } from 'mdx/types';
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import remarkGfm from 'remark-gfm';
 
 import { mdxComponents } from '@/components/mdx/config';
 
@@ -27,7 +28,15 @@ export default async function MDXRenderer({ content }: MDXRendererProps) {
 
     return (
         <div className="max-w-none">
-            <MDXRemote source={trimmed} components={components} />
+            <MDXRemote
+                source={trimmed}
+                components={components}
+                options={{
+                    mdxOptions: {
+                        remarkPlugins: [remarkGfm],
+                    },
+                }}
+            />
         </div>
     );
 }

@@ -2,113 +2,100 @@ import EnhancedCodeBlock from './components/enhanced-code-block';
 import MDXTable from './components/table';
 import { TableComponents } from './components/table-components';
 
-// Custom components for MDX with enhanced blog styling
+// Custom components for MDX with modern minimalistic styling for finance blogs
 export const mdxComponents = {
-  // Heading components with better visual hierarchy
+  // Headings - professional and clean
   h1: ({ children, ...props }) => (
-    <div className="relative mb-12">
-      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-gray-900 mb-4" {...props}>
-        {children}
-      </h1>
-      <div className="h-1 w-20 bg-gradient-to-r from-accent to-primary rounded-full"></div>
-    </div>
+    <h1 className="mb-6 mt-8 text-3xl font-bold leading-tight text-gray-900 sm:text-4xl" {...props}>
+      {children}
+    </h1>
   ),
   h2: ({ children, ...props }) => (
-    <div className="relative mt-16 mb-8 first:mt-0">
-      <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 mb-3" {...props}>
-        {children}
-      </h2>
-      <div className="h-0.5 w-16 bg-accent rounded-full"></div>
-    </div>
+    <h2 className="mb-5 mt-12 border-b border-gray-200 pb-2 text-2xl font-bold text-gray-900 sm:text-3xl" {...props}>
+      {children}
+    </h2>
   ),
   h3: ({ children, ...props }) => (
-    <h3 className="mt-12 mb-6 text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 relative before:content-[''] before:absolute before:-left-4 before:top-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-accent before:to-primary before:rounded-full" {...props}>
+    <h3 className="mb-4 mt-8 text-xl font-semibold text-gray-900 sm:text-2xl" {...props}>
       {children}
     </h3>
   ),
   h4: ({ children, ...props }) => (
-    <h4 className="mt-10 mb-4 text-xl sm:text-2xl font-semibold tracking-tight text-gray-900" {...props}>
+    <h4 className="mb-3 mt-6 text-lg font-semibold text-gray-900 sm:text-xl" {...props}>
       {children}
     </h4>
   ),
   h5: ({ children, ...props }) => (
-    <h5 className="mt-8 mb-3 text-lg sm:text-xl font-semibold tracking-tight text-gray-900" {...props}>
+    <h5 className="mb-3 mt-6 text-base font-semibold text-gray-900 sm:text-lg" {...props}>
       {children}
     </h5>
   ),
   h6: ({ children, ...props }) => (
-    <h6 className="mt-8 mb-3 text-base sm:text-lg font-semibold tracking-tight text-gray-900" {...props}>
+    <h6 className="mb-2 mt-6 text-base font-semibold text-gray-700" {...props}>
       {children}
     </h6>
   ),
 
-  // Enhanced paragraph with better spacing
+  // Paragraphs - comfortable reading size
   p: ({ children, ...props }) => (
-    <p className="mb-8 text-lg sm:text-xl leading-relaxed text-gray-700 selection:bg-accent/20" {...props}>
+    <p className="mb-5 text-base leading-relaxed text-gray-700 sm:text-lg sm:leading-8" {...props}>
       {children}
     </p>
   ),
 
-  // Enhanced list styling
+  // Lists - clean with better spacing
   ul: ({ children, ...props }) => (
-    <ul className="mb-8 space-y-4 text-lg sm:text-xl leading-relaxed text-gray-700" {...props}>
+    <ul className="mb-6 ml-6 space-y-2 text-base text-gray-700 sm:text-lg" {...props}>
       {children}
     </ul>
   ),
   ol: ({ children, ...props }) => (
-    <ol className="mb-8 space-y-4 text-lg sm:text-xl leading-relaxed text-gray-700 counter-reset-item" {...props}>
+    <ol className="mb-6 ml-6 space-y-2 text-base text-gray-700 sm:text-lg" {...props}>
       {children}
     </ol>
   ),
   li: ({ children, ...props }) => (
-    <li className="flex items-start gap-4 group" {...props}>
-      <div className="mt-2 flex h-3 w-3 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent to-primary shadow-sm group-hover:scale-110 transition-transform"></div>
-      <span className="flex-1">{children}</span>
+    <li className="pl-2 leading-relaxed marker:text-accent" {...props}>
+      {children}
     </li>
   ),
 
-  // Enhanced blockquote with better styling
+  // Blockquote - professional finance style
   blockquote: ({ children, ...props }) => (
-    <blockquote className="relative my-10 border-l-4 border-accent bg-gradient-to-r from-secondary/50 to-secondary/20 p-8 text-lg sm:text-xl italic leading-relaxed text-gray-700 rounded-r-lg shadow-sm" {...props}>
-      <div className="absolute -top-2 -left-2 text-4xl text-accent/30 font-serif">"</div>
+    <blockquote className="my-6 border-l-4 border-accent bg-gray-50 px-6 py-4 italic text-gray-700" {...props}>
       {children}
-      <div className="absolute -bottom-4 -right-2 text-4xl text-accent/30 font-serif rotate-180">"</div>
     </blockquote>
   ),
 
-  // Enhanced strong and emphasis
+  // Strong and emphasis
   strong: ({ children, ...props }) => (
-    <strong className="font-bold text-gray-900 bg-gradient-to-r from-accent/10 to-primary/10 px-1 rounded" {...props}>
+    <strong className="font-semibold text-gray-900" {...props}>
       {children}
     </strong>
   ),
   em: ({ children, ...props }) => (
-    <em className="italic text-gray-800 font-medium" {...props}>
+    <em className="italic text-gray-700" {...props}>
       {children}
     </em>
   ),
 
-  // Horizontal rule with styling
+  // Horizontal rule
   hr: ({ ...props }) => (
-    <div className="my-12 flex items-center justify-center" {...props}>
-      <div className="h-px w-24 bg-gradient-to-r from-transparent via-accent to-transparent"></div>
-      <div className="mx-4 h-2 w-2 rounded-full bg-accent"></div>
-      <div className="h-px w-24 bg-gradient-to-r from-accent via-accent to-transparent"></div>
-    </div>
+    <hr className="my-10 border-t border-gray-200" {...props} />
   ),
 
-  // Enhanced link styling
+  // Links - professional accent color
   a: ({ children, href, ...props }) => (
     <a 
       href={href} 
-      className="text-accent hover:text-primary underline decoration-accent/30 hover:decoration-primary underline-offset-2 transition-colors font-medium" 
+      className="font-medium text-accent underline decoration-accent/30 underline-offset-2 transition-colors hover:text-accent/80 hover:decoration-accent" 
       {...props}
     >
       {children}
     </a>
   ),
 
-  // Inline code with better styling
+  // Inline code - subtle and clean
   code: ({ className, children, ...props }) => {
     // If code is in a pre block, render as normal code
     if (className?.includes('language-')) {
@@ -116,7 +103,7 @@ export const mdxComponents = {
     }
     return (
       <code
-        className="inline-flex items-center rounded-md bg-gradient-to-r from-gray-100 to-gray-50 px-2 py-1 font-mono text-sm font-semibold text-gray-800 border border-gray-200 shadow-sm"
+        className="rounded-md bg-gray-100 px-2 py-0.5 font-mono text-sm text-gray-800 before:content-[''] after:content-['']"
         {...props}
       >
         {children}
