@@ -72,57 +72,39 @@ export const getUtcForTimeZone = (
     return utcDate;
 };
 
-// Convert an ET time (HH:MM) to display format
-// Automatically handles EST/EDT based on the date
-export const convertESTTimeToLocalDisplay = (
+// Convert an ET time (HH:MM) to UTC date and display format
+// Everything is in Eastern Time, so this converts ET time to UTC for storage
+export const convertETTimeToUTC = (
     date: Date,
-    estTime: string,
+    etTime: string,
 ): { displayTime: string; utcDate: Date } => {
-    try {
-        // Parse the ET time (24-hour format)
-        const [h, m] = estTime.split(':').map(Number);
+    // Parse the ET time (24-hour format)
+    const [h, m] = etTime.split(':').map(Number);
 
-        // Get the date components in ET timezone
-        const formatter = new Intl.DateTimeFormat('en-CA', {
-            timeZone: 'America/New_York',
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-        });
-        const etDateStr = formatter.format(date);
-        const [year, month, day] = etDateStr.split('-').map(Number);
+    // Extract date components directly from the Date object to preserve the calendar date
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // getMonth() returns 0-11, we need 1-12
+    const day = date.getDate();
 
-        // Use the helper function to get the proper UTC date for this ET time
-        const utcDate = getUtcForTimeZone(
-            year,
-            month,
-            day,
-            h,
-            m,
-            'America/New_York',
-        );
+    // Convert ET time to UTC for storage
+    const utcDate = getUtcForTimeZone(
+        year,
+        month,
+        day,
+        h,
+        m,
+        'America/New_York',
+    );
 
-        // Display the ET time in 12-hour format (e.g., 1:00pm)
-        const ampm = h >= 12 ? 'pm' : 'am';
-        const displayHours = h % 12 || 12;
-        const displayTime = `${displayHours}:${m.toString().padStart(2, '0')}${ampm}`;
+    // Format the ET time in 12-hour format for display (e.g., 10:00am)
+    const ampm = h >= 12 ? 'pm' : 'am';
+    const displayHours = h % 12 || 12;
+    const displayTime = `${displayHours}:${m.toString().padStart(2, '0')}${ampm}`;
 
-        return {
-            displayTime,
-            utcDate,
-        };
-    } catch (error) {
-        console.error('Time conversion error:', error);
-        const [hours, minutes] = estTime.split(':').map(Number);
-        const ampm = hours >= 12 ? 'pm' : 'am';
-        const displayHours = hours % 12 || 12;
-        const utcDate = new Date(date);
-        utcDate.setHours(hours, minutes, 0, 0);
-        return {
-            displayTime: `${displayHours}:${minutes.toString().padStart(2, '0')}${ampm}`,
-            utcDate,
-        };
-    }
+    return {
+        displayTime,
+        utcDate,
+    };
 };
 
 const getTimeZoneAbbreviation = (): string => {
@@ -162,7 +144,7 @@ export const getTimeSlots = (date: Date): TimeSlot[] => {
     ];
 
     etTimeSlots.forEach((etTime, index) => {
-        const { displayTime, utcDate } = convertESTTimeToLocalDisplay(
+        const { displayTime, utcDate } = convertETTimeToUTC(
             date,
             etTime,
         );
@@ -189,10 +171,22 @@ export const getTimeSlots = (date: Date): TimeSlot[] => {
     return slots;
 };
 
+/**
+ * Format a date using only the date components (year, month, day)
+ * This preserves the calendar date regardless of timezone
+ */
 export const formatDate = (date: Date): string => {
+    // Extract date components directly to avoid timezone issues
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    
+    // Create a new date at noon local time to avoid timezone shifts
+    const dateAtNoon = new Date(year, month, day, 12, 0, 0);
+    
     return new Intl.DateTimeFormat('en-US', {
         weekday: 'long',
         month: 'long',
         day: 'numeric',
-    }).format(date);
+    }).format(dateAtNoon);
 };

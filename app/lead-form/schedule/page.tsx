@@ -57,12 +57,20 @@ export default function SchedulePage() {
     };
 
     const formatFullDate = (date: Date) => {
-        return date.toLocaleDateString('en-US', {
+        // Extract date components directly to avoid timezone issues
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const day = date.getDate();
+        
+        // Create a new date at noon local time to avoid timezone shifts
+        const dateAtNoon = new Date(year, month, day, 12, 0, 0);
+        
+        return new Intl.DateTimeFormat('en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric',
-        });
+        }).format(dateAtNoon);
     };
 
     const timeSlots =
@@ -145,9 +153,9 @@ export default function SchedulePage() {
                                                     : 'text-gray-600',
                                             )}
                                         >
-                                            {date.toLocaleDateString('en-US', {
+                                            {new Intl.DateTimeFormat('en-US', {
                                                 weekday: 'short',
-                                            })}
+                                            }).format(date)}
                                         </div>
                                         {isToday && (
                                             <div

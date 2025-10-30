@@ -115,16 +115,20 @@ export default function ContactPage() {
             };
 
             // Format appointment details for customer email
+            // Format date using actual date components (not timezone-converted)
+            // to preserve the selected date
+            const year = formData.selectedDate.getFullYear();
+            const month = formData.selectedDate.getMonth();
+            const day = formData.selectedDate.getDate();
+            const dateAtNoon = new Date(year, month, day, 12, 0, 0);
+            
             const appointmentDetails = {
-                appointmentDate: formData.selectedDate.toLocaleDateString(
-                    'en-US',
-                    {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                    },
-                ),
+                appointmentDate: new Intl.DateTimeFormat('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                }).format(dateAtNoon),
                 appointmentTime: selectedSlot.time,
                 appointmentTimezone: selectedSlot.timezoneAbbrev,
             };

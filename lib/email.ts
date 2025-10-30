@@ -1,6 +1,7 @@
 'use server';
 
 import { emailConfig, smtpConfig } from '@/lib/env';
+import { generateRescheduleToken } from '@/lib/reschedule-token';
 
 // Lazy import to avoid loading in environments that don't need it.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -212,6 +213,8 @@ export type CustomerConfirmation = {
     appointmentDate: string; // e.g., "Monday, January 15, 2024"
     appointmentTime: string; // e.g., "2:00 PM"
     appointmentTimezone: string; // e.g., "EST"
+    appointmentDatetimeISO?: string; // ISO string for Google Calendar
+    leadId?: number; // Lead ID for generating reschedule link
 };
 
 export async function sendCustomerConfirmationEmail(
@@ -232,6 +235,34 @@ export async function sendCustomerConfirmationEmail(
         // Get asset URLs from validated config
         const logoUrl = emailConfig.logoUrl;
         const calendarIconUrl = emailConfig.calendarIconUrl;
+
+        // Generate Google Calendar URL
+        let googleCalendarUrl = 'https://www.google.com/calendar/render?action=TEMPLATE&text=Accounting+Consultation+-+Robust+Accounts&details=Consultation+with+Robust+Accounts+to+discuss+your+accounting+needs.+We\'ll+call+you+at+the+scheduled+time.&location=Phone+Call';
+        
+        if (confirmation.appointmentDatetimeISO) {
+            const appointmentDate = new Date(confirmation.appointmentDatetimeISO);
+            const startTimeUtc = new Date(appointmentDate);
+            const endTimeUtc = new Date(appointmentDate);
+            endTimeUtc.setMinutes(endTimeUtc.getMinutes() + 30); // 30 minute consultation
+            
+            // Format dates for Google Calendar (YYYYMMDDTHHMMSSZ)
+            const formatGoogleDate = (date: Date) => {
+                return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+            };
+            
+            const guestEmail = encodeURIComponent(confirmation.email);
+            const timezone = 'America/New_York'; // ET timezone
+            googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Accounting Consultation - Robust Accounts')}&dates=${formatGoogleDate(startTimeUtc)}/${formatGoogleDate(endTimeUtc)}&details=${encodeURIComponent('Free consultation with Robust Accounts to discuss your accounting needs. We\'ll call you at the scheduled time.')}&location=${encodeURIComponent('Phone Call')}&add=${guestEmail}&ctz=${encodeURIComponent(timezone)}`;
+        }
+
+        // Generate reschedule URL if leadId is provided
+        let rescheduleUrl = '';
+        if (confirmation.leadId) {
+            const { generateRescheduleToken } = await import('@/lib/reschedule-token');
+            const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://robustaccounts.com';
+            const rescheduleToken = await generateRescheduleToken(confirmation.leadId);
+            rescheduleUrl = `${baseUrl}/reschedule/${rescheduleToken}`;
+        }
 
         if (!nodemailer) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -267,7 +298,9 @@ export async function sendCustomerConfirmationEmail(
             '',
             'We look forward to discussing your accounting needs and how we can help your business thrive.',
             '',
-            "If you need to make any changes to your appointment, please don't hesitate to contact us at consultations@robustaccounts.com",
+            rescheduleUrl 
+                ? `If you'd like to make changes or reschedule your appointment, please click here (${rescheduleUrl}) or for any query contact us at consultations@robustaccounts.com`
+                : "If you need to make any changes to your appointment, please don't hesitate to contact us at consultations@robustaccounts.com",
             '',
             'Best regards,',
             'The Robust Accounts Team',
@@ -579,7 +612,7 @@ export async function sendCustomerConfirmationEmail(
                                                 <tr>
                                                     <td align="center" class="mobile-button">
                                                         <a
-                                                            href="https://www.google.com/calendar/render?action=TEMPLATE&text=Accounting+Consultation+-+Robust+Accounts&details=Consultation+with+Robust+Accounts"
+                                                            href="${googleCalendarUrl}"
                                                             target="_blank"
                                                             style="
                                                                 display: inline-flex;
@@ -618,18 +651,10 @@ export async function sendCustomerConfirmationEmail(
                                                     line-height: 1.6;
                                                 "
                                             >
-                                                If you'd like to make changes or reschedule
-                                                your appointment, just reply to this email
-                                                or reach us directly at
-                                                <a
-                                                    href="mailto:consultations@robustaccounts.com"
-                                                    style="
-                                                        color: #1a4d3a;
-                                                        text-decoration: none;
-                                                        font-weight: 600;
-                                                    "
-                                                    >consultations@robustaccounts.com</a
-                                                >.
+                                                ${rescheduleUrl 
+                                                    ? `If you'd like to make changes or reschedule your appointment, please <a href="${rescheduleUrl}" style="color: #1a4d3a; text-decoration: none; font-weight: 600;">click here</a> or for any query contact us at <a href="mailto:consultations@robustaccounts.com" style="color: #1a4d3a; text-decoration: none; font-weight: 600;">consultations@robustaccounts.com</a>.`
+                                                    : `If you'd like to make changes or reschedule your appointment, just reply to this email or reach us directly at <a href="mailto:consultations@robustaccounts.com" style="color: #1a4d3a; text-decoration: none; font-weight: 600;">consultations@robustaccounts.com</a>.`
+                                                }
                                             </p>
 
                                             <p
@@ -723,6 +748,405 @@ export async function sendCustomerConfirmationEmail(
     } catch (err) {
         console.error('Failed to send customer confirmation email:', err);
         // Log additional details about the error
+        if (err instanceof Error) {
+            console.error('Error details:', {
+                message: err.message,
+                name: err.name,
+                stack: err.stack,
+            });
+        }
+        return { sent: false, reason: 'send_failed' } as const;
+    }
+}
+
+export type AppointmentReminder = {
+    firstName: string;
+    lastName: string;
+    email: string;
+    appointmentDate: string; // e.g., "Monday, January 15, 2024"
+    appointmentTime: string; // e.g., "2:00 PM"
+    appointmentTimezone: string; // e.g., "ET"
+    leadId: number;
+};
+
+export async function sendAppointmentReminderEmail(
+    reminder: AppointmentReminder,
+) {
+    try {
+        const sendCustomerEmails = emailConfig.sendCustomerConfirmations;
+        const debugEnabled = emailConfig.debug;
+
+        if (!sendCustomerEmails) {
+            console.log('Customer reminder emails are disabled');
+            return { sent: false, reason: 'disabled' } as const;
+        }
+
+        const cfg = getSmtpConfig();
+        const logoUrl = emailConfig.logoUrl;
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://robustaccounts.com';
+        
+        // Generate reschedule token for this lead
+        const rescheduleToken = await generateRescheduleToken(reminder.leadId);
+        const rescheduleUrl = `${baseUrl}/reschedule/${rescheduleToken}`;
+
+        if (!nodemailer) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const mod: any = await import('nodemailer');
+            nodemailer = mod?.default ?? mod;
+        }
+
+        const transporter = nodemailer.createTransport({
+            host: cfg.host,
+            port: cfg.port,
+            secure: cfg.secure,
+            auth: cfg.auth,
+            requireTLS: !cfg.secure,
+            logger: debugEnabled,
+            debug: debugEnabled,
+            connectionTimeout: 10000,
+            greetingTimeout: 10000,
+            socketTimeout: 10000,
+        });
+
+        const subject = `Reminder: Your Consultation Tomorrow - ${reminder.appointmentDate}`;
+
+        const textBody = [
+            `Hi ${reminder.firstName},`,
+            '',
+            'This is a friendly reminder that you have a consultation scheduled with Robust Accounts.',
+            '',
+            'APPOINTMENT DETAILS',
+            `Date: ${reminder.appointmentDate}`,
+            `Time: ${reminder.appointmentTime} ${reminder.appointmentTimezone}`,
+            'Duration: 30 minutes',
+            '',
+            'We look forward to speaking with you!',
+            '',
+            `If you need to reschedule, please click here (${rescheduleUrl}) or contact us at consultations@robustaccounts.com`,
+            '',
+            'Best regards,',
+            'The Robust Accounts Team',
+        ].join('\n');
+
+        const htmlBody = `
+            <!doctype html>
+            <html lang="en">
+                <head>
+                    <meta charset="UTF-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <title>Appointment Reminder</title>
+                    <style type="text/css">
+                        body {
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            -webkit-text-size-adjust: 100%;
+                            -ms-text-size-adjust: 100%;
+                        }
+                        table, td {
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                        }
+                        table {
+                            border-collapse: collapse !important;
+                        }
+                        @media only screen and (max-width: 600px) {
+                            .mobile-padding {
+                                padding: 20px !important;
+                            }
+                        }
+                    </style>
+                </head>
+                <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+                    <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f3f4f6;">
+                        <tr>
+                            <td align="center" style="padding: 40px 20px">
+                                <table role="presentation" style="width: 100%; max-width: 600px; border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                                    <tr>
+                                        <td style="padding: 40px 40px 30px; text-align: center; background: linear-gradient(135deg, #1a4d3a 0%, #2d7a5f 100%); border-radius: 12px 12px 0 0;">
+                                            <img src="${logoUrl}" alt="Robust Accounts Logo" width="120" style="max-width: 120px; height: auto; display: block; margin: 0 auto;" />
+                                            <h1 style="margin: 20px 0 0; color: #ffffff; font-size: 28px; font-weight: 700; line-height: 1.2;">
+                                                Appointment Reminder
+                                            </h1>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 40px" class="mobile-padding">
+                                            <p style="margin: 0 0 20px; color: #111827; font-size: 16px;">
+                                                Hi <strong>${escapeHtml(reminder.firstName)}</strong>,
+                                            </p>
+                                            <p style="margin: 0 0 30px; color: #4b5563; font-size: 16px; line-height: 1.6;">
+                                                This is a friendly reminder that you have a consultation scheduled with <strong>Robust Accounts</strong>.
+                                            </p>
+                                            <div style="margin-bottom: 30px">
+                                                <h2 style="margin: 0 0 16px; color: #1a4d3a; font-size: 18px; font-weight: 600;">
+                                                    Appointment Details
+                                                </h2>
+                                                <div style="margin-bottom: 12px">
+                                                    <strong style="color: #1f2937; font-size: 15px;">Date:</strong>
+                                                    <span style="color: #1f2937; font-size: 15px; float: right;">${escapeHtml(reminder.appointmentDate)}</span>
+                                                    <div style="clear: both"></div>
+                                                </div>
+                                                <div style="margin-bottom: 12px">
+                                                    <strong style="color: #1f2937; font-size: 15px;">Time:</strong>
+                                                    <span style="color: #1f2937; font-size: 15px; float: right;">${escapeHtml(reminder.appointmentTime)} ${escapeHtml(reminder.appointmentTimezone)}</span>
+                                                    <div style="clear: both"></div>
+                                                </div>
+                                                <div style="margin-bottom: 12px">
+                                                    <strong style="color: #1f2937; font-size: 15px;">Duration:</strong>
+                                                    <span style="color: #1f2937; font-size: 15px; float: right;">30 minutes</span>
+                                                    <div style="clear: both"></div>
+                                                </div>
+                                            </div>
+                                            <p style="margin: 0 0 20px; color: #4b5563; font-size: 15px; line-height: 1.6;">
+                                                We look forward to speaking with you! If you need to reschedule, please <a href="${rescheduleUrl}" style="color: #1a4d3a; text-decoration: none; font-weight: 600;">click here</a> or contact us at <a href="mailto:consultations@robustaccounts.com" style="color: #1a4d3a; text-decoration: none; font-weight: 600;">consultations@robustaccounts.com</a>.
+                                            </p>
+                                            <p style="margin: 0; color: #111827; font-size: 16px; line-height: 1.6;">
+                                                Best regards,<br />
+                                                <strong>The Robust Accounts Team</strong>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 30px 40px; text-align: center; background-color: #f9fafb; border-radius: 0 0 12px 12px; border-top: 1px solid #e5e7eb;">
+                                            <p style="margin: 0 0 12px; color: #6b7280; font-size: 14px;">
+                                                <strong>Robust Accounts</strong><br />
+                                                Professional Accounting & Advisory Services
+                                            </p>
+                                            <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                                                <a href="https://robustaccounts.com" style="color: #1a4d3a; text-decoration: none;">robustaccounts.com</a>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+            </html>
+        `;
+
+        const envelopeFrom = extractAddress(cfg.from || cfg.user || '');
+
+        const info = await transporter.sendMail({
+            from: cfg.from,
+            to: reminder.email,
+            subject,
+            text: textBody,
+            html: htmlBody,
+            envelope: {
+                from: envelopeFrom,
+                to: reminder.email,
+            },
+        });
+
+        console.log(
+            `Appointment reminder email sent to ${reminder.email}`,
+            debugEnabled
+                ? {
+                      messageId: info.messageId,
+                      accepted: info.accepted,
+                      rejected: info.rejected,
+                  }
+                : '',
+        );
+        return { sent: true } as const;
+    } catch (err) {
+        console.error('Failed to send appointment reminder email:', err);
+        if (err instanceof Error) {
+            console.error('Error details:', {
+                message: err.message,
+                name: err.name,
+                stack: err.stack,
+            });
+        }
+        return { sent: false, reason: 'send_failed' } as const;
+    }
+}
+
+export type RescheduleEmail = {
+    firstName: string;
+    lastName: string;
+    email: string;
+    leadId: number;
+    rescheduleToken: string; // Unique token for the reschedule link
+};
+
+export async function sendRescheduleEmail(reschedule: RescheduleEmail) {
+    try {
+        const sendCustomerEmails = emailConfig.sendCustomerConfirmations;
+        const debugEnabled = emailConfig.debug;
+
+        if (!sendCustomerEmails) {
+            console.log('Customer reschedule emails are disabled');
+            return { sent: false, reason: 'disabled' } as const;
+        }
+
+        const cfg = getSmtpConfig();
+        const logoUrl = emailConfig.logoUrl;
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://robustaccounts.com';
+        const rescheduleUrl = `${baseUrl}/reschedule/${reschedule.rescheduleToken}`;
+
+        if (!nodemailer) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const mod: any = await import('nodemailer');
+            nodemailer = mod?.default ?? mod;
+        }
+
+        const transporter = nodemailer.createTransport({
+            host: cfg.host,
+            port: cfg.port,
+            secure: cfg.secure,
+            auth: cfg.auth,
+            requireTLS: !cfg.secure,
+            logger: debugEnabled,
+            debug: debugEnabled,
+            connectionTimeout: 10000,
+            greetingTimeout: 10000,
+            socketTimeout: 10000,
+        });
+
+        const subject = `Reschedule Your Consultation - Robust Accounts`;
+
+        const textBody = [
+            `Hi ${reschedule.firstName},`,
+            '',
+            'We noticed you missed your scheduled consultation appointment.',
+            '',
+            'Would you like to reschedule your appointment? Click the link below to choose a new time that works for you:',
+            '',
+            rescheduleUrl,
+            '',
+            'If you\'ve already completed your consultation, please ignore this email.',
+            '',
+            'If you have any questions, please contact us at consultations@robustaccounts.com',
+            '',
+            'Best regards,',
+            'The Robust Accounts Team',
+        ].join('\n');
+
+        const htmlBody = `
+            <!doctype html>
+            <html lang="en">
+                <head>
+                    <meta charset="UTF-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <title>Reschedule Your Consultation</title>
+                    <style type="text/css">
+                        body {
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            -webkit-text-size-adjust: 100%;
+                            -ms-text-size-adjust: 100%;
+                        }
+                        table, td {
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                        }
+                        table {
+                            border-collapse: collapse !important;
+                        }
+                        @media only screen and (max-width: 600px) {
+                            .mobile-padding {
+                                padding: 20px !important;
+                            }
+                            .mobile-button {
+                                width: 100% !important;
+                                display: block !important;
+                            }
+                        }
+                    </style>
+                </head>
+                <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+                    <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f3f4f6;">
+                        <tr>
+                            <td align="center" style="padding: 40px 20px">
+                                <table role="presentation" style="width: 100%; max-width: 600px; border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                                    <tr>
+                                        <td style="padding: 40px 40px 30px; text-align: center; background: linear-gradient(135deg, #1a4d3a 0%, #2d7a5f 100%); border-radius: 12px 12px 0 0;">
+                                            <img src="${logoUrl}" alt="Robust Accounts Logo" width="120" style="max-width: 120px; height: auto; display: block; margin: 0 auto;" />
+                                            <h1 style="margin: 20px 0 0; color: #ffffff; font-size: 28px; font-weight: 700; line-height: 1.2;">
+                                                Reschedule Your Consultation
+                                            </h1>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 40px" class="mobile-padding">
+                                            <p style="margin: 0 0 20px; color: #111827; font-size: 16px;">
+                                                Hi <strong>${escapeHtml(reschedule.firstName)}</strong>,
+                                            </p>
+                                            <p style="margin: 0 0 30px; color: #4b5563; font-size: 16px; line-height: 1.6;">
+                                                We noticed you missed your scheduled consultation appointment.
+                                            </p>
+                                            <p style="margin: 0 0 30px; color: #4b5563; font-size: 16px; line-height: 1.6;">
+                                                Would you like to reschedule your appointment? Click the button below to choose a new time that works for you.
+                                            </p>
+                                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+                                                <tr>
+                                                    <td align="center" class="mobile-button">
+                                                        <a href="${rescheduleUrl}" style="display: inline-block; padding: 14px 28px; background-color: #1a4d3a; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: 600;">
+                                                            Reschedule Appointment
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <p style="margin: 0 0 20px; color: #4b5563; font-size: 15px; line-height: 1.6;">
+                                                If you've already completed your consultation, please ignore this email.
+                                            </p>
+                                            <p style="margin: 0; color: #4b5563; font-size: 15px; line-height: 1.6;">
+                                                If you have any questions, please contact us at <a href="mailto:consultations@robustaccounts.com" style="color: #1a4d3a; text-decoration: none; font-weight: 600;">consultations@robustaccounts.com</a>.
+                                            </p>
+                                            <p style="margin: 20px 0 0; color: #111827; font-size: 15px; line-height: 1.6;">
+                                                Best regards,<br />
+                                                <strong>The Robust Accounts Team</strong>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 30px 40px; text-align: center; background-color: #f9fafb; border-radius: 0 0 12px 12px; border-top: 1px solid #e5e7eb;">
+                                            <p style="margin: 0 0 12px; color: #6b7280; font-size: 14px;">
+                                                <strong>Robust Accounts</strong><br />
+                                                Professional Accounting & Advisory Services
+                                            </p>
+                                            <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                                                <a href="https://robustaccounts.com" style="color: #1a4d3a; text-decoration: none;">robustaccounts.com</a>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+            </html>
+        `;
+
+        const envelopeFrom = extractAddress(cfg.from || cfg.user || '');
+
+        const info = await transporter.sendMail({
+            from: cfg.from,
+            to: reschedule.email,
+            subject,
+            text: textBody,
+            html: htmlBody,
+            envelope: {
+                from: envelopeFrom,
+                to: reschedule.email,
+            },
+        });
+
+        console.log(
+            `Reschedule email sent to ${reschedule.email}`,
+            debugEnabled
+                ? {
+                      messageId: info.messageId,
+                      accepted: info.accepted,
+                      rejected: info.rejected,
+                  }
+                : '',
+        );
+        return { sent: true } as const;
+    } catch (err) {
+        console.error('Failed to send reschedule email:', err);
         if (err instanceof Error) {
             console.error('Error details:', {
                 message: err.message,

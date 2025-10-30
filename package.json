@@ -8,7 +8,10 @@
         "start": "next start",
         "lint": "next lint",
         "check-env": "npx tsx scripts/check-email-config.ts",
-        "check-env:vercel": "vercel env pull .env.vercel && npx tsx scripts/check-email-config.ts"
+        "check-env:vercel": "vercel env pull .env.vercel && npx tsx scripts/check-email-config.ts",
+        "migrate": "npx tsx scripts/run-migration.ts",
+        "test:emails": "npx tsx scripts/test-emails.ts",
+        "test:all-emails": "npx tsx scripts/test-all-emails.ts"
     },
     "dependencies": {
         "@amplitude/analytics-browser": "^2.20.1",

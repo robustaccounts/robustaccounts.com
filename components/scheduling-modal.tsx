@@ -201,8 +201,15 @@ export default function SchedulingModal({
             };
 
             // Format appointment details for customer email
+            // Format date using actual date components (not timezone-converted)
+            // to preserve the selected date
+            const year = selectedDate.getFullYear();
+            const month = selectedDate.getMonth();
+            const day = selectedDate.getDate();
+            const dateAtNoon = new Date(year, month, day, 12, 0, 0);
+            
             const appointmentDetails = {
-                appointmentDate: selectedDate.toLocaleDateString('en-US', {
+                appointmentDate: dateAtNoon.toLocaleDateString('en-US', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
@@ -262,13 +269,26 @@ export default function SchedulingModal({
     };
 
     const formatDate = (date: Date) => {
+        // Extract date components directly to avoid timezone issues
+        const year = date.getFullYear();
+        const month = date.getMonth();
         const day = date.getDate();
-        const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+        const dateAtNoon = new Date(year, month, day, 12, 0, 0);
+        
+        const dayName = dateAtNoon.toLocaleDateString('en-US', { weekday: 'short' });
         return `${day} ${dayName}`;
     };
 
     const formatFullDate = (date: Date) => {
-        return date.toLocaleDateString('en-US', {
+        // Extract date components directly to avoid timezone issues
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const day = date.getDate();
+        
+        // Create a new date at noon local time to avoid timezone shifts
+        const dateAtNoon = new Date(year, month, day, 12, 0, 0);
+        
+        return dateAtNoon.toLocaleDateString('en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',

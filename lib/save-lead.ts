@@ -93,6 +93,8 @@ export async function saveLead(
                 appointmentDate: appointmentDetails.appointmentDate,
                 appointmentTime: appointmentDetails.appointmentTime,
                 appointmentTimezone: appointmentDetails.appointmentTimezone,
+                appointmentDatetimeISO: leadData.appointmentDatetime.toISOString(),
+                leadId: leadId,
             })
                 .then((result) => {
                     console.log('Customer confirmation email result:', result);
