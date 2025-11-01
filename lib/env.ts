@@ -92,6 +92,34 @@ const envSchema = z.object({
     NODE_ENV: z
         .enum(['development', 'test', 'production'])
         .default('development'),
+
+    // API Secrets
+    REVALIDATION_SECRET: z
+        .string()
+        .min(1, 'REVALIDATION_SECRET is required for revalidation API')
+        .optional(),
+    CRON_SECRET: z
+        .string()
+        .min(1, 'CRON_SECRET is required for cron job security')
+        .optional(),
+
+    // Blob Storage
+    BLOB_READ_WRITE_TOKEN: z
+        .string()
+        .min(1, 'BLOB_READ_WRITE_TOKEN is required for blob operations')
+        .optional(),
+
+    // Public URLs
+    NEXT_PUBLIC_BASE_URL: z
+        .string()
+        .url('NEXT_PUBLIC_BASE_URL must be a valid URL')
+        .optional()
+        .default('https://robustaccounts.com'),
+    NEXT_PUBLIC_WEBSITE_URL: z
+        .string()
+        .url('NEXT_PUBLIC_WEBSITE_URL must be a valid URL')
+        .optional()
+        .default('https://robustaccounts.com'),
 });
 
 // Refine to ensure at least one notification recipient is set
@@ -161,4 +189,19 @@ export const emailConfig = {
 
 export const databaseConfig = {
     url: env.DATABASE_URL,
+} as const;
+
+// Export additional configs for convenience
+export const apiConfig = {
+    revalidationSecret: env.REVALIDATION_SECRET,
+    cronSecret: env.CRON_SECRET,
+} as const;
+
+export const blobConfig = {
+    readWriteToken: env.BLOB_READ_WRITE_TOKEN,
+} as const;
+
+export const publicUrlConfig = {
+    baseUrl: env.NEXT_PUBLIC_BASE_URL,
+    websiteUrl: env.NEXT_PUBLIC_WEBSITE_URL,
 } as const;

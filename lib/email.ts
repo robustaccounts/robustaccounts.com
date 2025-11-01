@@ -1,6 +1,6 @@
 'use server';
 
-import { emailConfig, smtpConfig } from '@/lib/env';
+import { emailConfig, smtpConfig, publicUrlConfig } from '@/lib/env';
 import { generateRescheduleToken } from '@/lib/reschedule-token';
 
 // Lazy import to avoid loading in environments that don't need it.
@@ -259,7 +259,7 @@ export async function sendCustomerConfirmationEmail(
         let rescheduleUrl = '';
         if (confirmation.leadId) {
             const { generateRescheduleToken } = await import('@/lib/reschedule-token');
-            const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://robustaccounts.com';
+            const baseUrl = publicUrlConfig.baseUrl;
             const rescheduleToken = await generateRescheduleToken(confirmation.leadId);
             rescheduleUrl = `${baseUrl}/reschedule/${rescheduleToken}`;
         }
@@ -783,7 +783,7 @@ export async function sendAppointmentReminderEmail(
 
         const cfg = getSmtpConfig();
         const logoUrl = emailConfig.logoUrl;
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://robustaccounts.com';
+        const baseUrl = publicUrlConfig.baseUrl;
         
         // Generate reschedule token for this lead
         const rescheduleToken = await generateRescheduleToken(reminder.leadId);
@@ -983,7 +983,7 @@ export async function sendRescheduleEmail(reschedule: RescheduleEmail) {
 
         const cfg = getSmtpConfig();
         const logoUrl = emailConfig.logoUrl;
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://robustaccounts.com';
+        const baseUrl = publicUrlConfig.baseUrl;
         const rescheduleUrl = `${baseUrl}/reschedule/${reschedule.rescheduleToken}`;
 
         if (!nodemailer) {

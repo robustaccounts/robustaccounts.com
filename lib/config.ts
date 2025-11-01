@@ -1,4 +1,5 @@
+import { env } from './env';
+
 export const config = {
-    baseUrl:
-        process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://robustaccounts.com',
+    baseUrl: env.NEXT_PUBLIC_WEBSITE_URL,
 } as const;

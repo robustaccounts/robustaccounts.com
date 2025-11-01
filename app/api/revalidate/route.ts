@@ -1,5 +1,6 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
+import { apiConfig } from '@/lib/env';
 
 export async function POST(request: NextRequest) {
     try {
@@ -9,7 +10,7 @@ export async function POST(request: NextRequest) {
             (await request.json().catch(() => ({})))?.secret;
 
         // Verify secret token
-        if (secret !== process.env.REVALIDATION_SECRET) {
+        if (!apiConfig.revalidationSecret || secret !== apiConfig.revalidationSecret) {
             return NextResponse.json(
                 { message: 'Invalid token' },
                 { status: 401 },

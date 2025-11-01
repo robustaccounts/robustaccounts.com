@@ -54,11 +54,15 @@ export async function getLeadByToken(token: string) {
 
 /**
  * Reschedule a lead's appointment
+ * @param token - Reschedule token for the lead
+ * @param newAppointmentDatetime - New appointment datetime
+ * @param _appointmentDetails - Optional appointment details (reserved for future use)
  */
 export async function rescheduleLead(
     token: string,
     newAppointmentDatetime: Date,
-    appointmentDetails?: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _appointmentDetails?: {
         appointmentDate: string;
         appointmentTime: string;
         appointmentTimezone: string;

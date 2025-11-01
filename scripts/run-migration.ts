@@ -60,18 +60,21 @@ async function runMigration() {
           const result = await sql.query(statement);
           const preview = statement.substring(0, 80).replace(/\n/g, ' ').replace(/\s+/g, ' ');
           console.log(`✓ [${i + 1}/${statements.length}] ${preview}...`);
-        } catch (err: any) {
+        } catch (err) {
           // Ignore errors for "already exists" - these are fine
-          if (err?.message?.includes('already exists') || 
-              err?.message?.includes('duplicate') ||
-              err?.message?.includes('already defined')) {
+          const errorMessage = err instanceof Error ? err.message : String(err);
+          if (errorMessage.includes('already exists') || 
+              errorMessage.includes('duplicate') ||
+              errorMessage.includes('already defined')) {
             const preview = statement.substring(0, 80).replace(/\n/g, ' ').replace(/\s+/g, ' ');
             console.log(`⚠️  [${i + 1}/${statements.length}] Skipped (already exists): ${preview}...`);
           } else {
             const preview = statement.substring(0, 80).replace(/\n/g, ' ').replace(/\s+/g, ' ');
             console.error(`❌ [${i + 1}/${statements.length}] Error: ${preview}...`);
-            console.error(`   Error details: ${err?.message}`);
-            console.error(`   Error code: ${err?.code}`);
+            console.error(`   Error details: ${errorMessage}`);
+            if (err && typeof err === 'object' && 'code' in err) {
+              console.error(`   Error code: ${String(err.code)}`);
+            }
             throw err;
           }
         }
