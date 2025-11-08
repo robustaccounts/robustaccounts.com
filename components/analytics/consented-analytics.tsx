@@ -2,7 +2,6 @@
 
 import { useConsent } from '@/contexts/consent-context';
 
-import { usePathname } from 'next/navigation';
 import Script from 'next/script';
 import React, { useEffect } from 'react';
 
@@ -23,10 +22,6 @@ const clarityProjectId =
 
 export default function ConsentedAnalytics() {
     const { state } = useConsent();
-    const pathname = usePathname();
-
-    // Check if we're on a lead form page
-    const isLeadFormPage = pathname?.startsWith('/lead-form');
 
     // Optionally, respect DNT to auto-reject
     useEffect(() => {

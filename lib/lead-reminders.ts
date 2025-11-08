@@ -1,8 +1,10 @@
 'use server';
 
 import { neon } from '@neondatabase/serverless';
-import { databaseConfig } from '@/lib/env';
+
 import { sendAppointmentReminderEmail, sendRescheduleEmail } from '@/lib/email';
+import { databaseConfig } from '@/lib/env';
+import { logger } from '@/lib/logger';
 import { generateRescheduleToken } from '@/lib/reschedule-token';
 
 const sql = neon(databaseConfig.url);
@@ -23,23 +25,28 @@ export async function createAuditLog(
             VALUES (${leadId}, ${action}, ${oldValue ? JSON.stringify(oldValue) : null}, ${newValue ? JSON.stringify(newValue) : null}, ${changedBy})
         `;
     } catch (error) {
-        console.error('Failed to create audit log:', error);
+        logger.error('Failed to create audit log', error, { leadId, action });
     }
 }
 
 /**
- * Send daily appointment reminders for appointments happening tomorrow
+ * Send daily appointment reminders for all future appointments
+ * Sends reminders every day until the appointment date
  */
 export async function sendDailyReminders() {
-    try {
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        tomorrow.setHours(0, 0, 0, 0);
-        
-        const dayAfter = new Date(tomorrow);
-        dayAfter.setDate(dayAfter.getDate() + 1);
+    const startTime = Date.now();
+    logger.info('sendDailyReminders - Starting', {
+        function: 'sendDailyReminders',
+    });
 
-        // Find all leads with appointments tomorrow that are not resolved
+    try {
+        const now = new Date();
+
+        logger.debug('Querying for leads with future appointments', {
+            now: now.toISOString(),
+        });
+
+        // Find all leads with future appointments that have opted in and are not resolved
         const leads = await sql`
             SELECT 
                 id,
@@ -48,10 +55,14 @@ export async function sendDailyReminders() {
                 email,
                 appointment_datetime
             FROM leads
-            WHERE appointment_datetime >= ${tomorrow.toISOString()}
-            AND appointment_datetime < ${dayAfter.toISOString()}
+            WHERE appointment_datetime > ${now.toISOString()}
+            AND email_consent = true
             AND resolved = false
         `;
+
+        logger.info(`Found ${leads.length} leads with future appointments`, {
+            leadCount: leads.length,
+        });
 
         let sentCount = 0;
         let errorCount = 0;
@@ -59,7 +70,7 @@ export async function sendDailyReminders() {
         for (const lead of leads) {
             try {
                 const appointmentDate = new Date(lead.appointment_datetime);
-                
+
                 // Format date in Eastern Time
                 const appointmentDateStr = new Intl.DateTimeFormat('en-US', {
                     weekday: 'long',
@@ -78,6 +89,13 @@ export async function sendDailyReminders() {
                 });
                 const appointmentTimeStr = formatter.format(appointmentDate);
 
+                logger.debug('Sending reminder email', {
+                    leadId: lead.id,
+                    email: lead.email,
+                    appointmentDate: appointmentDateStr,
+                    appointmentTime: appointmentTimeStr,
+                });
+
                 const result = await sendAppointmentReminderEmail({
                     firstName: lead.first_name,
                     lastName: lead.last_name,
@@ -85,6 +103,7 @@ export async function sendDailyReminders() {
                     appointmentDate: appointmentDateStr,
                     appointmentTime: appointmentTimeStr,
                     appointmentTimezone: 'ET',
+                    appointmentDatetime: lead.appointment_datetime,
                     leadId: lead.id,
                 });
 
@@ -93,27 +112,57 @@ export async function sendDailyReminders() {
                         lead.id,
                         'reminder_sent',
                         undefined,
-                        { appointmentDate: appointmentDateStr, appointmentTime: appointmentTimeStr },
+                        {
+                            appointmentDate: appointmentDateStr,
+                            appointmentTime: appointmentTimeStr,
+                        },
                         'system',
                     );
+                    logger.info('Reminder email sent successfully', {
+                        leadId: lead.id,
+                        email: lead.email,
+                    });
                     sentCount++;
                 } else {
+                    logger.warn('Failed to send reminder email', {
+                        leadId: lead.id,
+                        email: lead.email,
+                        reason: result.reason,
+                    });
                     errorCount++;
                 }
             } catch (error) {
-                console.error(`Failed to send reminder for lead ${lead.id}:`, error);
+                logger.error(
+                    `Failed to send reminder for lead ${lead.id}`,
+                    error,
+                    {
+                        leadId: lead.id,
+                        email: lead.email,
+                    },
+                );
                 errorCount++;
             }
         }
 
-        return {
+        const duration = Date.now() - startTime;
+        const result = {
             success: true,
             sent: sentCount,
             errors: errorCount,
             total: leads.length,
         };
+
+        logger.info('sendDailyReminders - Completed', {
+            ...result,
+            duration: `${duration}ms`,
+        });
+
+        return result;
     } catch (error) {
-        console.error('Failed to send daily reminders:', error);
+        const duration = Date.now() - startTime;
+        logger.error('sendDailyReminders - Failed', error, {
+            duration: `${duration}ms`,
+        });
         return {
             success: false,
             error: error instanceof Error ? error.message : 'Unknown error',
@@ -125,10 +174,19 @@ export async function sendDailyReminders() {
  * Send reschedule emails for leads whose appointments have passed and are not resolved
  */
 export async function sendRescheduleEmails() {
+    const startTime = Date.now();
+    logger.info('sendRescheduleEmails - Starting', {
+        function: 'sendRescheduleEmails',
+    });
+
     try {
         const now = new Date();
-        
-        // Find all leads with appointments in the past that are not resolved
+
+        logger.debug('Querying for leads with past appointments', {
+            now: now.toISOString(),
+        });
+
+        // Find all leads with appointments in the past that have opted in and are not resolved
         const leads = await sql`
             SELECT 
                 id,
@@ -138,8 +196,13 @@ export async function sendRescheduleEmails() {
                 appointment_datetime
             FROM leads
             WHERE appointment_datetime < ${now.toISOString()}
+            AND email_consent = true
             AND resolved = false
         `;
+
+        logger.info(`Found ${leads.length} leads with past appointments`, {
+            leadCount: leads.length,
+        });
 
         let sentCount = 0;
         let errorCount = 0;
@@ -148,6 +211,11 @@ export async function sendRescheduleEmails() {
             try {
                 // Generate reschedule token
                 const token = await generateRescheduleToken(lead.id);
+
+                logger.debug('Sending reschedule email', {
+                    leadId: lead.id,
+                    email: lead.email,
+                });
 
                 const result = await sendRescheduleEmail({
                     firstName: lead.first_name,
@@ -165,28 +233,54 @@ export async function sendRescheduleEmails() {
                         { token },
                         'system',
                     );
+                    logger.info('Reschedule email sent successfully', {
+                        leadId: lead.id,
+                        email: lead.email,
+                    });
                     sentCount++;
                 } else {
+                    logger.warn('Failed to send reschedule email', {
+                        leadId: lead.id,
+                        email: lead.email,
+                        reason: result.reason,
+                    });
                     errorCount++;
                 }
             } catch (error) {
-                console.error(`Failed to send reschedule email for lead ${lead.id}:`, error);
+                logger.error(
+                    `Failed to send reschedule email for lead ${lead.id}`,
+                    error,
+                    {
+                        leadId: lead.id,
+                        email: lead.email,
+                    },
+                );
                 errorCount++;
             }
         }
 
-        return {
+        const duration = Date.now() - startTime;
+        const result = {
             success: true,
             sent: sentCount,
             errors: errorCount,
             total: leads.length,
         };
+
+        logger.info('sendRescheduleEmails - Completed', {
+            ...result,
+            duration: `${duration}ms`,
+        });
+
+        return result;
     } catch (error) {
-        console.error('Failed to send reschedule emails:', error);
+        const duration = Date.now() - startTime;
+        logger.error('sendRescheduleEmails - Failed', error, {
+            duration: `${duration}ms`,
+        });
         return {
             success: false,
             error: error instanceof Error ? error.message : 'Unknown error',
         };
     }
 }
-

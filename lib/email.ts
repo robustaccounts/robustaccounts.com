@@ -1,6 +1,6 @@
 'use server';
 
-import { emailConfig, smtpConfig, publicUrlConfig } from '@/lib/env';
+import { emailConfig, publicUrlConfig, smtpConfig } from '@/lib/env';
 import { generateRescheduleToken } from '@/lib/reschedule-token';
 
 // Lazy import to avoid loading in environments that don't need it.
@@ -237,30 +237,40 @@ export async function sendCustomerConfirmationEmail(
         const calendarIconUrl = emailConfig.calendarIconUrl;
 
         // Generate Google Calendar URL
-        let googleCalendarUrl = 'https://www.google.com/calendar/render?action=TEMPLATE&text=Accounting+Consultation+-+Robust+Accounts&details=Consultation+with+Robust+Accounts+to+discuss+your+accounting+needs.+We\'ll+call+you+at+the+scheduled+time.&location=Phone+Call';
-        
+        let googleCalendarUrl =
+            "https://www.google.com/calendar/render?action=TEMPLATE&text=Accounting+Consultation+-+Robust+Accounts&details=Consultation+with+Robust+Accounts+to+discuss+your+accounting+needs.+We'll+call+you+at+the+scheduled+time.&location=Phone+Call";
+
         if (confirmation.appointmentDatetimeISO) {
-            const appointmentDate = new Date(confirmation.appointmentDatetimeISO);
+            const appointmentDate = new Date(
+                confirmation.appointmentDatetimeISO,
+            );
             const startTimeUtc = new Date(appointmentDate);
             const endTimeUtc = new Date(appointmentDate);
             endTimeUtc.setMinutes(endTimeUtc.getMinutes() + 30); // 30 minute consultation
-            
+
             // Format dates for Google Calendar (YYYYMMDDTHHMMSSZ)
             const formatGoogleDate = (date: Date) => {
-                return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+                return date
+                    .toISOString()
+                    .replace(/[-:]/g, '')
+                    .replace(/\.\d{3}/, '');
             };
-            
+
             const guestEmail = encodeURIComponent(confirmation.email);
             const timezone = 'America/New_York'; // ET timezone
-            googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Accounting Consultation - Robust Accounts')}&dates=${formatGoogleDate(startTimeUtc)}/${formatGoogleDate(endTimeUtc)}&details=${encodeURIComponent('Free consultation with Robust Accounts to discuss your accounting needs. We\'ll call you at the scheduled time.')}&location=${encodeURIComponent('Phone Call')}&add=${guestEmail}&ctz=${encodeURIComponent(timezone)}`;
+            googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Accounting Consultation - Robust Accounts')}&dates=${formatGoogleDate(startTimeUtc)}/${formatGoogleDate(endTimeUtc)}&details=${encodeURIComponent("Free consultation with Robust Accounts to discuss your accounting needs. We'll call you at the scheduled time.")}&location=${encodeURIComponent('Phone Call')}&add=${guestEmail}&ctz=${encodeURIComponent(timezone)}`;
         }
 
         // Generate reschedule URL if leadId is provided
         let rescheduleUrl = '';
         if (confirmation.leadId) {
-            const { generateRescheduleToken } = await import('@/lib/reschedule-token');
+            const { generateRescheduleToken } = await import(
+                '@/lib/reschedule-token'
+            );
             const baseUrl = publicUrlConfig.baseUrl;
-            const rescheduleToken = await generateRescheduleToken(confirmation.leadId);
+            const rescheduleToken = await generateRescheduleToken(
+                confirmation.leadId,
+            );
             rescheduleUrl = `${baseUrl}/reschedule/${rescheduleToken}`;
         }
 
@@ -298,7 +308,7 @@ export async function sendCustomerConfirmationEmail(
             '',
             'We look forward to discussing your accounting needs and how we can help your business thrive.',
             '',
-            rescheduleUrl 
+            rescheduleUrl
                 ? `If you'd like to make changes or reschedule your appointment, please click here (${rescheduleUrl}) or for any query contact us at consultations@robustaccounts.com`
                 : "If you need to make any changes to your appointment, please don't hesitate to contact us at consultations@robustaccounts.com",
             '',
@@ -651,9 +661,10 @@ export async function sendCustomerConfirmationEmail(
                                                     line-height: 1.6;
                                                 "
                                             >
-                                                ${rescheduleUrl 
-                                                    ? `If you'd like to make changes or reschedule your appointment, please <a href="${rescheduleUrl}" style="color: #1a4d3a; text-decoration: none; font-weight: 600;">click here</a> or for any query contact us at <a href="mailto:consultations@robustaccounts.com" style="color: #1a4d3a; text-decoration: none; font-weight: 600;">consultations@robustaccounts.com</a>.`
-                                                    : `If you'd like to make changes or reschedule your appointment, just reply to this email or reach us directly at <a href="mailto:consultations@robustaccounts.com" style="color: #1a4d3a; text-decoration: none; font-weight: 600;">consultations@robustaccounts.com</a>.`
+                                                ${
+                                                    rescheduleUrl
+                                                        ? `If you'd like to make changes or reschedule your appointment, please <a href="${rescheduleUrl}" style="color: #1a4d3a; text-decoration: none; font-weight: 600;">click here</a> or for any query contact us at <a href="mailto:consultations@robustaccounts.com" style="color: #1a4d3a; text-decoration: none; font-weight: 600;">consultations@robustaccounts.com</a>.`
+                                                        : `If you'd like to make changes or reschedule your appointment, just reply to this email or reach us directly at <a href="mailto:consultations@robustaccounts.com" style="color: #1a4d3a; text-decoration: none; font-weight: 600;">consultations@robustaccounts.com</a>.`
                                                 }
                                             </p>
 
@@ -766,6 +777,7 @@ export type AppointmentReminder = {
     appointmentDate: string; // e.g., "Monday, January 15, 2024"
     appointmentTime: string; // e.g., "2:00 PM"
     appointmentTimezone: string; // e.g., "ET"
+    appointmentDatetime: string; // ISO string of the appointment datetime
     leadId: number;
 };
 
@@ -784,7 +796,7 @@ export async function sendAppointmentReminderEmail(
         const cfg = getSmtpConfig();
         const logoUrl = emailConfig.logoUrl;
         const baseUrl = publicUrlConfig.baseUrl;
-        
+
         // Generate reschedule token for this lead
         const rescheduleToken = await generateRescheduleToken(reminder.leadId);
         const rescheduleUrl = `${baseUrl}/reschedule/${rescheduleToken}`;
@@ -808,7 +820,33 @@ export async function sendAppointmentReminderEmail(
             socketTimeout: 10000,
         });
 
-        const subject = `Reminder: Your Consultation Tomorrow - ${reminder.appointmentDate}`;
+        // Determine if appointment is today or tomorrow in Eastern Time
+        const now = new Date();
+        const appointmentDate = new Date(reminder.appointmentDatetime);
+
+        // Get date strings in Eastern Time for comparison (YYYY-MM-DD format)
+        const nowETStr = now.toLocaleDateString('en-CA', {
+            timeZone: 'America/New_York',
+        }); // 'en-CA' gives YYYY-MM-DD
+        const appointmentETStr = appointmentDate.toLocaleDateString('en-CA', {
+            timeZone: 'America/New_York',
+        });
+
+        // Calculate tomorrow's date string in ET
+        const tomorrowDate = new Date(now);
+        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+        const tomorrowETStr = tomorrowDate.toLocaleDateString('en-CA', {
+            timeZone: 'America/New_York',
+        });
+
+        let datePrefix = '';
+        if (appointmentETStr === nowETStr) {
+            datePrefix = 'Today - ';
+        } else if (appointmentETStr === tomorrowETStr) {
+            datePrefix = 'Tomorrow - ';
+        }
+
+        const subject = `Reminder: Your Consultation ${datePrefix}${reminder.appointmentDate}`;
 
         const textBody = [
             `Hi ${reminder.firstName},`,
@@ -1016,7 +1054,7 @@ export async function sendRescheduleEmail(reschedule: RescheduleEmail) {
             '',
             rescheduleUrl,
             '',
-            'If you\'ve already completed your consultation, please ignore this email.',
+            "If you've already completed your consultation, please ignore this email.",
             '',
             'If you have any questions, please contact us at consultations@robustaccounts.com',
             '',
