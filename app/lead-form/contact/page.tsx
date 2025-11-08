@@ -12,6 +12,7 @@ import { Close } from '@/ui/icons/google-icons';
 import Input from '@/ui/input';
 import PhoneInput from '@/ui/phone-input';
 import Textarea from '@/ui/textarea';
+import Checkbox from '@/ui/checkbox';
 
 import { getTimeSlots } from '@/lib/lead-form-utils';
 import { saveLead } from '@/lib/save-lead';
@@ -30,7 +31,7 @@ const industries: DropdownOption[] = [
 
 export default function ContactPage() {
     const router = useRouter();
-    const { formData, setContactData } = useLeadForm();
+    const { formData, setContactData, setEmailConsent, setSmsConsent } = useLeadForm();
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -112,6 +113,8 @@ export default function ContactPage() {
                 industry: formData.contactData.industry,
                 message: formData.contactData.message,
                 appointmentDatetime: appointmentStart,
+                emailConsent: formData.emailConsent,
+                smsConsent: formData.smsConsent,
             };
 
             // Format appointment details for customer email
@@ -277,6 +280,24 @@ export default function ContactPage() {
                             placeholder="Tell us about your accounting needs..."
                             rows={4}
                         />
+
+                        {/* Consent Checkboxes */}
+                        <div className="space-y-4">
+                            <div className="space-y-3">
+                                <Checkbox
+                                    label="I consent to receive email communications about my appointment and related services"
+                                    checked={formData.emailConsent}
+                                    onChange={setEmailConsent}
+                                    name="email-consent"
+                                />
+                                <Checkbox
+                                    label="I consent to receive SMS/text messages about my appointment and related services"
+                                    checked={formData.smsConsent}
+                                    onChange={setSmsConsent}
+                                    name="sms-consent"
+                                />
+                            </div>
+                        </div>
 
                         {/* Terms Agreement */}
                         <div className="rounded-lg bg-gray-50 p-4">

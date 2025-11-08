@@ -5,6 +5,8 @@ import React, { createContext, useCallback, useContext, useState } from 'react';
 interface LeadFormData {
     selectedDate: Date | null;
     selectedTimeSlot: string | null;
+    emailConsent: boolean;
+    smsConsent: boolean;
     contactData: {
         firstName: string;
         lastName: string;
@@ -21,6 +23,8 @@ interface LeadFormContextType {
     formData: LeadFormData;
     setSelectedDate: (date: Date | null) => void;
     setSelectedTimeSlot: (slot: string | null) => void;
+    setEmailConsent: (consent: boolean) => void;
+    setSmsConsent: (consent: boolean) => void;
     setContactData: (data: Partial<LeadFormData['contactData']>) => void;
     resetForm: () => void;
 }
@@ -32,6 +36,8 @@ const LeadFormContext = createContext<LeadFormContextType | undefined>(
 const initialFormData: LeadFormData = {
     selectedDate: null,
     selectedTimeSlot: null,
+    emailConsent: true,
+    smsConsent: true,
     contactData: {
         firstName: '',
         lastName: '',
@@ -55,6 +61,14 @@ export function LeadFormProvider({ children }: { children: React.ReactNode }) {
         setFormData((prev) => ({ ...prev, selectedTimeSlot: slot }));
     }, []);
 
+    const setEmailConsent = useCallback((consent: boolean) => {
+        setFormData((prev) => ({ ...prev, emailConsent: consent }));
+    }, []);
+
+    const setSmsConsent = useCallback((consent: boolean) => {
+        setFormData((prev) => ({ ...prev, smsConsent: consent }));
+    }, []);
+
     const setContactData = useCallback(
         (data: Partial<LeadFormData['contactData']>) => {
             setFormData((prev) => ({
@@ -75,6 +89,8 @@ export function LeadFormProvider({ children }: { children: React.ReactNode }) {
                 formData,
                 setSelectedDate,
                 setSelectedTimeSlot,
+                setEmailConsent,
+                setSmsConsent,
                 setContactData,
                 resetForm,
             }}

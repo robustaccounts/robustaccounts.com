@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next';
 
 import type { Metadata } from 'next';
 
+import BotpressChat from '@/providers/botpress-chat';
 import { Providers } from '@/providers/providers';
 
 import './globals.css';
@@ -17,12 +18,13 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
-            <body className={'font-sans antialiased'}>
+        <html lang="en" suppressHydrationWarning>
+            <body className={'font-sans antialiased'} suppressHydrationWarning>
                 <Providers>
                     {children}
 
                     <Analytics />
+                    <BotpressChat />
                 </Providers>
             </body>
         </html>

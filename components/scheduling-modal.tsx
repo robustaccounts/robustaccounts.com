@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
+import Checkbox from '@/ui/checkbox';
 import Dropdown, { DropdownOption } from '@/ui/dropdown';
 import GoogleCalendar from '@/ui/icons/google-calendar';
 import { ArrowForward, ChevronRight, Close } from '@/ui/icons/google-icons';
@@ -65,6 +66,8 @@ export default function SchedulingModal({
         industry: '',
         message: '',
     });
+    const [emailConsent, setEmailConsent] = useState(true);
+    const [smsConsent, setSmsConsent] = useState(true);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isBooking, setIsBooking] = useState(false);
     const [isBooked, setIsBooked] = useState(false);
@@ -86,6 +89,8 @@ export default function SchedulingModal({
             industry: '',
             message: '',
         });
+        setEmailConsent(true);
+        setSmsConsent(true);
         setErrors({});
         setIsBooking(false);
         setIsBooked(false);
@@ -198,6 +203,8 @@ export default function SchedulingModal({
                 industry: contactData.industry,
                 message: contactData.message,
                 appointmentDatetime: appointmentStart,
+                emailConsent: emailConsent,
+                smsConsent: smsConsent,
             };
 
             // Format appointment details for customer email
@@ -207,7 +214,7 @@ export default function SchedulingModal({
             const month = selectedDate.getMonth();
             const day = selectedDate.getDate();
             const dateAtNoon = new Date(year, month, day, 12, 0, 0);
-            
+
             const appointmentDetails = {
                 appointmentDate: dateAtNoon.toLocaleDateString('en-US', {
                     weekday: 'long',
@@ -274,8 +281,10 @@ export default function SchedulingModal({
         const month = date.getMonth();
         const day = date.getDate();
         const dateAtNoon = new Date(year, month, day, 12, 0, 0);
-        
-        const dayName = dateAtNoon.toLocaleDateString('en-US', { weekday: 'short' });
+
+        const dayName = dateAtNoon.toLocaleDateString('en-US', {
+            weekday: 'short',
+        });
         return `${day} ${dayName}`;
     };
 
@@ -284,10 +293,10 @@ export default function SchedulingModal({
         const year = date.getFullYear();
         const month = date.getMonth();
         const day = date.getDate();
-        
+
         // Create a new date at noon local time to avoid timezone shifts
         const dateAtNoon = new Date(year, month, day, 12, 0, 0);
-        
+
         return dateAtNoon.toLocaleDateString('en-US', {
             weekday: 'long',
             year: 'numeric',
@@ -779,6 +788,26 @@ export default function SchedulingModal({
                                                         }}
                                                         placeholder="Tell us about your accounting needs or any specific questions..."
                                                         rows={4}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Consent Checkboxes */}
+                                            <div className="space-y-4">
+                                                <div className="space-y-3">
+                                                    <Checkbox
+                                                        label="I consent to receive email communications about my appointment and related services"
+                                                        checked={emailConsent}
+                                                        onChange={
+                                                            setEmailConsent
+                                                        }
+                                                        name="email-consent-modal"
+                                                    />
+                                                    <Checkbox
+                                                        label="I consent to receive SMS/text messages about my appointment and related services"
+                                                        checked={smsConsent}
+                                                        onChange={setSmsConsent}
+                                                        name="sms-consent-modal"
                                                     />
                                                 </div>
                                             </div>

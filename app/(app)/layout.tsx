@@ -1,4 +1,4 @@
-import Script from 'next/script';
+import BotpressChat from '@/providers/botpress-chat';
 
 import ContactUsBanner from '@/components/contact-us-banner';
 import Footer from '@/components/footer/footer';
@@ -11,14 +11,11 @@ export default function Layout({
 }>) {
     return (
         <>
-            <Script
-                src="//code.tidio.co/9itfrqnmmdew7a6oktqq4yb0mm6cqddb.js"
-                strategy="beforeInteractive"
-            />
             <Header />
             {children}
             <ContactUsBanner />
             <Footer />
+            <BotpressChat />
         </>
     );
 }

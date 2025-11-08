@@ -18,6 +18,8 @@ interface LeadData {
     industry: string;
     message: string;
     appointmentDatetime: Date;
+    emailConsent: boolean;
+    smsConsent: boolean;
 }
 
 interface AppointmentDetails {
@@ -43,7 +45,9 @@ export async function saveLead(
                 business_name, 
                 industry, 
                 message, 
-                appointment_datetime
+                appointment_datetime,
+                email_consent,
+                sms_consent
             ) VALUES (
                 ${leadData.firstName},
                 ${leadData.lastName},
@@ -53,7 +57,9 @@ export async function saveLead(
                 ${leadData.businessName},
                 ${leadData.industry},
                 ${leadData.message || null},
-                ${leadData.appointmentDatetime.toISOString()}
+                ${leadData.appointmentDatetime.toISOString()},
+                ${leadData.emailConsent},
+                ${leadData.smsConsent}
             )
             RETURNING id
         `;

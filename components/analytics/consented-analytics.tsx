@@ -39,43 +39,8 @@ export default function ConsentedAnalytics() {
         }
     }, []);
 
-    // Hide Tidio widget on lead form pages even if it was already loaded
-    useEffect(() => {
-        if (isLeadFormPage && typeof window !== 'undefined') {
-            // Hide Tidio if it's already loaded
-            const tidioWidget = document.getElementById('tidio-chat');
-            if (tidioWidget) {
-                tidioWidget.style.display = 'none';
-            }
-            // Also try to hide via Tidio API if available
-            const tidioApi = (
-                window as Window & { tidioChatApi?: { hide: () => void } }
-            ).tidioChatApi;
-            if (tidioApi) {
-                try {
-                    tidioApi.hide();
-                } catch {
-                    // Silently fail if API is not available
-                }
-            }
-        } else if (!isLeadFormPage && typeof window !== 'undefined') {
-            // Show Tidio on non-lead-form pages
-            const tidioWidget = document.getElementById('tidio-chat');
-            if (tidioWidget) {
-                tidioWidget.style.display = '';
-            }
-            const tidioApi = (
-                window as Window & { tidioChatApi?: { show: () => void } }
-            ).tidioChatApi;
-            if (tidioApi) {
-                try {
-                    tidioApi.show();
-                } catch {
-                    // Silently fail if API is not available
-                }
-            }
-        }
-    }, [isLeadFormPage]);
+    // Previously used for Tidio - now using Botpress
+    // Tidio logic removed
 
     // Only block analytics if user explicitly rejected (opt-out approach)
     if (state === 'rejected') return null;
@@ -95,14 +60,6 @@ export default function ConsentedAnalytics() {
                           y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
                         })(window, document, "clarity", "script", "${clarityProjectId}");`,
                     }}
-                />
-            )}
-            {/* Only load Tidio chat on non-lead-form pages */}
-            {!isLeadFormPage && (
-                <Script
-                    src="//code.tidio.co/9itfrqnmmdew7a6oktqq4yb0mm6cqddb.js"
-                    strategy="afterInteractive"
-                    id="tidio-chat"
                 />
             )}
         </>
