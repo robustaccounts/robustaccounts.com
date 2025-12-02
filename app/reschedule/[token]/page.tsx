@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getAvailableDates, getTimeSlots, formatDate } from '@/lib/lead-form-utils';
 import { rescheduleLead, getLeadByToken } from '@/lib/reschedule-lead';
-import { ArrowForward, Close, CalendarMonth } from '@/ui/icons/google-icons';
+import { ArrowRight, X, Calendar } from 'lucide-react';
 import cn from '@/utils/cn';
 
 export default function ReschedulePage() {
@@ -199,7 +199,7 @@ export default function ReschedulePage() {
                         className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-all duration-300 hover:bg-gray-200 sm:h-10 sm:w-10"
                         aria-label="Close"
                     >
-                        <Close className="h-5 w-5 fill-foreground sm:h-6 sm:w-6" />
+                        <X className="h-5 w-5 fill-foreground sm:h-6 sm:w-6" />
                     </Link>
                 </div>
                 <div className="flex flex-1 items-center justify-center p-4">
@@ -233,7 +233,7 @@ export default function ReschedulePage() {
                         className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-all duration-300 hover:bg-gray-200 sm:h-10 sm:w-10"
                         aria-label="Close"
                     >
-                        <Close className="h-5 w-5 fill-foreground sm:h-6 sm:w-6" />
+                        <X className="h-5 w-5 fill-foreground sm:h-6 sm:w-6" />
                     </Link>
                 </div>
             )}
@@ -276,7 +276,7 @@ export default function ReschedulePage() {
                                     {selectedDate && selectedSlotDetails && (
                                         <div className="mb-8 rounded-lg bg-accent/5 p-6">
                                             <div className="mb-4 flex items-center justify-center gap-2">
-                                                <CalendarMonth className="h-6 w-6 fill-accent" />
+                                                <Calendar className="h-6 w-6 text-accent" />
                                                 <h2 className="text-lg font-semibold text-gray-900">
                                                     Appointment Details
                                                 </h2>
@@ -315,7 +315,7 @@ export default function ReschedulePage() {
                                             onClick={handleAddToCalendar}
                                             className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-accent bg-white px-6 py-3 text-sm font-medium text-accent transition-colors hover:bg-accent/5 sm:text-base"
                                         >
-                                            <CalendarMonth className="h-5 w-5 fill-current" />
+                                            <Calendar className="h-5 w-5" />
                                             Add to Google Calendar
                                         </button>
                                         <button
@@ -323,7 +323,7 @@ export default function ReschedulePage() {
                                             className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-accent px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-accent/90 sm:text-base"
                                         >
                                             <svg
-                                                className="h-5 w-5 fill-current"
+                                                className="h-5 w-5"
                                                 viewBox="0 0 24 24"
                                             >
                                                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
@@ -520,7 +520,7 @@ export default function ReschedulePage() {
                             ) : (
                                 <>
                                     Confirm New Appointment
-                                    <ArrowForward className="h-5 w-5 fill-current" />
+                                    <ArrowRight className="h-5 w-5" />
                                 </>
                             )}
                         </button>

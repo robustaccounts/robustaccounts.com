@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check } from '@/ui/icons/google-icons';
+import { Check } from 'lucide-react';
 import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
 const benefits = [
     'Strategic Tax Planning',
@@ -35,7 +35,7 @@ export default function HeroSection() {
                             className="flex items-center justify-center gap-2"
                         >
                             <div className="flex h-5 w-5 items-center justify-center rounded-full bg-accent">
-                                <Check className="h-3 w-3 fill-white" />
+                                <Check className="h-3 w-3 text-white" />
                             </div>
                             <span className="text-sm font-medium text-gray-700">
                                 {benefit}

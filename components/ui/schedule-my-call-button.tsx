@@ -69,8 +69,8 @@ export default function ScheduleMyCallButton({
                         className={cn(
                             iconSizes[size],
                             variant === 'primary'
-                                ? 'fill-accent'
-                                : 'fill-white',
+                                ? 'text-accent'
+                                : 'text-white',
                         )}
                     />
                 </div> */}

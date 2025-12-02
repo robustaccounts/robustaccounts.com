@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import React, { useRef } from 'react';
 
-import { ArrowForward } from '@/ui/icons/google-icons';
+import { ArrowRight } from 'lucide-react';
 
 import cn from '@/utils/cn';
 
@@ -94,7 +94,7 @@ export default function ProcessStepsSection() {
                         </p>
                         {/* Arrow to Step 2 (right) */}
                         <div className="absolute top-1/2 right-[-44px] z-10">
-                            <ArrowForward className="h-10 w-10 text-accent" />
+                            <ArrowRight className="h-10 w-10 text-accent" />
                         </div>
                     </div>
                     {/* Step 2 */}
@@ -110,7 +110,7 @@ export default function ProcessStepsSection() {
                         </p>
                         {/* Arrow to Step 3 (down) */}
                         <div className="absolute bottom-[-44px] left-1/2 z-10 -translate-x-1/2">
-                            <ArrowForward className="h-10 w-10 rotate-90 text-accent" />
+                            <ArrowRight className="h-10 w-10 rotate-90 text-accent" />
                         </div>
                     </div>
                     {/* Step 4 */}
@@ -138,7 +138,7 @@ export default function ProcessStepsSection() {
                         </p>
                         {/* Arrow to Step 4 (left) */}
                         <div className="absolute top-1/2 left-[-44px] z-10 -translate-y-1/2">
-                            <ArrowForward className="h-10 w-10 rotate-180 text-accent" />
+                            <ArrowRight className="h-10 w-10 rotate-180 text-accent" />
                         </div>
                     </div>
                 </div>
@@ -167,7 +167,7 @@ export default function ProcessStepsSection() {
                                 {index < steps.length - 1 && (
                                     <div className="mt-6 block sm:mt-8">
                                         <div className="rounded-full bg-accent/20 p-2">
-                                            <ArrowForward className="mx-auto h-6 w-6 rotate-90 text-accent sm:h-8 sm:w-8" />
+                                            <ArrowRight className="mx-auto h-6 w-6 rotate-90 text-accent sm:h-8 sm:w-8" />
                                         </div>
                                     </div>
                                 )}

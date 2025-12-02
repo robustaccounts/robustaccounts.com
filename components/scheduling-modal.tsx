@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 import Checkbox from '@/ui/checkbox';
 import Dropdown, { DropdownOption } from '@/ui/dropdown';
 import GoogleCalendar from '@/ui/icons/google-calendar';
-import { ArrowForward, ChevronRight, Close } from '@/ui/icons/google-icons';
+import { ArrowRight, ChevronRight, X } from 'lucide-react';
 import Input from '@/ui/input';
 import PhoneInput from '@/ui/phone-input';
 import Textarea from '@/ui/textarea';
@@ -364,7 +364,7 @@ export default function SchedulingModal({
                                     aria-label="Close modal"
                                     type="button"
                                 >
-                                    <Close className="h-5 w-5 fill-foreground sm:h-6 sm:w-6" />
+                                    <X className="h-5 w-5 fill-foreground sm:h-6 sm:w-6" />
                                 </button>
                             </div>
 
@@ -523,7 +523,7 @@ export default function SchedulingModal({
                                     aria-label="Close modal"
                                     type="button"
                                 >
-                                    <Close className="h-5 w-5 fill-foreground sm:h-6 sm:w-6" />
+                                    <X className="h-5 w-5 fill-foreground sm:h-6 sm:w-6" />
                                 </button>
                             </div>
 
@@ -638,7 +638,7 @@ export default function SchedulingModal({
                                                 }
                                             >
                                                 Continue to Contact Form
-                                                <ArrowForward className="h-4 w-4 sm:h-5 sm:w-5" />
+                                                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
                                             </button>
                                         </div>
                                     </div>
@@ -858,7 +858,7 @@ export default function SchedulingModal({
                                                         <>
                                                             Confirm My
                                                             Appointment
-                                                            <ArrowForward className="h-4 w-4 sm:h-5 sm:w-5" />
+                                                            <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
                                                         </>
                                                     )}
                                                 </button>

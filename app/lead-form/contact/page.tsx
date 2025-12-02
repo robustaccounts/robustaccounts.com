@@ -3,16 +3,16 @@
 import { useLeadForm } from '@/contexts/lead-form-context';
 import { sendGAEvent } from '@next/third-parties/google';
 
+import { X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import Checkbox from '@/ui/checkbox';
 import Dropdown, { DropdownOption } from '@/ui/dropdown';
-import { Close } from '@/ui/icons/google-icons';
 import Input from '@/ui/input';
 import PhoneInput from '@/ui/phone-input';
 import Textarea from '@/ui/textarea';
-import Checkbox from '@/ui/checkbox';
 
 import { getTimeSlots } from '@/lib/lead-form-utils';
 import { saveLead } from '@/lib/save-lead';
@@ -31,7 +31,8 @@ const industries: DropdownOption[] = [
 
 export default function ContactPage() {
     const router = useRouter();
-    const { formData, setContactData, setEmailConsent, setSmsConsent } = useLeadForm();
+    const { formData, setContactData, setEmailConsent, setSmsConsent } =
+        useLeadForm();
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -124,7 +125,7 @@ export default function ContactPage() {
             const month = formData.selectedDate.getMonth();
             const day = formData.selectedDate.getDate();
             const dateAtNoon = new Date(year, month, day, 12, 0, 0);
-            
+
             const appointmentDetails = {
                 appointmentDate: new Intl.DateTimeFormat('en-US', {
                     weekday: 'long',
@@ -168,13 +169,16 @@ export default function ContactPage() {
     };
 
     return (
-        <div className="flex min-h-screen flex-col bg-white">
-            {/* Header - Sticky */}
-            <div className="sticky top-0 z-10 flex w-full items-center justify-between border-b border-gray-200 bg-white px-4 py-4 sm:px-6 sm:py-6">
+        <div className="flex h-screen flex-col overflow-hidden bg-white">
+            {/* Header */}
+            <div className="flex w-full shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 py-4 sm:px-6 sm:py-5">
                 <div className="w-10"></div>
-                <div className="px-2 text-center">
-                    <h2 className="text-base font-bold text-foreground sm:text-lg">
-                        Enter your details.
+                <div className="text-center">
+                    <p className="text-xs font-medium text-gray-500">
+                        Step 2 of 2
+                    </p>
+                    <h2 className="mt-0.5 text-base font-bold text-foreground sm:text-lg">
+                        Your Details
                     </h2>
                 </div>
                 <Link
@@ -182,15 +186,18 @@ export default function ContactPage() {
                     className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-all duration-300 hover:bg-gray-200 sm:h-10 sm:w-10"
                     aria-label="Close"
                 >
-                    <Close className="h-5 w-5 fill-foreground sm:h-6 sm:w-6" />
+                    <X className="h-5 w-5 text-gray-600" />
                 </Link>
             </div>
 
-            {/* Main Content - Scrollable */}
-            <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
+            {/* Main Content - Scrollable on mobile, optimized for desktop */}
+            <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 lg:px-8 lg:py-6">
                 <div className="mx-auto w-full max-w-4xl">
                     {/* Form */}
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="space-y-3 lg:space-y-4"
+                    >
                         {/* Name Fields */}
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <Input
@@ -300,8 +307,8 @@ export default function ContactPage() {
                         </div>
 
                         {/* Terms Agreement */}
-                        <div className="rounded-lg bg-gray-50 p-4">
-                            <p className="text-xs text-gray-600 sm:text-sm">
+                        <div className="rounded-lg bg-gray-50 p-3 lg:p-4">
+                            <p className="text-xs text-gray-600">
                                 By clicking 'Confirm My Appointment' you agree
                                 to our{' '}
                                 <Link
@@ -326,7 +333,7 @@ export default function ContactPage() {
 
                         {/* Error Message */}
                         {errors.submit && (
-                            <div className="rounded-lg bg-red-50 p-4">
+                            <div className="rounded-lg bg-red-50 p-3 lg:p-4">
                                 <p className="text-sm text-red-900">
                                     {errors.submit}
                                 </p>
@@ -336,20 +343,14 @@ export default function ContactPage() {
                 </div>
             </div>
 
-            {/* Footer - Sticky */}
-            <div className="sticky bottom-0 border-t border-gray-200 bg-white px-4 py-4 sm:px-6">
-                <div className="mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row sm:justify-between">
+            {/* Footer */}
+            <div className="shrink-0 border-t border-gray-200 bg-white px-4 py-4 sm:px-6">
+                <div className="mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <button
                         type="button"
                         onClick={handleBack}
-                        className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 px-6 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 sm:text-base"
+                        className="cursor-pointer rounded-xl border-2 border-gray-300 px-6 py-3 text-center text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 sm:text-base"
                     >
-                        <svg
-                            className="h-5 w-5 fill-current"
-                            viewBox="0 0 24 24"
-                        >
-                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
-                        </svg>
                         Back
                     </button>
                     <button

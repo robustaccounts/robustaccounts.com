@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Check } from '@/ui/icons/google-icons';
+import { Check } from 'lucide-react';
 
 import cn from '@/utils/cn';
 
@@ -55,22 +55,6 @@ const services = [
         pricing: 'Starting at $399/month',
         popular: false,
     },
-    {
-        id: 'business-advisory',
-        title: 'Business Advisory',
-        description:
-            'Strategic business consulting to help you make informed financial decisions.',
-        features: [
-            'Business strategy consulting',
-            'Market analysis',
-            'Mergers & acquisitions',
-            'Business valuation',
-            'Succession planning',
-            'Due diligence',
-        ],
-        pricing: 'Custom pricing',
-        popular: false,
-    },
 ];
 
 export default function ServicesGridSection() {
@@ -121,7 +105,7 @@ export default function ServicesGridSection() {
                                                     key={index}
                                                     className="flex items-center gap-3"
                                                 >
-                                                    <Check className="h-5 w-5 flex-shrink-0 fill-accent" />
+                                                    <Check className="h-5 w-5 flex-shrink-0 text-accent" />
                                                     <span className="text-sm text-gray-700 sm:text-base">
                                                         {feature}
                                                     </span>

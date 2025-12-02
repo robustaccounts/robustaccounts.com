@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Check } from '@/ui/icons/google-icons';
+import { Check } from 'lucide-react';
 
 import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
 
@@ -152,7 +152,7 @@ export default function ComparisonSection() {
                                                     className="flex items-start gap-3"
                                                 >
                                                     <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-accent/10">
-                                                        <Check className="h-3.5 w-3.5 fill-accent" />
+                                                        <Check className="h-3.5 w-3.5 text-accent" />
                                                     </div>
                                                     <span className="text-gray-700">
                                                         {feature}

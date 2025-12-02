@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ArrowForward, Check } from '@/ui/icons/google-icons';
+import { ArrowRight, Check } from 'lucide-react';
 import Link from '@/ui/link';
 
 import cn from '@/utils/cn';
@@ -21,7 +21,7 @@ function BenefitItem({ benefit }: Readonly<{ benefit: string }>) {
         <div className="flex items-start gap-3">
             <div className="mt-1 flex-shrink-0">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10">
-                    <Check className="h-4 w-4 fill-accent" />
+                    <Check className="h-4 w-4 text-accent" />
                 </div>
             </div>
             <span className="text-sm text-gray-700 sm:text-base">{benefit}</span>
@@ -58,7 +58,7 @@ export default function BookkeepingBenefitsSection() {
                     className="group flex transform cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-base font-semibold text-white transition-all hover:bg-accent/80 focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:outline-none sm:px-8 sm:py-4 sm:text-lg"
                 >
                     Get Free Consultation
-                    <ArrowForward className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
             </div>
         </section>

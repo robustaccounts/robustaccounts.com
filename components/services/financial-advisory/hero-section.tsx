@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Check } from '@/ui/icons/google-icons';
+import { Check } from 'lucide-react';
 
 import cn from '@/utils/cn';
 
@@ -54,11 +54,11 @@ export default function FinancialAdvisoryHeroSection() {
                 </div>
 
                 <div className="flex items-center gap-x-4 text-sm">
-                    <Check className="h-4 w-4 fill-accent" />
+                    <Check className="h-4 w-4 text-accent" />
                     <span>No setup fees</span>
-                    <Check className="h-4 w-4 fill-accent" />
+                    <Check className="h-4 w-4 text-accent" />
                     <span>Cancel anytime</span>
-                    <Check className="h-4 w-4 fill-accent" />
+                    <Check className="h-4 w-4 text-accent" />
                     <span>24/7 support</span>
                 </div>
             </div>

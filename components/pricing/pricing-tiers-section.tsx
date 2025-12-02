@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-import { Check } from '@/ui/icons/google-icons';
+import { Check } from 'lucide-react';
 import Link from '@/ui/link';
 
 interface PricingTier {
@@ -222,7 +222,7 @@ export default function PricingTiersSection({
                                                 key={featureIndex}
                                                 className="flex items-start gap-3"
                                             >
-                                                <Check className="mt-0.5 h-4 w-4 flex-shrink-0 fill-primary" />
+                                                <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
                                                 <span className="text-sm">
                                                     {feature}
                                                 </span>

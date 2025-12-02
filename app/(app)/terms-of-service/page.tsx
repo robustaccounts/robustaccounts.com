@@ -56,9 +56,9 @@ export default function TermsOfService() {
                                 </p>
                                 <p className="mt-4 leading-relaxed text-gray-700">
                                     Robust Accounts ("we," "us," or "our")
-                                    provides accounting, bookkeeping, financial
-                                    advisory, and business advisory services to
-                                    businesses and individuals.
+                                    provides accounting, bookkeeping, and
+                                    financial advisory services to businesses
+                                    and individuals.
                                 </p>
                             </section>
 
@@ -73,7 +73,6 @@ export default function TermsOfService() {
                                 <ul className="list-disc space-y-2 pl-6 leading-relaxed text-gray-700">
                                     <li>Bookkeeping and accounting services</li>
                                     <li>Financial advisory and consulting</li>
-                                    <li>Business advisory services</li>
                                     <li>Payroll processing and management</li>
                                     <li>Tax preparation and filing</li>
                                     <li>Financial statement preparation</li>

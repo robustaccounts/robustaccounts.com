@@ -1,8 +1,8 @@
 import siteConfig from '@/siteconfig';
 
+import { Mail, MapPin, Phone } from 'lucide-react';
 import React from 'react';
 
-import { Call, LocationOn, Mail } from '@/ui/icons/google-icons';
 import Link from '@/ui/link';
 
 const services = [
@@ -17,10 +17,6 @@ const services = [
     {
         title: 'Financial Advisory',
         href: '/services/financial-advisory',
-    },
-    {
-        title: 'Business Advisory',
-        href: '/services/business-advisory',
     },
 ];
 
@@ -105,7 +101,7 @@ export default function Footer() {
                             className="flex items-center gap-3 transition-colors hover:text-accent"
                         >
                             <div className="rounded-full bg-accent/10 p-2">
-                                <Call className="h-5 w-5 fill-accent" />
+                                <Phone className="h-5 w-5 text-accent" />
                             </div>
                             <span className="text-sm font-semibold sm:text-base">
                                 {contactInfo.phoneDisplay}
@@ -116,7 +112,7 @@ export default function Footer() {
                             className="flex items-center gap-3 transition-colors hover:text-accent"
                         >
                             <div className="rounded-full bg-accent/10 p-2">
-                                <Mail className="h-5 w-5 fill-accent" />
+                                <Mail className="h-5 w-5 text-accent" />
                             </div>
                             <span className="text-sm font-semibold sm:text-base">
                                 {contactInfo.emailDisplay}
@@ -124,7 +120,7 @@ export default function Footer() {
                         </Link>
                         <div className="flex items-start gap-3">
                             <div className="mt-0.5 rounded-full bg-accent/10 p-2">
-                                <LocationOn className="h-5 w-5 fill-accent" />
+                                <MapPin className="h-5 w-5 text-accent" />
                             </div>
                             <span className="text-sm font-semibold sm:text-base">
                                 {addressDisplay}
@@ -206,8 +202,8 @@ export default function Footer() {
                 <div className="mt-6 border-t border-gray-200 pt-6 md:col-span-5">
                     <div className="flex w-full flex-col gap-3 text-center md:text-left">
                         <span className="text-sm font-semibold text-gray-700 sm:text-base">
-                            © {new Date().getFullYear()} {firm.name}. All rights
-                            reserved.
+                            © {new Date().getFullYear()} {firm.name}. All
+                            rights reserved.
                         </span>
                         <p className="w-full text-xs leading-relaxed text-gray-600 sm:text-sm">
                             Disclaimer: Robust Accounts is a part of KY Books

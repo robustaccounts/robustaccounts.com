@@ -2,7 +2,7 @@ import siteConfig from '@/siteconfig';
 
 import React from 'react';
 
-import { CalendarClock, Call, Mail } from '@/ui/icons/google-icons';
+import { CalendarClock, Phone, Mail } from 'lucide-react';
 import Link from '@/ui/link';
 
 const { contactInfo } = siteConfig;
@@ -10,7 +10,7 @@ const { contactInfo } = siteConfig;
 const ContactMethodsGrid = () => {
     const contactMethods = [
         {
-            icon: <Call className="h-12 w-12 fill-accent" />,
+            icon: <Phone className="h-12 w-12 text-accent" />,
             title: 'Phone',
             description: 'Speak with our team directly',
             contact: contactInfo.phoneDisplay,
@@ -18,7 +18,7 @@ const ContactMethodsGrid = () => {
             href: `tel:${contactInfo.phoneHref}`,
         },
         {
-            icon: <Mail className="h-12 w-12 fill-accent" />,
+            icon: <Mail className="h-12 w-12 text-accent" />,
             title: 'Email',
             description: 'Send us a message anytime',
             contact: contactInfo.emailDisplay,
@@ -26,7 +26,7 @@ const ContactMethodsGrid = () => {
             href: `mailto:${contactInfo.emailHref}`,
         },
         {
-            icon: <CalendarClock className="h-12 w-12 fill-accent" />,
+            icon: <CalendarClock className="h-12 w-12 text-accent" />,
             title: 'Schedule a Call',
             description: 'Book a free consultation',
             contact: 'Schedule Now',
@@ -34,7 +34,7 @@ const ContactMethodsGrid = () => {
             href: '/contact',
         },
         // {
-        //     icon: <SupportAgent className="h-12 w-12 fill-accent" />,
+        //     icon: <SupportAgent className="h-12 w-12 text-accent" />,
         //     title: 'Live Chat',
         //     description: 'Chat with our support team',
         //     contact: 'Start Chat',

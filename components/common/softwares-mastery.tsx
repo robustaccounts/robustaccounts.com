@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import React, { useRef } from 'react';
 
-import { Check } from '@/ui/icons/google-icons';
+import { Check } from 'lucide-react';
 import IntuitQuickbooks from '@/ui/logo/intuit-quickbooks';
 import SageGreenLogo19544 from '@/ui/logo/sage';
 import XeroSvgrepoCom from '@/ui/logo/xero';
@@ -94,7 +94,7 @@ function ExpertiseCard({
         <div className={cn('flex items-start gap-4 sm:gap-5')}>
             <div className="mt-1 flex-shrink-0">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 transition-colors sm:h-12 sm:w-12">
-                    <Check className="h-5 w-5 fill-accent sm:h-6 sm:w-6" />
+                    <Check className="h-5 w-5 text-accent sm:h-6 sm:w-6" />
                 </div>
             </div>
             <div className="flex flex-col gap-2">

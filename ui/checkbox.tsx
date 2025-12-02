@@ -1,10 +1,9 @@
 'use client';
 
+import { Check } from 'lucide-react';
 import * as React from 'react';
 
 import cn from '@/utils/cn';
-
-import { Check } from './icons/google-icons';
 
 export interface CheckboxProps {
     label: string;
@@ -58,7 +57,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
                 onKeyDown={handleKeyDown}
                 tabIndex={disabled ? -1 : 0}
             >
-                {checked && <Check className="h-4 w-4 fill-white" />}
+                {checked && <Check className="h-4 w-4 text-white" />}
                 <input
                     type="checkbox"
                     id={inputId}

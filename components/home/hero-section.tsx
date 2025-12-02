@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { Check } from '@/ui/icons/google-icons';
+import { Check } from 'lucide-react';
 
 import cn from '@/utils/cn';
 
@@ -156,19 +156,19 @@ export default function HeroSection() {
                     <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs text-white/95 sm:gap-x-4 sm:text-sm md:text-base">
                         <div className="flex items-center gap-1.5">
                             <div className="rounded-full bg-accent/20 p-1">
-                                <Check className="h-3 w-3 fill-accent sm:h-4 sm:w-4" />
+                                <Check className="h-3 w-3 text-accent sm:h-4 sm:w-4" />
                             </div>
                             <span className="font-medium">No setup fees</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <div className="rounded-full bg-accent/20 p-1">
-                                <Check className="h-3 w-3 fill-accent sm:h-4 sm:w-4" />
+                                <Check className="h-3 w-3 text-accent sm:h-4 sm:w-4" />
                             </div>
                             <span className="font-medium">Cancel anytime</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <div className="rounded-full bg-accent/20 p-1">
-                                <Check className="h-3 w-3 fill-accent sm:h-4 sm:w-4" />
+                                <Check className="h-3 w-3 text-accent sm:h-4 sm:w-4" />
                             </div>
                             <span className="font-medium">24/7 support</span>
                         </div>

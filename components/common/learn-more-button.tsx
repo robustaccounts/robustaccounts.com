@@ -1,4 +1,5 @@
-import { ArrowForward } from '@/ui/icons/google-icons';
+import { ArrowRight } from 'lucide-react';
+
 import Link from '@/ui/link';
 
 import cn from '@/utils/cn';
@@ -19,7 +20,7 @@ export default function LearnMoreButton({
             )}
         >
             <div className="rounded-full bg-white p-1">
-                <ArrowForward className="h-6 w-6 fill-accent" />
+                <ArrowRight className="h-6 w-6 text-accent" />
             </div>
             Learn More
         </Link>

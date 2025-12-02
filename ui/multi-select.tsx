@@ -1,13 +1,12 @@
 'use client';
 
+import { Check, ChevronRight, X } from 'lucide-react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 
 import useOnClickOutside from '@/hooks/useOnClickOutside';
 
 import cn from '@/utils/cn';
-
-import { Check, ChevronRight, Close } from './icons/google-icons';
 
 export interface MultiSelectOption {
     value: string;
@@ -85,12 +84,12 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         <div ref={dropdownRef} className="relative w-full">
             <div
                 className={cn(
-                    'bg-white flex min-h-[60px] w-full cursor-pointer items-center gap-2 rounded-xl border-2 px-4 py-2.5 transition-colors',
+                    'flex min-h-[60px] w-full cursor-pointer items-center gap-2 rounded-xl border-2 bg-white px-4 py-2.5 transition-colors',
                     isFocused || isOpen
                         ? 'border-accent'
                         : error
                           ? 'border-red-500'
-                            : 'border-secondary',
+                          : 'border-secondary',
                     disabled && 'cursor-not-allowed opacity-50',
                     className,
                 )}
@@ -132,7 +131,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                                             aria-label={`Remove ${option.label}`}
                                             title={`Remove ${option.label}`}
                                         >
-                                            <Close className="h-3 w-3" />
+                                            <X className="h-3 w-3" />
                                         </button>
                                     </div>
                                 ))
@@ -159,7 +158,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
             </div>
 
             {isOpen && (
-                <div className="bg-white absolute top-full right-0 left-0 z-50 mt-1 max-h-60 overflow-auto rounded-xl border border-gray-200 shadow-lg">
+                <div className="absolute top-full right-0 left-0 z-50 mt-1 max-h-60 overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg">
                     {options.map((option) => (
                         <div
                             key={option.value}
@@ -177,11 +176,11 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                                     'flex h-5 w-5 items-center justify-center rounded border-2 transition-all',
                                     value.includes(option.value)
                                         ? 'border-accent bg-secondary'
-                                            : 'border-accent',
+                                        : 'border-accent',
                                 )}
                             >
                                 {value.includes(option.value) && (
-                                    <Check className="fill-accent" />
+                                    <Check className="text-accent" />
                                 )}
                             </div>
                             <span

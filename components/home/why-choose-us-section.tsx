@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import React, { useRef } from 'react';
 
-import { Check } from '@/ui/icons/google-icons';
+import { Check } from 'lucide-react';
 
 import cn from '@/utils/cn';
 
@@ -45,7 +45,7 @@ function WhyChooseUsCard({
         >
             <div className="mt-1 flex-shrink-0">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 shadow-sm transition-all group-hover:scale-110 group-hover:bg-accent/20 sm:h-14 sm:w-14">
-                    <Check className="h-6 w-6 fill-accent sm:h-7 sm:w-7" />
+                    <Check className="h-6 w-6 text-accent sm:h-7 sm:w-7" />
                 </div>
             </div>
             <div className="flex flex-col gap-2 sm:gap-3">

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import React from 'react';
 
-import { Check } from '@/ui/icons/google-icons';
+import { Check } from 'lucide-react';
 
 export default function OurStorySection() {
     return (
@@ -26,19 +26,19 @@ export default function OurStorySection() {
                     </p>
                     <div className="flex flex-col gap-3">
                         <div className="flex items-center gap-3">
-                            <Check className="h-5 w-5 fill-primary" />
+                            <Check className="h-5 w-5 text-primary" />
                             <span className="text-gray-700">
                                 IFRS Reporting & GAAP Accounting Standards
                             </span>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Check className="h-5 w-5 fill-primary" />
+                            <Check className="h-5 w-5 text-primary" />
                             <span className="text-gray-700">
                                 International Payroll & Tax Expertise
                             </span>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Check className="h-5 w-5 fill-primary" />
+                            <Check className="h-5 w-5 text-primary" />
                             <span className="text-gray-700">
                                 One-Stop-Shop for Financial Outsourcing
                             </span>

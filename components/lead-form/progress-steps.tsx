@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-import { Check } from '@/ui/icons/google-icons';
+import { Check } from 'lucide-react';
 
 import cn from '@/utils/cn';
 
@@ -41,7 +41,7 @@ export default function ProgressSteps({ currentStep }: ProgressStepsProps) {
                                 >
                                     <span className="flex items-center px-2 py-4 text-sm font-medium sm:px-6">
                                         <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-accent transition-colors group-hover:bg-accent/90 sm:h-10 sm:w-10">
-                                            <Check className="h-4 w-4 fill-white sm:h-6 sm:w-6" />
+                                            <Check className="h-4 w-4 text-white sm:h-6 sm:w-6" />
                                         </span>
                                         <span className="ml-2 hidden text-sm font-medium text-gray-900 sm:ml-4 sm:inline-block">
                                             {step.name}

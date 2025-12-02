@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Check } from '@/ui/icons/google-icons';
+import { Check } from 'lucide-react';
 
 // ContactUsBanner is rendered globally in layout; avoid double-render on this page.
 
@@ -261,7 +261,7 @@ export default function TestimonialsPage() {
                                                 key={resultIndex}
                                                 className="flex items-center gap-2"
                                             >
-                                                <Check className="h-4 w-4 flex-shrink-0 fill-primary" />
+                                                <Check className="h-4 w-4 flex-shrink-0 text-primary" />
                                                 <span className="text-sm text-gray-600">
                                                     {result}
                                                 </span>
@@ -334,7 +334,7 @@ export default function TestimonialsPage() {
                                                             key={resultIndex}
                                                             className="flex items-center gap-2"
                                                         >
-                                                            <Check className="h-3 w-3 flex-shrink-0 fill-primary" />
+                                                            <Check className="h-3 w-3 flex-shrink-0 text-primary" />
                                                             <span className="text-xs text-gray-600">
                                                                 {result}
                                                             </span>

@@ -13,7 +13,7 @@ import {
 } from 'date-fns';
 import { useState } from 'react';
 
-import { ChevronRight } from '@/ui/icons/google-icons';
+import { ChevronRight } from 'lucide-react';
 
 interface CalendarProps {
     selectedDate?: Date;

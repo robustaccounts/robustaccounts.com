@@ -1,8 +1,8 @@
 import siteConfig from '@/siteconfig';
 
+import { ArrowRight, Mail, Phone } from 'lucide-react';
 import React from 'react';
 
-import { ArrowForward, Call, Mail } from '@/ui/icons/google-icons';
 import Link from '@/ui/link';
 
 export default function ContactUsBanner() {
@@ -29,7 +29,7 @@ export default function ContactUsBanner() {
                                 href={`tel:${contactInfo.phoneHref}`}
                                 className="flex items-center justify-center gap-2 sm:justify-start"
                             >
-                                <Call className="h-5 w-5 fill-primary" />
+                                <Phone className="h-5 w-5" />
                                 <span className="text-sm font-medium sm:text-base">
                                     {contactInfo.phoneDisplay}
                                 </span>
@@ -38,7 +38,7 @@ export default function ContactUsBanner() {
                                 href={`mailto:${contactInfo.emailHref}`}
                                 className="flex items-center justify-center gap-2 sm:justify-start"
                             >
-                                <Mail className="h-5 w-5 fill-primary" />
+                                <Mail className="h-5 w-5" />
                                 <span className="text-sm font-medium sm:text-base">
                                     {contactInfo.emailDisplay}
                                 </span>
@@ -53,7 +53,7 @@ export default function ContactUsBanner() {
                             className="group inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-base font-semibold text-white transition-all sm:px-8 sm:py-4 sm:text-lg lg:w-sm"
                         >
                             Get Free Consultation
-                            <ArrowForward className="h-5 w-5 fill-white transition-transform group-hover:translate-x-1" />
+                            <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                         </Link>
                         <Link
                             href="/pricing"

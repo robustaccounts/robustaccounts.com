@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Check } from '@/ui/icons/google-icons';
+import { Check } from 'lucide-react';
 
 import cn from '@/utils/cn';
 
@@ -134,7 +134,7 @@ export default function IndustriesSection() {
                                             key={serviceIndex}
                                             className="flex items-center gap-2"
                                         >
-                                            <Check className="h-4 w-4 flex-shrink-0 fill-accent" />
+                                            <Check className="h-4 w-4 flex-shrink-0 text-accent" />
                                             <span className="text-sm text-gray-600">
                                                 {service}
                                             </span>

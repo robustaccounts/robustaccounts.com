@@ -76,31 +76,6 @@ const additionalServices = [
             },
         ],
     },
-    {
-        category: 'Business Advisory',
-        services: [
-            {
-                name: 'Strategic Planning',
-                price: '$2,500 - $5,000',
-                description: 'Business strategy development',
-            },
-            {
-                name: 'Business Valuation',
-                price: '$2,500 - $10,000',
-                description: 'Professional valuation services',
-            },
-            {
-                name: 'M&A Advisory',
-                price: '$5,000 - $25,000',
-                description: 'Merger & acquisition support',
-            },
-            {
-                name: 'Performance Analysis',
-                price: '$1,000 - $3,000',
-                description: 'Business performance review',
-            },
-        ],
-    },
 ];
 
 export default function AdditionalServicesSection() {

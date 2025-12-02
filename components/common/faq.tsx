@@ -1,8 +1,7 @@
 'use client';
 
+import { Minus, Plus } from 'lucide-react';
 import { useState } from 'react';
-
-import { Add, Remove } from '@/ui/icons/google-icons';
 
 import cn from '@/utils/cn';
 
@@ -23,9 +22,9 @@ export default function FrequentlyAskedQuestion({
             <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-accent/10 transition-all group-hover:bg-accent/20 sm:h-8 sm:w-8">
                 <div className="transition-all">
                     {isOpen ? (
-                        <Remove className="h-5 w-5 fill-accent transition-all sm:h-6 sm:w-6" />
+                        <Minus className="h-5 w-5 text-accent transition-all sm:h-6 sm:w-6" />
                     ) : (
-                        <Add className="h-5 w-5 fill-accent transition-all sm:h-6 sm:w-6" />
+                        <Plus className="h-5 w-5 text-accent transition-all sm:h-6 sm:w-6" />
                     )}
                 </div>
             </div>

@@ -4,23 +4,54 @@ import { useModal } from '@/contexts/modal-context';
 import siteConfig from '@/siteconfig';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { ChevronDown, Menu, Phone, X } from 'lucide-react';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { Call, Close, Menu } from '@/ui/icons/google-icons';
 import Link from '@/ui/link';
 
 import cn from '@/utils/cn';
 
-const mobileMenuLinks = [
-    { name: 'Home', href: '/' },
+// Services dropdown items
+const servicesDropdown = [
+    {
+        name: 'Bookkeeping',
+        href: '/services/bookkeeping',
+        description: 'Accurate financial records',
+    },
+    {
+        name: 'Payroll',
+        href: '/services/payroll',
+        description: 'Complete payroll processing',
+    },
+    {
+        name: 'Financial Advisory',
+        href: '/services/financial-advisory',
+        description: 'Strategic financial guidance',
+    },
+];
+
+// Simple navigation links
+const navLinks = [
     { name: 'About', href: '/about' },
-    { name: 'Services', href: '/services' },
     { name: 'How It Works', href: '/how-it-works' },
     { name: 'Our Expertise', href: '/our-expertise' },
-    { name: 'Testimonials', href: '/testimonials' },
-    { name: 'FAQ', href: '/faq' },
     { name: 'Pricing', href: '/pricing' },
+    { name: 'Blog', href: '/blog' },
+];
+
+const mobileMenuLinks = [
+    { name: 'Home', href: '/' },
+    {
+        name: 'Services',
+        href: '/services',
+        children: servicesDropdown,
+    },
+    { name: 'About', href: '/about' },
+    { name: 'How It Works', href: '/how-it-works' },
+    { name: 'Our Expertise', href: '/our-expertise' },
+    { name: 'Pricing', href: '/pricing' },
+    { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/contact' },
 ];
 
@@ -44,10 +75,112 @@ const itemVariants = {
     exit: { opacity: 0, x: 24, transition: { duration: 0.12 } },
 };
 
+// Services Dropdown component for desktop navigation
+function ServicesDropdown({
+    isOpen,
+    onOpen,
+    onClose,
+}: {
+    isOpen: boolean;
+    onOpen: () => void;
+    onClose: () => void;
+}) {
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target as Node)
+            ) {
+                onClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isOpen, onClose]);
+
+    return (
+        <div
+            ref={dropdownRef}
+            className="relative"
+            onMouseEnter={onOpen}
+            onMouseLeave={onClose}
+        >
+            <button
+                className={cn(
+                    'flex items-center gap-1 rounded-md px-3 py-2 font-medium transition-all hover:text-accent focus-visible:outline-2 focus-visible:outline-accent',
+                    isOpen && 'text-accent',
+                )}
+                onClick={() => (isOpen ? onClose() : onOpen())}
+                aria-expanded={isOpen}
+                aria-haspopup="true"
+            >
+                Services
+                <ChevronDown
+                    className={cn(
+                        'h-4 w-4 transition-transform duration-200',
+                        isOpen && 'rotate-180',
+                    )}
+                />
+            </button>
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                        transition={{ duration: 0.15, ease: 'easeOut' }}
+                        className="absolute top-full left-1/2 z-50 mt-2 w-64 -translate-x-1/2 rounded-xl bg-white p-2 shadow-xl ring-1 ring-black/5"
+                    >
+                        <div className="absolute -top-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 bg-white" />
+                        <div className="relative flex flex-col gap-1">
+                            {servicesDropdown.map((item) => (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className="group flex flex-col gap-0.5 rounded-lg px-3 py-2.5 transition-colors hover:bg-accent/5"
+                                    onClick={onClose}
+                                >
+                                    <span className="font-medium text-primary group-hover:text-accent">
+                                        {item.name}
+                                    </span>
+                                    <span className="text-xs text-gray-500">
+                                        {item.description}
+                                    </span>
+                                </Link>
+                            ))}
+                            <div className="my-1 border-t border-gray-100" />
+                            <Link
+                                href="/services"
+                                className="group flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent/5"
+                                onClick={onClose}
+                            >
+                                View All Services
+                                <ChevronDown className="h-3 w-3 -rotate-90" />
+                            </Link>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+}
+
 export default function Header() {
     const { contactInfo, firm } = siteConfig;
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const [isServicesOpen, setIsServicesOpen] = useState(false);
+    const [expandedMobileItems, setExpandedMobileItems] = useState<string[]>(
+        [],
+    );
     const { isSchedulingModalOpen } = useModal();
     const mobileMenuRef = React.useRef<HTMLDivElement | null>(null);
     const firstMobileLinkRef = React.useRef<HTMLAnchorElement | null>(null);
@@ -116,6 +249,14 @@ export default function Header() {
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [isMobileMenuOpen]);
 
+    const toggleMobileExpand = (name: string) => {
+        setExpandedMobileItems((prev) =>
+            prev.includes(name)
+                ? prev.filter((item) => item !== name)
+                : [...prev, name],
+        );
+    };
+
     if (isSchedulingModalOpen) {
         return null;
     }
@@ -124,24 +265,24 @@ export default function Header() {
         <>
             <header
                 className={cn(
-                    'fixed top-4 left-1/2 z-50 w-[calc(100vw-1.5rem)] max-w-[100vw] -translate-x-1/2 transform rounded-full px-4 py-2.5 text-primary shadow-sm transition-all duration-300 sm:top-6 sm:w-[calc(100vw-2rem)] md:top-8 md:container md:mx-auto md:w-full md:px-8 md:py-3',
+                    'fixed top-4 left-1/2 z-50 w-[calc(100vw-1.5rem)] max-w-[100vw] -translate-x-1/2 transform rounded-2xl px-4 py-2.5 text-primary transition-all duration-300 sm:top-6 sm:w-[calc(100vw-2rem)] md:top-8 md:container md:mx-auto md:w-full md:px-6 md:py-3 lg:rounded-full',
                     isScrolled
-                        ? 'bg-secondary/95 shadow-md backdrop-blur-md'
-                        : 'bg-secondary',
+                        ? 'bg-white/95 shadow-lg ring-1 ring-black/5 backdrop-blur-md'
+                        : 'bg-secondary shadow-sm',
                 )}
             >
                 <div className="flex items-center justify-between gap-2">
                     {/* Logo */}
                     <Link
                         href="/"
-                        className="group flex items-center gap-2 object-contain sm:gap-2.5"
+                        className="group flex items-center gap-2 object-contain transition-opacity hover:opacity-80 sm:gap-2.5"
                     >
                         <Image
                             src="/assets/logo.png"
                             alt={`${firm.name} Logo`}
                             width={64}
                             height={64}
-                            className="h-9 w-9 object-contain sm:h-10 sm:w-10 md:h-12 md:w-12"
+                            className="h-9 w-9 object-contain sm:h-10 sm:w-10 md:h-11 md:w-11"
                         />
                         <span className="text-base font-bold sm:text-lg md:text-xl">
                             {firm.name}
@@ -149,23 +290,20 @@ export default function Header() {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <nav className="hidden items-center gap-6 lg:flex lg:gap-8">
-                        {[
-                            { name: 'Services', href: '/services' },
-                            { name: 'About', href: '/about' },
+                    <nav className="hidden items-center gap-1 lg:flex">
+                        {/* Services Dropdown */}
+                        <ServicesDropdown
+                            isOpen={isServicesOpen}
+                            onOpen={() => setIsServicesOpen(true)}
+                            onClose={() => setIsServicesOpen(false)}
+                        />
 
-                            { name: 'How It Works', href: '/how-it-works' },
-                            {
-                                name: 'Our Expertise',
-                                href: '/our-expertise',
-                            },
-                            { name: 'Pricing', href: '/pricing' },
-                            { name: 'Blog', href: '/blog' },
-                        ].map((item) => (
+                        {/* Regular Nav Links */}
+                        {navLinks.map((item) => (
                             <Link
                                 key={item.name}
                                 href={item.href}
-                                className="rounded-md px-1 font-medium transition-all hover:text-primary/60 focus-visible:outline-2 focus-visible:outline-accent"
+                                className="rounded-md px-3 py-2 font-medium transition-all hover:text-accent focus-visible:outline-2 focus-visible:outline-accent"
                             >
                                 {item.name}
                             </Link>
@@ -174,19 +312,21 @@ export default function Header() {
 
                     {/* Right side actions */}
                     <div className="flex items-center gap-2 sm:gap-3">
-                        {/* Phone CTA: mobile shows icon, desktop shows number */}
+                        {/* Desktop CTA Button */}
+                        <Link
+                            href="/lead-form"
+                            className="hidden rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white transition-all hover:bg-accent/90 hover:shadow-md active:scale-95 lg:inline-flex"
+                        >
+                            Get Started
+                        </Link>
+
+                        {/* Phone CTA: mobile shows icon */}
                         <Link
                             href={`tel:${contactInfo.phoneHref}`}
                             className="inline rounded-full p-2 text-primary transition-colors hover:bg-accent/10 lg:hidden"
                             aria-label={`Call us at ${contactInfo.phoneDisplay}`}
                         >
-                            <Call className="h-5 w-5 fill-primary sm:h-6 sm:w-6" />
-                        </Link>
-                        <Link
-                            href={`tel:${contactInfo.phoneHref}`}
-                            className="hidden text-base font-semibold text-primary transition-colors hover:text-accent lg:inline lg:text-lg"
-                        >
-                            {contactInfo.phoneDisplay}
+                            <Phone className="h-5 w-5 sm:h-6 sm:w-6" />
                         </Link>
 
                         {/* Mobile Menu Button */}
@@ -200,9 +340,9 @@ export default function Header() {
                             aria-controls="mobile-menu"
                         >
                             {isMobileMenuOpen ? (
-                                <Close className="h-6 w-6 fill-primary transition-transform duration-200 sm:h-7 sm:w-7" />
+                                <X className="h-6 w-6 transition-transform duration-200 sm:h-7 sm:w-7" />
                             ) : (
-                                <Menu className="h-6 w-6 fill-primary transition-transform duration-200 sm:h-7 sm:w-7" />
+                                <Menu className="h-6 w-6 transition-transform duration-200 sm:h-7 sm:w-7" />
                             )}
                         </button>
                     </div>
@@ -232,7 +372,7 @@ export default function Header() {
                             className="absolute top-6 right-6 z-50 rounded-full bg-accent/10 p-2.5 text-primary shadow-sm transition hover:bg-accent/20"
                             aria-label="Close mobile menu"
                         >
-                            <Close className="h-6 w-6 fill-primary" />
+                            <X className="h-6 w-6" />
                         </motion.button>
                         {/* Header space */}
                         <div className="h-20"></div>
@@ -241,31 +381,141 @@ export default function Header() {
                             initial="hidden"
                             animate="visible"
                             exit="exit"
-                            className="flex flex-1 flex-col px-2"
+                            className="flex flex-1 flex-col px-2 pb-32"
                         >
-                            <nav className="flex w-full flex-col gap-2">
-                                {mobileMenuLinks.map((item) => (
+                            <nav className="flex w-full flex-col gap-1">
+                                {mobileMenuLinks.map((item, index) => (
                                     <motion.div
                                         key={item.name}
                                         variants={itemVariants}
                                     >
-                                        <Link
-                                            href={item.href}
-                                            ref={
-                                                item.name === 'Home'
-                                                    ? firstMobileLinkRef
-                                                    : undefined
-                                            }
-                                            className="flex w-full items-center rounded-xl px-4 py-4 text-xl font-bold text-primary transition-all hover:bg-accent/10 focus:bg-accent/10 focus-visible:outline-2 focus-visible:outline-accent active:scale-95"
-                                            style={{
-                                                justifyContent: 'flex-start',
-                                            }}
-                                            onClick={() =>
-                                                setIsMobileMenuOpen(false)
-                                            }
-                                        >
-                                            {item.name}
-                                        </Link>
+                                        {item.children ? (
+                                            <div className="flex flex-col">
+                                                <button
+                                                    ref={
+                                                        index === 0
+                                                            ? (el) => {
+                                                                  if (el)
+                                                                      firstMobileLinkRef.current =
+                                                                          el as unknown as HTMLAnchorElement;
+                                                              }
+                                                            : undefined
+                                                    }
+                                                    className="flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-lg font-bold text-primary transition-all hover:bg-accent/10 focus:bg-accent/10 focus-visible:outline-2 focus-visible:outline-accent"
+                                                    onClick={() =>
+                                                        toggleMobileExpand(
+                                                            item.name,
+                                                        )
+                                                    }
+                                                    aria-expanded={expandedMobileItems.includes(
+                                                        item.name,
+                                                    )}
+                                                >
+                                                    {item.name}
+                                                    <ChevronDown
+                                                        className={cn(
+                                                            'h-5 w-5 transition-transform duration-200',
+                                                            expandedMobileItems.includes(
+                                                                item.name,
+                                                            ) && 'rotate-180',
+                                                        )}
+                                                    />
+                                                </button>
+                                                <AnimatePresence>
+                                                    {expandedMobileItems.includes(
+                                                        item.name,
+                                                    ) && (
+                                                        <motion.div
+                                                            initial={{
+                                                                height: 0,
+                                                                opacity: 0,
+                                                            }}
+                                                            animate={{
+                                                                height: 'auto',
+                                                                opacity: 1,
+                                                            }}
+                                                            exit={{
+                                                                height: 0,
+                                                                opacity: 0,
+                                                            }}
+                                                            transition={{
+                                                                duration: 0.2,
+                                                            }}
+                                                            className="overflow-hidden"
+                                                        >
+                                                            <div className="flex flex-col gap-1 py-1 pl-4">
+                                                                {item.href !==
+                                                                    '#' && (
+                                                                    <Link
+                                                                        href={
+                                                                            item.href
+                                                                        }
+                                                                        className="flex flex-col gap-0.5 rounded-lg px-4 py-2.5 transition-colors hover:bg-accent/5"
+                                                                        onClick={() =>
+                                                                            setIsMobileMenuOpen(
+                                                                                false,
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <span className="font-semibold text-accent">
+                                                                            View
+                                                                            All{' '}
+                                                                            {
+                                                                                item.name
+                                                                            }
+                                                                        </span>
+                                                                    </Link>
+                                                                )}
+                                                                {item.children.map(
+                                                                    (child) => (
+                                                                        <Link
+                                                                            key={
+                                                                                child.name
+                                                                            }
+                                                                            href={
+                                                                                child.href
+                                                                            }
+                                                                            className="flex flex-col gap-0.5 rounded-lg px-4 py-2.5 transition-colors hover:bg-accent/5"
+                                                                            onClick={() =>
+                                                                                setIsMobileMenuOpen(
+                                                                                    false,
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <span className="font-medium text-primary">
+                                                                                {
+                                                                                    child.name
+                                                                                }
+                                                                            </span>
+                                                                            <span className="text-xs text-gray-500">
+                                                                                {
+                                                                                    child.description
+                                                                                }
+                                                                            </span>
+                                                                        </Link>
+                                                                    ),
+                                                                )}
+                                                            </div>
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
+                                            </div>
+                                        ) : (
+                                            <Link
+                                                href={item.href}
+                                                ref={
+                                                    item.name === 'Home'
+                                                        ? firstMobileLinkRef
+                                                        : undefined
+                                                }
+                                                className="flex w-full items-center rounded-xl px-4 py-3.5 text-lg font-bold text-primary transition-all hover:bg-accent/10 focus:bg-accent/10 focus-visible:outline-2 focus-visible:outline-accent active:scale-95"
+                                                onClick={() =>
+                                                    setIsMobileMenuOpen(false)
+                                                }
+                                            >
+                                                {item.name}
+                                            </Link>
+                                        )}
                                     </motion.div>
                                 ))}
                             </nav>
@@ -275,13 +525,20 @@ export default function Header() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 20 }}
                             transition={{ delay: 0.2, duration: 0.25 }}
-                            className="fixed right-0 bottom-0 left-0 z-50 flex w-full justify-center border-t border-gray-200 bg-white px-5 pt-5 pb-8 shadow-lg"
+                            className="fixed right-0 bottom-0 left-0 z-50 flex w-full flex-col gap-3 border-t border-gray-100 bg-white px-5 pt-4 pb-8 shadow-lg"
                         >
                             <Link
-                                href={`tel:${contactInfo.phoneHref}`}
-                                className="flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-xl font-bold text-white shadow-lg transition-all hover:bg-accent/90 active:scale-95"
+                                href="/contact"
+                                className="flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-lg font-bold text-white shadow-lg transition-all hover:bg-accent/90 active:scale-95"
+                                onClick={() => setIsMobileMenuOpen(false)}
                             >
-                                <Call className="h-6 w-6 fill-white" />
+                                Get Started
+                            </Link>
+                            <Link
+                                href={`tel:${contactInfo.phoneHref}`}
+                                className="flex items-center justify-center gap-2 rounded-full border border-gray-200 bg-white px-6 py-3.5 text-lg font-semibold text-primary transition-all hover:bg-gray-50 active:scale-95"
+                            >
+                                <Phone className="h-5 w-5" />
                                 {contactInfo.phoneDisplay}
                             </Link>
                         </motion.div>

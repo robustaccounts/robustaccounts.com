@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Accounts from '@/ui/icons/accounts';
-import BusinessAdvisory from '@/ui/icons/business-advisory';
 import FinancialAdvisory from '@/ui/icons/financial-advisory';
 import Payroll from '@/ui/icons/payroll';
 import Link from '@/ui/link';
@@ -13,7 +12,7 @@ import LearnMoreButton from '../common/learn-more-button';
 const services = [
     {
         id: 1,
-        icon: <Accounts className="h-6 w-6 fill-accent" />,
+        icon: <Accounts className="h-6 w-6 text-accent" />,
         title: 'Bookkeeping & Accounting',
         description:
             'Comprehensive bookkeeping services including accounts payable/receivable, general ledger maintenance, and monthly financial statements.',
@@ -26,7 +25,7 @@ const services = [
     },
     {
         id: 2,
-        icon: <Payroll className="h-6 w-6 fill-accent" />,
+        icon: <Payroll className="h-6 w-6 text-accent" />,
         title: 'Payroll Management',
         description:
             'End-to-end payroll processing including employee payments, tax withholdings, and regulatory compliance reporting.',
@@ -35,7 +34,7 @@ const services = [
     },
     {
         id: 3,
-        icon: <FinancialAdvisory className="h-6 w-6 fill-accent" />,
+        icon: <FinancialAdvisory className="h-6 w-6 text-accent" />,
         title: 'Financial Advisory',
         description:
             'Strategic financial insights and advisory services to support budgeting, forecasting, and long-term business growth.',
@@ -45,19 +44,6 @@ const services = [
             'Growth strategies',
         ],
         href: '/services/financial-advisory',
-    },
-    {
-        id: 4,
-        icon: <BusinessAdvisory className="h-6 w-6 fill-accent" />,
-        title: 'Business Advisory',
-        description:
-            'Strategic business consulting to help you make informed decisions and drive sustainable growth.',
-        features: [
-            'Strategic planning',
-            'Performance analysis',
-            'Growth consulting',
-        ],
-        href: '/services/business-advisory',
     },
 ];
 
