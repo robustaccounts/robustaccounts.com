@@ -19,6 +19,7 @@ export interface DropdownProps {
     placeholder?: string;
     options: DropdownOption[];
     onChange?: (value: string) => void;
+    onBlur?: () => void;
     name?: string;
     required?: boolean;
     disabled?: boolean;
@@ -32,6 +33,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     placeholder = 'Select an option',
     options,
     onChange,
+    onBlur,
     name,
     required = false,
     disabled = false,
@@ -46,6 +48,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     useOnClickOutside(dropdownRef, () => {
         setIsOpen(false);
         setIsFocused(false);
+        onBlur?.();
     });
 
     const selectedOption = options.find((option) => option.value === value);
@@ -137,7 +140,11 @@ export const Dropdown: React.FC<DropdownProps> = ({
                 </div>
             )}
 
-            {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+            {error && (
+                <p className="absolute -bottom-5 left-0 text-xs text-red-600">
+                    {error}
+                </p>
+            )}
 
             <input type="hidden" name={name} value={value} />
         </div>

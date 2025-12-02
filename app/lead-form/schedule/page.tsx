@@ -100,8 +100,8 @@ export default function SchedulePage() {
                 </Link>
             </div>
 
-            {/* Main Content - Scrollable on mobile, fits on desktop */}
-            <div className="flex-1 overflow-y-auto lg:overflow-hidden">
+            {/* Main Content - Scrollable */}
+            <div className="flex-1 overflow-y-auto">
                 <div className="mx-auto w-full max-w-4xl py-4 pt-6 sm:py-6 sm:pt-10 lg:px-0 lg:pt-12">
                     {/* Date Selection */}
                     <div className="mb-8">

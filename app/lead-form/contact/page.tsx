@@ -6,7 +6,8 @@ import { sendGAEvent } from '@next/third-parties/google';
 import { X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { z } from 'zod';
 
 import Checkbox from '@/ui/checkbox';
 import Dropdown, { DropdownOption } from '@/ui/dropdown';
@@ -29,12 +30,47 @@ const industries: DropdownOption[] = [
     { value: 'other', label: 'Other' },
 ];
 
+// Zod validation schema for contact form
+const contactFormSchema = z.object({
+    firstName: z.string().min(1, 'First name is required'),
+    lastName: z.string().min(1, 'Last name is required'),
+    email: z
+        .string()
+        .min(1, 'Email is required')
+        .email('Please enter a valid email address'),
+    phone: z.string().min(1, 'Phone number is required'),
+    businessName: z.string().min(1, 'Business name is required'),
+    industry: z.string().min(1, 'Please select an industry'),
+});
+
+// Field names for touched tracking
+type FieldName =
+    | 'firstName'
+    | 'lastName'
+    | 'email'
+    | 'phone'
+    | 'businessName'
+    | 'industry';
+
 export default function ContactPage() {
     const router = useRouter();
     const { formData, setContactData, setEmailConsent, setSmsConsent } =
         useLeadForm();
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [touched, setTouched] = useState<Record<FieldName, boolean>>({
+        firstName: false,
+        lastName: false,
+        email: false,
+        phone: false,
+        businessName: false,
+        industry: false,
+    });
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Mark a field as touched
+    const handleBlur = (field: FieldName) => {
+        setTouched((prev) => ({ ...prev, [field]: true }));
+    };
 
     useEffect(() => {
         // Redirect to schedule if no date or time is selected
@@ -43,38 +79,81 @@ export default function ContactPage() {
         }
     }, [formData.selectedDate, formData.selectedTimeSlot, router]);
 
+    // Validate and update errors for touched fields
+    useEffect(() => {
+        const result = contactFormSchema.safeParse({
+            firstName: formData.contactData.firstName.trim(),
+            lastName: formData.contactData.lastName.trim(),
+            email: formData.contactData.email.trim(),
+            phone: formData.contactData.phone.trim(),
+            businessName: formData.contactData.businessName.trim(),
+            industry: formData.contactData.industry,
+        });
+
+        if (!result.success) {
+            const newErrors: Record<string, string> = {};
+            result.error.errors.forEach((err) => {
+                const field = err.path[0] as FieldName;
+                // Only show error if field is touched
+                if (touched[field]) {
+                    newErrors[field] = err.message;
+                }
+            });
+            setErrors(newErrors);
+        } else {
+            setErrors({});
+        }
+    }, [formData.contactData, touched]);
+
+    // Check if form is valid for enabling/disabling submit button
+    const isFormValid = useMemo(() => {
+        const result = contactFormSchema.safeParse({
+            firstName: formData.contactData.firstName.trim(),
+            lastName: formData.contactData.lastName.trim(),
+            email: formData.contactData.email.trim(),
+            phone: formData.contactData.phone.trim(),
+            businessName: formData.contactData.businessName.trim(),
+            industry: formData.contactData.industry,
+        });
+        return result.success;
+    }, [formData.contactData]);
+
     if (!formData.selectedDate || !formData.selectedTimeSlot) {
         return null;
     }
 
     const validateForm = (): boolean => {
-        const newErrors: Record<string, string> = {};
+        // Mark all fields as touched on submit
+        setTouched({
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            businessName: true,
+            industry: true,
+        });
 
-        if (!formData.contactData.firstName.trim()) {
-            newErrors.firstName = 'First name is required';
-        }
-        if (!formData.contactData.lastName.trim()) {
-            newErrors.lastName = 'Last name is required';
-        }
-        if (!formData.contactData.email.trim()) {
-            newErrors.email = 'Email is required';
-        } else if (
-            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contactData.email)
-        ) {
-            newErrors.email = 'Please enter a valid email address';
-        }
-        if (!formData.contactData.phone.trim()) {
-            newErrors.phone = 'Phone number is required';
-        }
-        if (!formData.contactData.businessName.trim()) {
-            newErrors.businessName = 'Business name is required';
-        }
-        if (!formData.contactData.industry) {
-            newErrors.industry = 'Please select an industry';
+        const result = contactFormSchema.safeParse({
+            firstName: formData.contactData.firstName.trim(),
+            lastName: formData.contactData.lastName.trim(),
+            email: formData.contactData.email.trim(),
+            phone: formData.contactData.phone.trim(),
+            businessName: formData.contactData.businessName.trim(),
+            industry: formData.contactData.industry,
+        });
+
+        if (!result.success) {
+            const newErrors: Record<string, string> = {};
+            result.error.errors.forEach((err) => {
+                const field = err.path[0] as string;
+                newErrors[field] = err.message;
+            });
+            setErrors(newErrors);
+            return false;
         }
 
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        setErrors({});
+        return true;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -208,6 +287,7 @@ export default function ContactPage() {
                                         firstName: value,
                                     })
                                 }
+                                onBlur={() => handleBlur('firstName')}
                                 error={errors.firstName}
                                 required
                             />
@@ -219,6 +299,7 @@ export default function ContactPage() {
                                         lastName: value,
                                     })
                                 }
+                                onBlur={() => handleBlur('lastName')}
                                 error={errors.lastName}
                                 required
                             />
@@ -233,6 +314,7 @@ export default function ContactPage() {
                                 onChange={(value) =>
                                     setContactData({ email: value })
                                 }
+                                onBlur={() => handleBlur('email')}
                                 error={errors.email}
                                 required
                             />
@@ -246,6 +328,7 @@ export default function ContactPage() {
                                 onCountryChange={(code) =>
                                     setContactData({ countryCode: code })
                                 }
+                                onBlur={() => handleBlur('phone')}
                                 error={errors.phone}
                                 required
                             />
@@ -260,6 +343,7 @@ export default function ContactPage() {
                                     businessName: value,
                                 })
                             }
+                            onBlur={() => handleBlur('businessName')}
                             error={errors.businessName}
                             required
                         />
@@ -272,6 +356,7 @@ export default function ContactPage() {
                             onChange={(value) =>
                                 setContactData({ industry: value })
                             }
+                            onBlur={() => handleBlur('industry')}
                             placeholder="Select your industry"
                             error={errors.industry}
                             required
@@ -356,7 +441,7 @@ export default function ContactPage() {
                     <button
                         type="submit"
                         onClick={handleSubmit}
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || !isFormValid}
                         className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50 sm:text-base"
                     >
                         {isSubmitting ? (
