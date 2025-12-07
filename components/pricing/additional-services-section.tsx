@@ -1,135 +1,140 @@
 import React from 'react';
 
-const additionalServices = [
+import { ArrowRight } from 'lucide-react';
+import Link from '@/ui/link';
+
+interface AddOn {
+    name: string;
+    price: string;
+    description: string;
+    features: string[];
+    href: string;
+}
+
+const addOns: AddOn[] = [
     {
-        category: 'Bookkeeping Services',
-        services: [
-            {
-                name: 'Basic Bookkeeping',
-                price: '$299 - $499/month',
-                description: 'Monthly bookkeeping and reconciliation',
-            },
-            {
-                name: 'Advanced Bookkeeping',
-                price: '$499 - $799/month',
-                description: 'Comprehensive accounting services',
-            },
-            {
-                name: 'Financial Statements',
-                price: '$200 - $500/month',
-                description: 'Monthly financial reporting',
-            },
-            {
-                name: 'Accounts Receivable Management',
-                price: '$150 - $300/month',
-                description: 'Invoice and collections management',
-            },
+        name: 'Catch-up Bookkeeping',
+        price: 'Starting at $200/mo',
+        description: 'Get your books in order and start fresh.',
+        features: [
+            'Reconcile past months and correct prior period entries.',
+            'Deliver clean, audit-ready financial records.',
         ],
+        href: '/lead-form/schedule?source=pricing&addon=catchup-bookkeeping',
     },
     {
-        category: 'Payroll Services',
-        services: [
-            {
-                name: 'Basic Payroll Processing',
-                price: '$50/month + $5/employee',
-                description: 'Up to 25 employees',
-            },
-            {
-                name: 'Full-Service Payroll',
-                price: '$100/month + $8/employee',
-                description: 'Includes tax filing',
-            },
-            {
-                name: 'HR Support',
-                price: '$150/month',
-                description: 'Employee handbook & compliance',
-            },
-            {
-                name: 'Benefits Administration',
-                price: '$25/employee/month',
-                description: 'Health insurance & 401k',
-            },
+        name: 'Payroll & Bill Pay',
+        price: 'Starting at $150/mo',
+        description: 'Streamlined payroll and accounts payable processing.',
+        features: [
+            'Full payroll processing, bill pay, vendor management, and 1099 prep.',
+            'Flexible limits – upgrade as your team grows.',
+            'Accountant review on all payments and workflows.',
         ],
+        href: '/lead-form/schedule?source=pricing&addon=payroll-billpay',
     },
     {
-        category: 'Financial Advisory',
-        services: [
-            {
-                name: 'Financial Planning',
-                price: '$200/hour',
-                description: 'Strategic financial guidance',
-            },
-            {
-                name: 'Cash Flow Analysis',
-                price: '$500 - $1,500',
-                description: 'Detailed cash flow forecasting',
-            },
-            {
-                name: 'Budget Planning',
-                price: '$300 - $800',
-                description: 'Annual budget development',
-            },
-            {
-                name: 'Financial Consulting',
-                price: '$150 - $300/hour',
-                description: 'Ongoing financial advisory',
-            },
+        name: 'Financial Planning & Analysis',
+        price: 'Starting at $300/mo',
+        description: 'Turn your financials into strategic insights.',
+        features: [
+            'Cash flow forecasting and KPI tracking.',
+            'Budget vs. actual reporting with scenario planning.',
+            'Investor-ready financial models and projections.',
         ],
+        href: '/lead-form/schedule?source=pricing&addon=fpa',
+    },
+    {
+        name: 'E-commerce Accounting',
+        price: 'Starting at $100/mo',
+        description: 'Multi-channel accounting for online sellers.',
+        features: [
+            'Integrate Shopify, Amazon, Stripe, and PayPal.',
+            'Track fees, refunds, chargebacks, and inventory costs.',
+            'Channel profitability reporting you can act on.',
+        ],
+        href: '/lead-form/schedule?source=pricing&addon=ecommerce',
+    },
+    {
+        name: 'Tax Services',
+        price: 'Starting at $500',
+        description: 'Professional tax preparation and compliance.',
+        features: [
+            'Business and personal returns, quarterly estimates, 1099 filing.',
+            'Sales tax compliance and R&D credit studies available.',
+            'Built on the clean books we maintain monthly.',
+        ],
+        href: '/lead-form/schedule?source=pricing&addon=tax',
+    },
+    {
+        name: 'Dedicated Staff Augmentation',
+        price: 'Starting at $2,000/mo',
+        description: 'Experienced accounting professionals embedded in your team.',
+        features: [
+            'Add a bookkeeper, accountant, or CFO advisor to your team.',
+            'Works in your timezone with full onboarding and oversight.',
+            'Scale up or down with flat monthly pricing.',
+        ],
+        href: '/lead-form/schedule?source=pricing&addon=staff-augmentation',
     },
 ];
 
 export default function AdditionalServicesSection() {
     return (
-        <section className="flex min-h-screen items-center py-12 lg:py-16">
+        <section className="flex items-center py-16 lg:py-24">
             <div className="container mx-auto px-4 sm:px-6 lg:px-12">
                 <div className="mb-12 text-center">
-                    <h2 className="mb-4 text-2xl font-semibold sm:text-3xl lg:text-4xl">
-                        Additional Services
+                    <h2 className="mb-4 text-2xl font-bold sm:text-3xl lg:text-4xl">
+                        Add-ons to{' '}
+                        <span className="text-accent">enhance your plan</span>
                     </h2>
-                    <p className="mx-auto max-w-3xl text-base sm:text-lg">
-                        Enhance your plan with specialized services tailored to
-                        your business needs
+                    <p className="mx-auto max-w-3xl text-base text-gray-600 sm:text-lg">
+                        Specialized services tailored to your business needs
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                    {additionalServices.map((category, index) => (
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {addOns.map((addon, index) => (
                         <div
                             key={index}
-                            className="rounded-xl bg-secondary p-6"
+                            className="group flex flex-col rounded-xl border border-gray-200 bg-white p-6 transition-all duration-300 hover:border-accent/50 hover:shadow-lg"
                         >
-                            <h3 className="mb-4 text-xl font-semibold">
-                                {category.category}
-                            </h3>
-                            <div className="space-y-4">
-                                {category.services.map(
-                                    (service, serviceIndex) => (
-                                        <div
-                                            key={serviceIndex}
-                                            className="group relative flex items-center justify-between"
-                                        >
-                                            <div className="flex-1">
-                                                <h4
-                                                    className="cursor-help font-medium"
-                                                    title={service.description}
-                                                >
-                                                    {service.name}
-                                                </h4>
-                                                {/* Tooltip */}
-                                                <div className="invisible absolute bottom-full left-0 z-10 mb-2 w-48 rounded-lg bg-black px-3 py-2 text-sm text-white opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
-                                                    {service.description}
-                                                    <div className="absolute top-[90%] left-4 h-2 w-2 rotate-45 bg-black"></div>
-                                                </div>
-                                            </div>
-                                            <div className="ml-4 text-right">
-                                                <span className="font-semibold text-accent">
-                                                    {service.price}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    ),
-                                )}
+                            {/* Header */}
+                            <div className="mb-4">
+                                <h3 className="text-lg font-bold text-gray-900">
+                                    {addon.name}
+                                </h3>
+                                <p className="mt-1 text-sm font-semibold text-accent">
+                                    {addon.price}
+                                </p>
                             </div>
+
+                            {/* Description */}
+                            <p className="mb-4 text-sm text-gray-600">
+                                {addon.description}
+                            </p>
+
+                            {/* Features */}
+                            <ul className="mb-6 flex-grow space-y-2">
+                                {addon.features.map((feature, featureIndex) => (
+                                    <li
+                                        key={featureIndex}
+                                        className="flex items-start gap-2 text-sm text-gray-700"
+                                    >
+                                        <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-accent" />
+                                        {feature}
+                                    </li>
+                                ))}
+                            </ul>
+
+                            {/* CTA */}
+                            <Link
+                                href={addon.href}
+                                className="mt-auto flex items-center justify-center gap-2 rounded-full border-2 border-gray-200 py-2.5 text-sm font-semibold text-gray-700 transition-all group-hover:border-accent group-hover:text-accent"
+                            >
+                                Learn More
+                                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                            </Link>
                         </div>
                     ))}
                 </div>

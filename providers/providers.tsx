@@ -10,6 +10,7 @@ import { initializeAmplitude } from '@/lib/amplitude';
 import SchedulingModal from '@/components/scheduling-modal';
 import CookieBanner from '@/components/consent/cookie-banner';
 import ConsentedAnalytics from '@/components/analytics/consented-analytics';
+import BotpressChat from '@/providers/botpress-chat';
 
 function ModalWrapper() {
     const { isSchedulingModalOpen, setSchedulingModalOpen } = useModal();
@@ -41,6 +42,7 @@ export function Providers({ children }: Readonly<{ children: React.ReactNode }>)
                 <ModalWrapper />
                 <CookieBanner />
                 <ConsentedAnalytics />
+                <BotpressChat />
             </ModalProvider>
         </ConsentProvider>
     );
