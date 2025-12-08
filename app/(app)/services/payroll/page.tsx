@@ -1,106 +1,133 @@
+'use client';
+
 import React from 'react';
 
-import cn from '@/utils/cn';
+import ServiceHero from '@/components/services/shared-hero';
+import FadeIn from '@/components/ui/fade-in';
+import { Calendar, Users, ShieldCheck, FileText } from 'lucide-react';
+import ProcessSection from '@/components/services/process-section';
+import WhoIsThisForSection from '@/components/services/who-is-this-for-section';
+import FAQSection from '@/components/services/faq-section';
 
-import PricingTiersSection, { PricingTier } from '@/components/pricing/pricing-tiers-section';
-import PayrollHeroSection from '@/components/services/payroll/hero-section';
-import PayrollFeaturesSection from '@/components/services/payroll/features-section';
-import PayrollBenefitsSection from '@/components/services/payroll/benefits-section';
-
-// Payroll-specific pricing tiers
-const payrollPricingTiers: PricingTier[] = [
+const features = [
     {
-        name: 'Essentials',
-        price: '$149',
-        annualPrice: '$134',
-        period: '/month',
-        description: 'Perfect for small teams getting started with payroll',
-        popular: false,
-        features: [
-            'Up to 5 employees included',
-            'Direct deposit processing',
-            'Basic tax filings',
-            'Employee pay stubs',
-            'Monthly reporting',
-            'Email support',
-            '$8/additional employee',
-        ],
-        limitations: [
-            'Basic reporting only',
-            'Email support only',
-            'No benefits administration',
-        ],
-        cta: 'Get Started',
-        href: '/getting-started?plan=essentials&service=payroll',
+        title: 'Automated Payroll Runs',
+        description:
+            'Set it and forget it. We handle your payroll schedule, whether weekly, bi-weekly, or monthly.',
+        icon: Calendar,
     },
     {
-        name: 'Professional',
-        price: '$299',
-        annualPrice: '$269',
-        period: '/month',
-        description: 'Comprehensive payroll for growing businesses',
-        popular: true,
-        features: [
-            'Up to 15 employees included',
-            'All Essential features',
-            'Benefits administration',
-            'Time tracking integration',
-            'Quarterly tax reports',
-            'Phone & email support',
-            'HR compliance tools',
-            '$6/additional employee',
-        ],
-        limitations: [
-            'Standard reporting templates',
-            'Limited HR features',
-        ],
-        cta: 'Get Started',
-        href: '/getting-started?plan=professional&service=payroll',
+        title: 'Tax Filing & Compliance',
+        description:
+            'We calculate, file, and pay your federal, state, and local payroll taxes automatically.',
+        icon: ShieldCheck,
     },
     {
-        name: 'Enterprise',
-        price: 'Custom',
-        annualPrice: 'Custom',
-        description: 'Advanced payroll solution for large organizations',
-        popular: false,
-        features: [
-            'Up to 50 employees included',
-            'All Professional features',
-            'Dedicated payroll specialist',
-            'Advanced reporting & analytics',
-            'Multi-location support',
-            'Priority support',
-            'Custom integrations',
-            '$4/additional employee',
-        ],
-        limitations: [],
-        cta: 'Contact Sales',
-        href: '/contact',
+        title: 'Employee Self-Service',
+        description:
+            'Employees get their own portal to view pay stubs, W-2s, and manage personal details.',
+        icon: Users,
+    },
+    {
+        title: 'Year-End W-2s & 1099s',
+        description:
+            'We generate and distribute all necessary year-end tax forms to your team and contractors.',
+        icon: FileText,
+    },
+];
+
+const processSteps = [
+    {
+        title: 'Sync Employee Data',
+        description:
+            'Enter hours worked or sync with your time-tracking software. We verify the data for accuracy.',
+    },
+    {
+        title: 'Review & Approve',
+        description:
+            'We prepare the payroll run and send you a summary for approval. One click and you’re done.',
+    },
+    {
+        title: 'Direct Deposit & Tax Filing',
+        description:
+            'Funds are deposited directly into employee accounts, and all payroll taxes are filed and paid automatically.',
+    },
+];
+
+const audience = [
+    'Growing companies hiring their first employees',
+    'Businesses tired of payroll tax penalties',
+    'Remote teams in multiple states/jurisdictions',
+    'Companies managing a mix of W-2s and contractors',
+    'Owners who want to automate administrative tasks',
+];
+
+const faqs = [
+    {
+        question: 'Do you handle filings for all 50 states?',
+        answer: 'Yes, we handle federal, state, and local payroll tax filings for employees in all 50 states.',
+    },
+    {
+        question: 'Can I pay contractors (1099s) through this service?',
+        answer: 'Absolutely. We can handle payments and year-end 1099 filings for all your independent contractors alongside your W-2 employees.',
+    },
+    {
+        question: 'How long does direct deposit take?',
+        answer: 'Standard processing time is 2-4 business days, but next-day and same-day direct deposit options are available for qualified businesses.',
+    },
+    {
+        question: 'Who handles onboarding new employees?',
+        answer: 'We provide self-service onboarding flows where new hires can enter their own personal banking and tax information securely.',
     },
 ];
 
 export default function PayrollPage() {
     return (
-        <main className="min-h-screen">
-            {/* Hero Section */}
-            <PayrollHeroSection />
+        <main className="flex min-h-screen flex-col">
+            <ServiceHero
+                title="Seamless payroll,"
+                highlightedText="every time"
+                subtitle="Ensure your team gets paid correctly and on time. We handle calculations, tax filings, and compliance so you never have to stress about payroll day."
+            />
 
-            {/* Features Section */}
-            <PayrollFeaturesSection />
+            {/* Features Grid */}
+            <section className="w-full bg-gray-50 py-24 lg:py-32">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <FadeIn className="mb-16 text-center">
+                        <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
+                            Payroll Made Simple
+                        </h2>
+                        <p className="mt-4 text-lg text-gray-600">
+                            A complete payroll solution that scales with your
+                            team.
+                        </p>
+                    </FadeIn>
 
-            {/* Benefits Section */}
-            <PayrollBenefitsSection />
-
-            {/* Pricing Section */}
-            <section className={cn(
-                'flex w-full flex-col items-center justify-center gap-12 px-4 py-16 sm:gap-16 sm:px-6 md:px-12 lg:px-16 xl:container xl:mx-auto',
-            )}>
-                <PricingTiersSection 
-                    pricingTiers={payrollPricingTiers}
-                    title="Choose Your Payroll Package"
-                    subtitle="Flexible pricing options designed specifically for your payroll needs"
-                />
+                    <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2">
+                        {features.map((feature, index) => (
+                            <FadeIn
+                                key={index}
+                                delay={index * 0.1}
+                                className="group flex flex-col gap-4 rounded-2xl border border-gray-100 bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                            >
+                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent transition-colors group-hover:bg-accent group-hover:text-white">
+                                    <feature.icon className="h-6 w-6" />
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900">
+                                    {feature.title}
+                                </h3>
+                                <p className="text-base leading-relaxed text-gray-600">
+                                    {feature.description}
+                                </p>
+                            </FadeIn>
+                        ))}
+                    </div>
+                </div>
             </section>
+
+            <ProcessSection steps={processSteps} />
+            <WhoIsThisForSection audience={audience} />
+            <FAQSection items={faqs} />
         </main>
     );
 }

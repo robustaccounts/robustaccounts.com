@@ -57,44 +57,49 @@ const services = [
     },
 ];
 
+import FadeIn from '@/components/ui/fade-in';
+
 export default function ServicesGridSection() {
     return (
-        <section
-            className={cn(
-                'flex w-full flex-col items-center justify-center gap-12 px-4 py-16 sm:gap-16 sm:px-6 md:px-12 lg:px-16 xl:container xl:mx-auto',
-            )}
-        >
-            <div className="flex max-w-4xl flex-col items-center justify-center gap-4 text-center">
-                <h2 className="text-2xl font-semibold sm:text-3xl lg:text-4xl">
-                    Choose Your Perfect Service Package
-                </h2>
-                <p className="text-base text-gray-600 sm:text-lg">
-                    Professional accounting services designed to scale with your
-                    business
-                </p>
-            </div>
+        <section className="w-full bg-gray-50 py-24 lg:py-32">
+            <div className="container mx-auto flex w-full flex-col items-center justify-center gap-12 px-5 sm:gap-16 sm:px-8 lg:px-12">
+                <FadeIn className="flex max-w-4xl flex-col items-center justify-center gap-4 text-center">
+                    <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl text-gray-900">
+                        Choose Your Perfect Service Package
+                    </h2>
+                    <p className="text-base text-gray-600 sm:text-lg">
+                        Professional accounting services designed to scale with your
+                        business
+                    </p>
+                </FadeIn>
 
-            <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {services.map((service) => (
-                    <div key={service.id} className="relative">
-                        {service.popular && (
-                            <div className="absolute -top-4 left-1/2 z-10 -translate-x-1/2 transform rounded-full bg-accent px-4 py-1 text-sm font-medium text-white">
-                                Most Popular
-                            </div>
-                        )}
-                        <div className="h-full cursor-pointer rounded-xl bg-secondary p-6 transition-all duration-300 sm:p-8">
-                            <div className="flex h-full flex-col justify-between gap-6">
-                                <div className="flex flex-col gap-4">
+                <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {services.map((service, index) => (
+                        <FadeIn
+                            key={service.id}
+                            delay={index * 0.1}
+                            className="relative h-full"
+                        >
+                            {service.popular && (
+                                <div className="absolute -top-4 left-1/2 z-10 -translate-x-1/2 transform rounded-full bg-accent px-4 py-1 text-sm font-medium text-white shadow-md">
+                                    Most Popular
+                                </div>
+                            )}
+                            <div className={cn(
+                                "group flex h-full flex-col justify-between rounded-2xl border bg-white p-6 transition-all duration-300 hover:shadow-xl sm:p-8",
+                                service.popular ? "border-accent/20 ring-1 ring-accent/10" : "border-gray-100"
+                            )}>
+                                <div className="flex flex-col gap-6">
                                     <div className="flex flex-col gap-2">
-                                        <h3 className="text-lg font-semibold sm:text-xl lg:text-2xl">
+                                        <h3 className="text-xl font-bold text-gray-900 sm:text-2xl">
                                             {service.title}
                                         </h3>
-                                        <p className="font-semibold text-accent">
+                                        <p className="font-bold text-accent text-lg">
                                             {service.pricing}
                                         </p>
                                     </div>
 
-                                    <p className="text-sm text-gray-600 sm:text-base">
+                                    <p className="text-sm text-gray-600 sm:text-base leading-relaxed">
                                         {service.description}
                                     </p>
 
@@ -103,9 +108,11 @@ export default function ServicesGridSection() {
                                             (feature, index) => (
                                                 <div
                                                     key={index}
-                                                    className="flex items-center gap-3"
+                                                    className="flex items-start gap-3"
                                                 >
-                                                    <Check className="h-5 w-5 flex-shrink-0 text-accent" />
+                                                    <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-accent/10">
+                                                        <Check className="h-3 w-3 text-accent" />
+                                                    </div>
                                                     <span className="text-sm text-gray-700 sm:text-base">
                                                         {feature}
                                                     </span>
@@ -115,15 +122,16 @@ export default function ServicesGridSection() {
                                     </div>
                                 </div>
 
-                                <div className="mt-4">
+                                <div className="mt-8">
                                     <LearnMoreButton
                                         href={`/services/${service.id}`}
+                                        className="w-full justify-center"
                                     />
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                ))}
+                        </FadeIn>
+                    ))}
+                </div>
             </div>
         </section>
     );

@@ -26,17 +26,16 @@ const about = [
         href: '/about',
     },
     {
+        title: 'Our Expertise',
+        href: '/our-expertise',
+    },
+    {
+        title: 'Pricing',
+        href: '/pricing',
+    },
+    {
         title: 'How It Works',
         href: '/how-it-works',
-    },
-
-    {
-        title: 'Blog',
-        href: '/blog',
-    },
-    {
-        title: 'Contact Us',
-        href: '/contact',
     },
 ];
 

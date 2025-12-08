@@ -29,45 +29,43 @@ const faqs = [
 
 export default function FAQSection() {
     return (
-        <section
-            className={cn(
-                'container mx-auto flex h-full w-full flex-col items-center justify-center gap-8 px-5 py-12 sm:gap-10 sm:px-8 sm:py-14 md:px-12 md:py-16 lg:px-16 lg:py-20',
-            )}
-        >
-            {/* Header */}
-            <div className="flex flex-col items-center gap-3 text-center sm:gap-4">
-                <h2 className="text-2xl leading-tight font-bold sm:text-3xl lg:text-4xl">
-                    Frequently Asked{' '}
-                    <span className="text-accent">Questions</span>
-                </h2>
-                <p className="max-w-2xl text-sm leading-relaxed text-gray-700 sm:text-base lg:text-lg">
-                    Get answers to the most common questions about our
-                    accounting outsourcing services.
-                </p>
-            </div>
+        <section className="w-full bg-gray-50 py-24 sm:py-32">
+            <div className="container mx-auto flex h-full w-full flex-col items-center justify-center gap-12 px-5 sm:gap-16 sm:px-8 md:px-12 lg:px-16">
+                {/* Header */}
+                <div className="flex flex-col items-center gap-3 text-center sm:gap-4">
+                    <h2 className="text-3xl leading-tight font-bold tracking-tight text-primary sm:text-4xl lg:text-5xl">
+                        Frequently Asked{' '}
+                        <span className="text-accent">Questions</span>
+                    </h2>
+                    <p className="max-w-2xl text-sm leading-relaxed text-gray-700 sm:text-base lg:text-lg">
+                        Get answers to the most common questions about our
+                        accounting outsourcing services.
+                    </p>
+                </div>
 
-            {/* FAQ Items */}
-            <div className="w-full max-w-4xl space-y-3 sm:space-y-4">
-                {faqs.map((faq, index) => (
-                    <FrequentlyAskedQuestion
-                        key={index}
-                        question={faq.question}
-                        answer={faq.answer}
-                    />
-                ))}
-            </div>
+                {/* FAQ Items */}
+                <div className="w-full max-w-4xl space-y-3 sm:space-y-4">
+                    {faqs.map((faq, index) => (
+                        <FrequentlyAskedQuestion
+                            key={index}
+                            question={faq.question}
+                            answer={faq.answer}
+                        />
+                    ))}
+                </div>
 
-            {/* CTA */}
-            <div className="flex flex-col items-center gap-5 pt-4 text-center sm:gap-6">
-                <p className="text-base text-gray-700 sm:text-lg lg:text-xl">
-                    Still have questions? We're here to help.
-                </p>
-                <Link
-                    href="/faq"
-                    className="flex cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:bg-accent/90 hover:shadow-xl focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:outline-none active:scale-95 sm:px-10 sm:text-lg"
-                >
-                    View All FAQs
-                </Link>
+                {/* CTA */}
+                <div className="flex flex-col items-center gap-5 pt-4 text-center sm:gap-6">
+                    <p className="text-base text-gray-700 sm:text-lg lg:text-xl">
+                        Still have questions? We're here to help.
+                    </p>
+                    <Link
+                        href="/faq"
+                        className="flex cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:bg-accent/90 hover:shadow-xl focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:outline-none active:scale-95 sm:px-10 sm:text-lg"
+                    >
+                        View All FAQs
+                    </Link>
+                </div>
             </div>
         </section>
     );

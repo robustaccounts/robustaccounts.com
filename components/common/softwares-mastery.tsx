@@ -126,7 +126,7 @@ export default function SoftwaresMasterySection() {
         <section
             ref={sectionRef}
             className={cn(
-                'relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-white px-5 py-12 sm:px-8 sm:py-14 md:px-12 md:py-16 lg:px-16 lg:py-20',
+                'relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-white px-5 py-24 sm:px-8 sm:py-32 md:px-12 lg:px-16',
             )}
         >
             {/* Parallax Overlay for better text contrast */}
@@ -141,7 +141,7 @@ export default function SoftwaresMasterySection() {
             >
                 {/* Left: Heading and Description */}
                 <div className="flex w-full flex-col items-center justify-center gap-4 text-center sm:gap-5 lg:w-1/2 lg:items-start lg:text-left">
-                    <h2 className="text-2xl leading-tight font-bold text-primary sm:text-3xl lg:text-4xl">
+                    <h2 className="text-3xl leading-tight font-bold tracking-tight text-primary sm:text-4xl lg:text-5xl">
                         Masters of Leading{' '}
                         <span className="text-accent">Accounting Software</span>
                     </h2>

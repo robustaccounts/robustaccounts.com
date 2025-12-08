@@ -1,7 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import Image from 'next/image';
+import { motion, Variants } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Check } from 'lucide-react';
@@ -11,7 +10,7 @@ import cn from '@/utils/cn';
 import ScheduleMyCallButton from '../ui/schedule-my-call-button';
 
 // Animation variants with improved timing
-const heroContainer = {
+const heroContainer: Variants = {
     hidden: { opacity: 0 },
     show: {
         opacity: 1,
@@ -22,14 +21,14 @@ const heroContainer = {
     },
 };
 
-const heroItem = {
+const heroItem: Variants = {
     hidden: { opacity: 0, y: 30 },
     show: {
         opacity: 1,
         y: 0,
         transition: {
             duration: 0.6,
-            ease: [0.25, 0.46, 0.45, 0.94],
+            ease: 'easeInOut',
         },
     },
 };
@@ -53,7 +52,6 @@ export default function HeroSection() {
     }, []);
 
     // Parallax factors for each layer
-    const overlayParallax = scrollY * 0.18;
     const contentParallax = scrollY * 0.08;
     const trustParallax = scrollY * 0.18;
 
@@ -64,30 +62,7 @@ export default function HeroSection() {
                 'hero-section relative flex min-h-[100svh] w-full flex-col items-center justify-center overflow-hidden',
             )}
         >
-            {/* Optimized Background Image */}
-            <Image
-                src="/assets/images/hero-section-bg-2.png"
-                alt=""
-                fill
-                priority
-                className="object-cover"
-                sizes="100vw"
-                quality={90}
-                aria-hidden="true"
-            />
-            {/* Enhanced Parallax Overlay for better text contrast */}
-            <motion.div
-                className={cn(
-                    'pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-black/60 via-black/70 to-black/80 will-change-transform',
-                )}
-                style={{
-                    transform: overlayParallax
-                        ? `translateY(${overlayParallax}px)`
-                        : undefined,
-                }}
-                aria-hidden="true"
-            />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-32 bg-gradient-to-t from-black/50 to-transparent" />
+
             <motion.div
                 variants={heroContainer}
                 initial="hidden"
@@ -109,10 +84,10 @@ export default function HeroSection() {
                     {/* Main Headline */}
                     <motion.h1
                         variants={heroItem}
-                        className="text-center text-3xl leading-[1.15] font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl"
+                        className="text-center text-4xl leading-[1.1] font-extrabold tracking-tighter text-primary sm:text-5xl md:text-6xl lg:text-7xl"
                     >
                         Transform Your{' '}
-                        <span className="bg-gradient-to-r from-white to-white/90 bg-clip-text text-transparent">
+                        <span className="bg-gradient-to-r from-primary to-primary/90 bg-clip-text text-transparent">
                             Business
                         </span>{' '}
                         with{' '}
@@ -125,7 +100,7 @@ export default function HeroSection() {
                     {/* Subtitle */}
                     <motion.p
                         variants={heroItem}
-                        className="max-w-2xl px-2 text-center text-sm leading-relaxed text-white/95 sm:text-base md:text-lg lg:text-xl"
+                        className="max-w-xl px-4 text-center text-base leading-relaxed text-gray-600 sm:max-w-2xl sm:text-lg md:text-xl lg:text-2xl"
                     >
                         Save 40+ hours monthly and reduce costs by 60% with our
                         comprehensive accounting outsourcing services. Focus on
@@ -153,7 +128,7 @@ export default function HeroSection() {
                             : undefined,
                     }}
                 >
-                    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs text-white/95 sm:gap-x-4 sm:text-sm md:text-base">
+                    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs text-gray-600 sm:gap-x-4 sm:text-sm md:text-base">
                         <div className="flex items-center gap-1.5">
                             <div className="rounded-full bg-accent/20 p-1">
                                 <Check className="h-3 w-3 text-accent sm:h-4 sm:w-4" />

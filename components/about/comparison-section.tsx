@@ -101,15 +101,17 @@ const comparisonData = [
     },
 ];
 
+import FadeIn from '@/components/ui/fade-in';
+
 export default function ComparisonSection() {
     return (
-        <section className={cn('py-12 lg:py-16')}>
+        <section className={cn('bg-white py-24 lg:py-32')}>
             <div
                 className={cn(
                     'flex w-full flex-col items-center justify-center gap-12 px-4 sm:gap-16 sm:px-6 md:px-12 lg:px-16 xl:container xl:mx-auto',
                 )}
             >
-                <div className="flex max-w-4xl flex-col items-center justify-center gap-6 text-center sm:gap-8">
+                <FadeIn className="flex max-w-4xl flex-col items-center justify-center gap-6 text-center sm:gap-8">
                     <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl lg:text-5xl">
                         Robust Accounts vs{' '}
                         <span className="text-accent">Traditional</span>{' '}
@@ -119,32 +121,32 @@ export default function ComparisonSection() {
                         Discover why modern businesses choose our innovative
                         approach over traditional accounting methods.
                     </p>
-                </div>
+                </FadeIn>
 
                 <div className="w-full max-w-6xl space-y-8">
                     {comparisonData.map((category, index) => (
-                        <div
+                        <FadeIn
                             key={index}
-                            className="overflow-hidden rounded-2xl p-5 sm:p-8"
+                            className="overflow-hidden rounded-3xl bg-gray-50/50 p-5 sm:p-8 border border-gray-100"
                         >
-                            <div className="pb-3 text-center sm:pb-4">
+                            <div className="pb-6 text-center sm:pb-8">
                                 <h3 className="text-2xl font-bold text-accent sm:text-3xl">
                                     {category.category}
                                 </h3>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
+                            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
                                 {/* Robust Accounts Column */}
-                                <div className="rounded-2xl bg-white p-5 sm:p-6 lg:p-8">
-                                    <div className="mb-4 flex items-start justify-between">
-                                        <h4 className="text-xl font-semibold text-gray-900 sm:text-2xl">
+                                <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md lg:p-8">
+                                    <div className="mb-6 flex items-start justify-between">
+                                        <h4 className="text-xl font-bold text-primary sm:text-2xl">
                                             {category.robustAccounts.title}
                                         </h4>
                                         <span className="hidden rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent sm:inline-flex">
                                             Robust Accounts
                                         </span>
                                     </div>
-                                    <ul className="space-y-3">
+                                    <ul className="space-y-4">
                                         {category.robustAccounts.features.map(
                                             (feature, featureIndex) => (
                                                 <li
@@ -154,7 +156,7 @@ export default function ComparisonSection() {
                                                     <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-accent/10">
                                                         <Check className="h-3.5 w-3.5 text-accent" />
                                                     </div>
-                                                    <span className="text-gray-700">
+                                                    <span className="text-gray-700 font-medium">
                                                         {feature}
                                                     </span>
                                                 </li>
@@ -164,16 +166,16 @@ export default function ComparisonSection() {
                                 </div>
 
                                 {/* Traditional Firms Column */}
-                                <div className="rounded-2xl bg-white p-5 sm:p-6 lg:p-8">
-                                    <div className="mb-4 flex items-start justify-between">
-                                        <h4 className="text-xl font-semibold text-gray-900 sm:text-2xl">
+                                <div className="rounded-2xl border border-gray-200/60 bg-gray-50 p-6 lg:p-8">
+                                    <div className="mb-6 flex items-start justify-between">
+                                        <h4 className="text-xl font-semibold text-gray-600 sm:text-2xl">
                                             {category.traditional.title}
                                         </h4>
                                         <span className="hidden rounded-full bg-gray-200 px-3 py-1 text-xs font-medium text-gray-700 sm:inline-flex">
                                             Traditional
                                         </span>
                                     </div>
-                                    <ul className="space-y-3">
+                                    <ul className="space-y-4">
                                         {category.traditional.features.map(
                                             (feature, featureIndex) => (
                                                 <li
@@ -192,7 +194,7 @@ export default function ComparisonSection() {
                                                             />
                                                         </svg>
                                                     </div>
-                                                    <span className="text-gray-700">
+                                                    <span className="text-gray-500">
                                                         {feature}
                                                     </span>
                                                 </li>
@@ -201,12 +203,12 @@ export default function ComparisonSection() {
                                     </ul>
                                 </div>
                             </div>
-                        </div>
+                        </FadeIn>
                     ))}
                 </div>
 
-                <div className="max-w-3xl text-center">
-                    <p className="mb-6 text-lg text-gray-600">
+                <FadeIn className="max-w-3xl text-center">
+                    <p className="mb-8 text-lg text-gray-600">
                         Ready to experience the difference? Join thousands of
                         businesses that have already made the switch to modern
                         accounting.
@@ -214,7 +216,7 @@ export default function ComparisonSection() {
                     <div className="flex flex-col justify-center gap-4 sm:flex-row">
                         <ScheduleMyCallButton size="lg" showSubtext={false} />
                     </div>
-                </div>
+                </FadeIn>
             </div>
         </section>
     );

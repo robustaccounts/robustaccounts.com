@@ -63,7 +63,7 @@ function ServicesCard({
     return (
         <div
             className={cn(
-                'group relative rounded-2xl bg-secondary p-6 shadow-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg sm:p-8',
+                'group relative rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-10',
                 className,
             )}
         >
@@ -87,46 +87,56 @@ function ServicesCard({
     );
 }
 
+import FadeIn from '@/components/ui/fade-in';
+
+// ... (keep imports)
+
 export default function ServicesSection() {
     return (
-        <section
-            className={cn(
-                'container mx-auto flex h-full w-full flex-col items-center justify-center gap-8 px-5 py-12 sm:gap-10 sm:px-8 sm:py-14 md:px-12 md:py-16 lg:px-16 lg:py-20',
-            )}
-        >
-            <div className="flex flex-col items-center justify-center gap-3 text-center sm:gap-4">
-                <h2 className="text-2xl leading-tight font-bold sm:text-3xl lg:text-4xl">
-                    Our Expert Accounting and{' '}
-                    <span className="text-accent">Outsourcing Services</span>
-                </h2>
-                <p className="max-w-3xl text-sm leading-relaxed text-gray-600 sm:text-base lg:text-lg">
-                    Tailored accounting solutions crafted to optimize your
-                    business operations with precision and expertise.
-                </p>
-            </div>
-            <div className="grid w-full grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 lg:gap-8">
-                {services.map((service) => (
-                    <ServicesCard
-                        key={service.id}
-                        title={service.title}
-                        description={service.description}
-                        href={service.href}
-                        icon={service.icon}
-                    />
-                ))}
-            </div>
+        <section className="w-full bg-gray-50 py-24 sm:py-32">
+            <div className="container mx-auto flex h-full w-full flex-col items-center justify-center gap-12 px-5 sm:gap-16 sm:px-8 md:px-12 lg:px-16">
+                <FadeIn className="flex flex-col items-center justify-center gap-3 text-center sm:gap-4">
+                    <h2 className="text-3xl leading-tight font-bold tracking-tight text-primary sm:text-4xl lg:text-5xl">
+                        Our Expert Accounting and{' '}
+                        <span className="text-accent">
+                            Outsourcing Services
+                        </span>
+                    </h2>
+                    <p className="max-w-3xl text-sm leading-relaxed text-gray-600 sm:text-base lg:text-lg">
+                        Tailored accounting solutions crafted to optimize your
+                        business operations with precision and expertise.
+                    </p>
+                </FadeIn>
+                <div className="grid w-full grid-cols-1 gap-6 sm:gap-8 md:grid-cols-3">
+                    {services.map((service, index) => (
+                        <FadeIn
+                            key={service.id}
+                            delay={index * 0.1}
+                            className="h-full"
+                        >
+                            <ServicesCard
+                                title={service.title}
+                                description={service.description}
+                                href={service.href}
+                                icon={service.icon}
+                                className="h-full"
+                            />
+                        </FadeIn>
+                    ))}
+                </div>
 
-            {/* Enhanced CTA Section */}
-            <div className="flex flex-col items-center gap-5 pt-4 text-center sm:gap-6">
-                <p className="text-base text-gray-700 sm:text-lg lg:text-xl">
-                    Ready to transform your business finances?
-                </p>
-                <Link
-                    href="/services"
-                    className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:bg-accent/90 hover:shadow-xl active:scale-95 sm:px-10 sm:text-lg"
-                >
-                    Explore All Services
-                </Link>
+                {/* Enhanced CTA Section */}
+                <div className="flex flex-col items-center gap-5 pt-4 text-center sm:gap-6">
+                    <p className="text-base text-gray-700 sm:text-lg lg:text-xl">
+                        Ready to transform your business finances?
+                    </p>
+                    <Link
+                        href="/services"
+                        className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:bg-accent/90 hover:shadow-xl active:scale-95 sm:px-10 sm:text-lg"
+                    >
+                        Explore All Services
+                    </Link>
+                </div>
             </div>
         </section>
     );

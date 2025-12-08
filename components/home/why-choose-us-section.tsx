@@ -30,29 +30,34 @@ const benefits = [
     },
 ];
 
+import FadeIn from '@/components/ui/fade-in';
+
 function WhyChooseUsCard({
     title,
     description,
+    className,
 }: Readonly<{
     title: string;
     description: string;
+    className?: string;
 }>) {
     return (
         <div
             className={cn(
-                'group flex items-start gap-4 rounded-xl p-4 transition-all hover:bg-secondary/30 sm:gap-5 sm:p-5',
+                'group flex h-full items-start gap-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl sm:gap-5 sm:p-8',
+                className,
             )}
         >
             <div className="mt-1 flex-shrink-0">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 shadow-sm transition-all group-hover:scale-110 group-hover:bg-accent/20 sm:h-14 sm:w-14">
-                    <Check className="h-6 w-6 text-accent sm:h-7 sm:w-7" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent transition-all group-hover:scale-110 group-hover:bg-accent group-hover:text-white sm:h-14 sm:w-14">
+                    <Check className="h-6 w-6 sm:h-7 sm:w-7" />
                 </div>
             </div>
             <div className="flex flex-col gap-2 sm:gap-3">
                 <h3 className="text-lg font-bold text-primary sm:text-xl lg:text-2xl">
                     {title}
                 </h3>
-                <p className="text-sm leading-relaxed text-gray-700 sm:text-base lg:text-lg">
+                <p className="text-sm leading-relaxed text-gray-600 sm:text-base lg:text-lg">
                     {description}
                 </p>
             </div>
@@ -61,58 +66,44 @@ function WhyChooseUsCard({
 }
 
 export default function WhyChooseUsSection() {
-    // Section ref for scroll tracking
-    const sectionRef = useRef<HTMLDivElement>(null);
-    // Framer Motion scroll progress for this section
-    const { scrollYProgress } = useScroll({
-        target: sectionRef,
-        offset: ['start end', 'end start'],
-    });
-
-    // Parallax transforms (tweak values for desired effect)
-    const overlayY = useTransform(scrollYProgress, [0, 1], ['0px', '50px']);
-    const contentY = useTransform(scrollYProgress, [0, 1], ['0px', '-30px']);
-
     return (
-        <section
-            ref={sectionRef}
-            className={cn(
-                'relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-white px-5 py-12 sm:px-8 sm:py-14 md:px-12 md:py-16 lg:px-16 lg:py-20',
-            )}
-        >
-            {/* Parallax Overlay for subtle effect */}
-            <motion.div
-                className="pointer-events-none absolute inset-0 z-10 will-change-transform"
-                style={{ y: overlayY }}
-                aria-hidden="true"
-            />
-            <motion.div
-                className="relative z-20 flex w-full max-w-6xl flex-col gap-12 will-change-transform sm:gap-14 lg:flex-row lg:items-center lg:justify-center lg:gap-16"
-                style={{ y: contentY }}
-            >
-                {/* Left: Heading and Description */}
-                <div className="flex w-full flex-col items-center justify-center gap-4 text-center sm:gap-5 lg:w-1/2 lg:items-start lg:text-left">
-                    <h2 className="text-2xl leading-tight font-bold text-primary sm:text-3xl lg:text-4xl">
+        <section className="relative w-full overflow-hidden bg-white py-24 sm:py-32">
+            <div className="container mx-auto relative z-20 flex w-full flex-col gap-16 px-5 sm:px-8 md:px-12 lg:px-16">
+                {/* Heading */}
+                <FadeIn className="flex w-full flex-col items-center justify-center gap-4 text-center lg:items-start lg:text-left">
+                    <h2 className="text-center text-3xl leading-tight font-bold tracking-tight text-primary sm:text-4xl lg:text-5xl lg:text-left">
                         Smarter Accounting.{' '}
                         <span className="text-accent">Better Results</span>.
                     </h2>
-                    <p className="max-w-3xl text-sm leading-relaxed text-gray-700 sm:text-base lg:text-lg">
+                    <p className="max-w-3xl text-center text-sm leading-relaxed text-gray-600 sm:text-base lg:text-left lg:text-lg">
                         We simplify bookkeeping with smart, expert
                         solutions—saving you time, ensuring accuracy, and
                         letting you focus on growing your business.
                     </p>
-                </div>
-                {/* Right: Benefits List */}
-                <div className="grid w-full grid-cols-1 gap-6 sm:gap-8 lg:w-1/2">
+                </FadeIn>
+
+                {/* Bento Grid */}
+                <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8">
                     {benefits.map((benefit, index) => (
-                        <WhyChooseUsCard
+                        <FadeIn
                             key={index}
-                            title={benefit.title}
-                            description={benefit.description}
-                        />
+                            delay={index * 0.1}
+                            className={cn(
+                                'h-full',
+                                index === 0 || index === 3
+                                    ? 'md:col-span-2'
+                                    : 'md:col-span-1',
+                            )}
+                        >
+                            <WhyChooseUsCard
+                                title={benefit.title}
+                                description={benefit.description}
+                                className="h-full"
+                            />
+                        </FadeIn>
                     ))}
                 </div>
-            </motion.div>
+            </div>
         </section>
     );
 }
