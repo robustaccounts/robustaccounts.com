@@ -295,7 +295,7 @@ export default function PricingTiersSection({
                                             <span
                                                 className={`text-4xl font-bold tracking-tight text-gray-900 ${!isRecommended ? 'group-hover:text-white' : ''}`}
                                             >
-                                                Custom
+                                                Custom Pricing
                                             </span>
                                         ) : (
                                             <>

@@ -92,13 +92,17 @@ export default function ContactPage() {
 
         if (!result.success) {
             const newErrors: Record<string, string> = {};
-            result.error.errors.forEach((err) => {
-                const field = err.path[0] as FieldName;
-                // Only show error if field is touched
-                if (touched[field]) {
-                    newErrors[field] = err.message;
-                }
-            });
+            // Safely access errors array, handling potential API differences or undefined values
+            const issues = result.error?.errors || result.error?.issues || [];
+            if (Array.isArray(issues)) {
+                issues.forEach((err: any) => {
+                    const field = err.path[0] as FieldName;
+                    // Only show error if field is touched
+                    if (touched[field]) {
+                        newErrors[field] = err.message;
+                    }
+                });
+            }
             setErrors(newErrors);
         } else {
             setErrors({});
@@ -144,10 +148,14 @@ export default function ContactPage() {
 
         if (!result.success) {
             const newErrors: Record<string, string> = {};
-            result.error.errors.forEach((err) => {
-                const field = err.path[0] as string;
-                newErrors[field] = err.message;
-            });
+            // Safely access errors array
+            const issues = result.error?.errors || result.error?.issues || [];
+            if (Array.isArray(issues)) {
+                issues.forEach((err: any) => {
+                    const field = err.path[0] as string;
+                    newErrors[field] = err.message;
+                });
+            }
             setErrors(newErrors);
             return false;
         }

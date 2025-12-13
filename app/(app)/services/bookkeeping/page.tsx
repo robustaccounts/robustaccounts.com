@@ -82,6 +82,8 @@ const faqs = [
     },
 ];
 
+import Image from 'next/image';
+
 export default function BookkeepingPage() {
     return (
         <main className="flex min-h-screen flex-col">
@@ -89,7 +91,49 @@ export default function BookkeepingPage() {
                 title="Accurate bookkeeping for"
                 highlightedText="peace of mind"
                 subtitle="Stop worrying about your books. Our expert team handles your daily transactions, reconciliations, and reporting so you can focus on growing your business."
+                image="/assets/images/bookkeeping-hero.png"
+                imageAlt="Accountant reviewing financial documents with a client"
             />
+
+            {/* Meet the Team Section */}
+            <section className="w-full border-b border-gray-100 bg-white py-12 md:py-24">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <FadeIn className="grid gap-12 lg:grid-cols-2 lg:items-center">
+                        <div className="relative aspect-video w-full overflow-hidden rounded-2xl shadow-xl sm:aspect-[4/3] lg:aspect-square">
+                            <Image
+                                src="/assets/images/bookkeeping-team-v2.png"
+                                alt="Our expert accounting team"
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 1024px) 100vw, 50vw"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-6">
+                            <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
+                                Real Humans, <span className="text-accent">Real Expertise</span>
+                            </h2>
+                            <p className="text-lg leading-relaxed text-gray-600">
+                                Behind every report is a dedicated team of accounting professionals. We aren't just software – we're real people who care about your business's financial health.
+                            </p>
+                            <ul className="space-y-4">
+                                {[
+                                    'Dedicated dedicated bookkeeper for your account',
+                                    'Senior accountant review for every close',
+                                    'Direct access via email and phone', 
+                                    'Proactive advice, not just data entry'
+                                ].map((item, i) => (
+                                    <li key={i} className="flex items-center gap-3 text-base text-gray-700">
+                                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent/10">
+                                            <Check className="h-4 w-4 text-accent" />
+                                        </div>
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </FadeIn>
+                </div>
+            </section>
 
             {/* Features Grid */}
             <section className="w-full bg-gray-50 py-24 lg:py-32">

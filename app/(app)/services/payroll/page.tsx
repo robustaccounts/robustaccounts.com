@@ -81,13 +81,17 @@ const faqs = [
     },
 ];
 
+import Image from 'next/image';
+
 export default function PayrollPage() {
     return (
         <main className="flex min-h-screen flex-col">
             <ServiceHero
-                title="Seamless payroll,"
-                highlightedText="every time"
-                subtitle="Ensure your team gets paid correctly and on time. We handle calculations, tax filings, and compliance so you never have to stress about payroll day."
+                title="Payroll that works for"
+                highlightedText="you & your team"
+                subtitle="Streamlined payroll processing, automated tax filings, and full compliance. We ensure your team gets paid on time, every time."
+                image="/assets/images/payroll-hero.png"
+                imageAlt="HR manager managing payroll on a modern dashboard"
             />
 
             {/* Features Grid */}

@@ -81,13 +81,17 @@ const faqs = [
     },
 ];
 
+import Image from 'next/image';
+
 export default function FinancialAdvisoryPage() {
     return (
         <main className="flex min-h-screen flex-col">
             <ServiceHero
-                title="Strategic insight for"
-                highlightedText="growth"
-                subtitle="Go beyond the numbers. Our financial advisory services provide the strategic guidance and analysis you need to scale your business with confidence."
+                title="Strategic financial guidance for"
+                highlightedText="growth & clarity"
+                subtitle="Go beyond the numbers. Our CFO-level advisory services provide the insights, forecasting, and strategy you need to scale confidently."
+                image="/assets/images/financial-advisory-hero.png"
+                imageAlt="Financial advisor presenting data to a client"
             />
 
             {/* Features Grid */}

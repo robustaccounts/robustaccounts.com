@@ -133,7 +133,7 @@ export default function ExpenseSlider({
             <div className={`mt-4 text-center transition-colors duration-300 ${valueColorClass}`}>
                 {isCustom ? (
                     <span className="text-lg font-bold text-accent">
-                        Custom Pricing
+                        {'>'} $200K / month
                     </span>
                 ) : (
                     <span className="text-lg font-semibold">

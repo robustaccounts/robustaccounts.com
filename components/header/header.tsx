@@ -105,45 +105,27 @@ function NavDropdown({
 }) {
     const isOpen = activeDropdown === item.name;
     const dropdownRef = useRef<HTMLDivElement>(null);
-    let timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    const handleMouseEnter = () => {
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        setActiveDropdown(item.name);
+    const handleToggle = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setActiveDropdown(isOpen ? null : item.name);
     };
-
-    const handleMouseLeave = () => {
-        timeoutRef.current = setTimeout(() => {
-            setActiveDropdown(null);
-        }, 150); // slight delay to prevent flickering
-    };
-
-    useEffect(() => {
-        return () => {
-            if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        };
-    }, []);
 
     return (
-        <div
-            ref={dropdownRef}
-            className="relative"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-        >
+        <div ref={dropdownRef} className="relative">
             <button
                 className={cn(
-                    'flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-accent focus-visible:outline-2 focus-visible:outline-accent',
-                    isOpen && 'bg-gray-100 text-accent',
+                    'flex items-center gap-1.5 rounded-full px-5 py-2.5 text-[15px] font-medium text-gray-700 transition-all hover:bg-gray-100/80 hover:text-accent focus-visible:outline-2 focus-visible:outline-accent active:scale-95',
+                    isOpen && 'bg-gray-100/80 text-accent',
                 )}
-                onClick={() => setActiveDropdown(isOpen ? null : item.name)}
+                onClick={handleToggle}
                 aria-expanded={isOpen}
                 aria-haspopup="true"
             >
                 {item.name}
                 <ChevronDown
                     className={cn(
-                        'h-4 w-4 transition-transform duration-200',
+                        'h-4 w-4 transition-transform duration-300',
                         isOpen && 'rotate-180',
                     )}
                 />
@@ -151,26 +133,46 @@ function NavDropdown({
             <AnimatePresence>
                 {isOpen && item.children && (
                     <motion.div
-                        initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                        transition={{ duration: 0.15, ease: 'easeOut' }}
-                        className="absolute top-full left-1/2 z-50 mt-2 w-64 -translate-x-1/2 rounded-xl bg-white p-2 shadow-xl ring-1 ring-black/5"
+                        initial={{
+                            opacity: 0,
+                            y: 8,
+                            scale: 0.96,
+                            filter: 'blur(4px)',
+                        }}
+                        animate={{
+                            opacity: 1,
+                            y: 0,
+                            scale: 1,
+                            filter: 'blur(0px)',
+                        }}
+                        exit={{
+                            opacity: 0,
+                            y: 8,
+                            scale: 0.96,
+                            filter: 'blur(4px)',
+                        }}
+                        transition={{
+                            type: 'spring',
+                            stiffness: 400,
+                            damping: 30,
+                            mass: 0.8,
+                        }}
+                        className="absolute top-[calc(100%+4px)] left-1/2 z-[101] mt-2 w-72 -translate-x-1/2 overflow-hidden rounded-2xl bg-white/95 p-2 shadow-2xl ring-1 ring-black/5 backdrop-blur-md"
+                        onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="absolute -top-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 bg-white" />
                         <div className="relative flex flex-col gap-1">
                             {item.children.map((child) => (
                                 <Link
                                     key={child.name}
                                     href={child.href}
-                                    className="group flex flex-col gap-0.5 rounded-lg px-3 py-2.5 transition-colors hover:bg-accent/5"
+                                    className="group flex flex-col gap-1 rounded-xl px-4 py-3 transition-colors hover:bg-zinc-50"
                                     onClick={() => setActiveDropdown(null)}
                                 >
-                                    <span className="font-medium text-primary group-hover:text-accent">
+                                    <span className="text-sm font-semibold text-gray-900 group-hover:text-accent">
                                         {child.name}
                                     </span>
                                     {child.description && (
-                                        <span className="text-xs text-gray-500">
+                                        <span className="text-xs font-medium text-gray-500">
                                             {child.description}
                                         </span>
                                     )}
@@ -189,10 +191,13 @@ export default function Header() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-    const [expandedMobileItems, setExpandedMobileItems] = useState<string[]>([]);
+    const [expandedMobileItems, setExpandedMobileItems] = useState<string[]>(
+        [],
+    );
 
     const mobileMenuRef = React.useRef<HTMLDivElement | null>(null);
     const firstMobileLinkRef = React.useRef<HTMLAnchorElement | null>(null);
+    const headerRef = useRef<HTMLElement>(null);
 
     // Handle scroll detection
     useEffect(() => {
@@ -200,8 +205,22 @@ export default function Header() {
             setIsScrolled(window.scrollY > 0);
         };
 
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                headerRef.current &&
+                !headerRef.current.contains(event.target as Node)
+            ) {
+                setActiveDropdown(null);
+            }
+        };
+
         window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        document.addEventListener('click', handleClickOutside);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            document.removeEventListener('click', handleClickOutside);
+        };
     }, []);
 
     // Prevent background scrolling when mobile menu is open
@@ -249,13 +268,14 @@ export default function Header() {
     return (
         <>
             <header
+                ref={headerRef}
                 className={cn(
-                    'fixed top-4 left-1/2 z-50 w-[calc(100vw-1.5rem)] max-w-[100vw] -translate-x-1/2 transform rounded-full px-4 py-3 text-primary transition-all duration-300 sm:top-6 sm:w-[calc(100vw-2rem)] md:top-8 md:container md:mx-auto md:w-full md:px-6',
-                    'bg-white/90 backdrop-blur-xl shadow-lg ring-1 ring-black/5 supports-[backdrop-filter]:bg-white/60',
-                    isScrolled && 'py-2.5 shadow-xl sm:py-2.5',
+                    'fixed top-0 right-0 left-0 z-[100] w-full border-b border-transparent bg-transparent transition-all duration-300',
+                    isScrolled &&
+                        'border-gray-100/50 bg-white/80 shadow-sm backdrop-blur-xl',
                 )}
             >
-                <div className="flex items-center justify-between gap-2">
+                <div className="mx-auto flex h-[64px] max-w-[1400px] items-center justify-between px-6 lg:px-8">
                     {/* Logo */}
                     <Link
                         href="/"
@@ -287,7 +307,7 @@ export default function Header() {
                                 <Link
                                     key={item.name}
                                     href={item.href}
-                                    className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-accent focus-visible:outline-2 focus-visible:outline-accent"
+                                    className="rounded-full px-5 py-2.5 text-[15px] font-medium text-gray-700 transition-all hover:bg-gray-100/80 hover:text-accent focus-visible:outline-2 focus-visible:outline-accent"
                                 >
                                     {item.name}
                                 </Link>
@@ -296,7 +316,7 @@ export default function Header() {
                     </nav>
 
                     {/* Right side actions */}
-                    <div className="flex items-center gap-2 sm:gap-3 lg:gap-6">
+                    <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
                         {/* Desktop Phone Number */}
                         <Link
                             href={`tel:${contactInfo.phoneHref}`}
@@ -391,7 +411,7 @@ export default function Header() {
                                                                   if (el)
                                                                       firstMobileLinkRef.current =
                                                                           el as unknown as HTMLAnchorElement;
-                                                               }
+                                                              }
                                                             : undefined
                                                     }
                                                     className="flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-lg font-bold text-primary transition-all hover:bg-accent/10 focus:bg-accent/10 focus-visible:outline-2 focus-visible:outline-accent"
@@ -438,7 +458,9 @@ export default function Header() {
                                                         >
                                                             <div className="flex flex-col gap-1 py-1 pl-4">
                                                                 <Link
-                                                                    href={item.href}
+                                                                    href={
+                                                                        item.href
+                                                                    }
                                                                     className="flex flex-col gap-0.5 rounded-lg px-4 py-2.5 transition-colors hover:bg-accent/5"
                                                                     onClick={() =>
                                                                         setIsMobileMenuOpen(
@@ -447,7 +469,10 @@ export default function Header() {
                                                                     }
                                                                 >
                                                                     <span className="font-semibold text-accent">
-                                                                        View All {item.name}
+                                                                        View All{' '}
+                                                                        {
+                                                                            item.name
+                                                                        }
                                                                     </span>
                                                                 </Link>
                                                                 {item.children.map(
