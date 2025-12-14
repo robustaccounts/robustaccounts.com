@@ -95,16 +95,12 @@ export default function ServicesSection() {
     return (
         <section className="w-full bg-gray-50 py-24 sm:py-32">
             <div className="container mx-auto flex h-full w-full flex-col items-center justify-center gap-12 px-5 sm:gap-16 sm:px-8 md:px-12 lg:px-16">
-                <FadeIn className="flex flex-col items-center justify-center gap-3 text-center sm:gap-4">
-                    <h2 className="text-3xl leading-tight font-bold tracking-tight text-primary sm:text-4xl lg:text-5xl">
-                        Our Expert Accounting and{' '}
-                        <span className="text-accent">
-                            Outsourcing Services
-                        </span>
+                <FadeIn className="flex flex-col items-center justify-center gap-4 text-center sm:gap-5">
+                    <h2 className="text-[1.75rem] leading-tight font-bold tracking-[-0.02em] text-primary sm:text-3xl md:text-4xl lg:text-[2.75rem]">
+                        What We Handle
                     </h2>
-                    <p className="max-w-3xl text-sm leading-relaxed text-gray-600 sm:text-base lg:text-lg">
-                        Tailored accounting solutions crafted to optimize your
-                        business operations with precision and expertise.
+                    <p className="max-w-2xl text-sm leading-relaxed text-gray-600 sm:text-base lg:text-lg">
+                        A complete finance function, managed offshore.
                     </p>
                 </FadeIn>
                 <div className="grid w-full grid-cols-1 gap-6 sm:gap-8 md:grid-cols-3">
@@ -125,16 +121,16 @@ export default function ServicesSection() {
                     ))}
                 </div>
 
-                {/* Enhanced CTA Section */}
+                {/* CTA Section */}
                 <div className="flex flex-col items-center gap-5 pt-4 text-center sm:gap-6">
-                    <p className="text-base text-gray-700 sm:text-lg lg:text-xl">
-                        Ready to transform your business finances?
+                    <p className="text-sm text-gray-600 sm:text-base lg:text-lg">
+                        See how we work with businesses like yours.
                     </p>
                     <Link
                         href="/services"
-                        className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:bg-accent/90 hover:shadow-xl active:scale-95 sm:px-10 sm:text-lg"
+                        className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[0.9375rem] font-medium text-white transition-all duration-300 hover:bg-primary/95 hover:shadow-lg hover:shadow-primary/20 sm:px-9 sm:py-4 sm:text-base"
                     >
-                        Explore All Services
+                        View Our Services
                     </Link>
                 </div>
             </div>

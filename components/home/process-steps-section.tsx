@@ -11,12 +11,12 @@ const steps = [
     {
         step: '01',
         title: 'Fill Out Form',
-        description: 'Tell us about your business and accounting needs',
+        description: 'Tell us about your business and financial operations',
     },
     {
         step: '02',
-        title: 'Free Consultation',
-        description: 'We analyze your requirements and discuss solutions',
+        title: 'Discovery Call',
+        description: 'We learn about your operations and financial needs',
     },
     {
         step: '03',
@@ -25,8 +25,8 @@ const steps = [
     },
     {
         step: '04',
-        title: 'Get Started',
-        description: 'Begin your accounting transformation journey',
+        title: 'Go Live',
+        description: 'Your dedicated team takes over operations',
     },
 ];
 
@@ -57,12 +57,11 @@ export default function ProcessStepsSection() {
                 style={{ y: contentY }}
             >
                 <div className="text-center">
-                    <h2 className="mb-3 text-3xl leading-tight font-bold tracking-tight text-primary sm:mb-4 sm:text-4xl md:text-5xl">
-                        How It <span className="text-accent">Works</span>
+                    <h2 className="mb-3 text-[1.75rem] leading-tight font-bold tracking-[-0.02em] text-primary sm:mb-4 sm:text-3xl md:text-4xl lg:text-[2.75rem]">
+                        How We Start
                     </h2>
                     <p className="mx-auto max-w-2xl text-sm leading-relaxed text-gray-600 sm:text-base md:text-lg">
-                        Simple steps to get your accounting outsourced and
-                        transform your business
+                        A clear path to getting your finance function running.
                     </p>
                 </div>
                 {/* Desktop Steps Grid - Hidden on mobile */}

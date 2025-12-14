@@ -1,42 +1,45 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
-import React, { useRef } from 'react';
-
-import { Check } from 'lucide-react';
+import React from 'react';
 
 import cn from '@/utils/cn';
 
 const benefits = [
     {
-        title: 'Cost-Effective Solutions',
+        number: '01',
+        title: 'Lower Operating Costs',
         description:
-            'Reduce overhead costs by up to 60% with our scalable outsourcing services, tailored to your budget and business size.',
+            'Reduce fixed overhead with a dedicated offshore team sized to your needs.',
     },
     {
-        title: 'Expert Team',
+        number: '02',
+        title: 'Qualified Team',
         description:
-            'Access a global team of certified public accountants and financial experts with 10+ years of experience.',
+            'CPAs and finance professionals with deep industry experience, assigned to your account.',
     },
     {
-        title: 'Time Savings',
+        number: '03',
+        title: 'More Time for Operations',
         description:
-            'Free up 40+ hours monthly to focus on core business activities while we handle your complete financial operations.',
+            'Offload daily financial tasks so your team can focus on revenue-generating work.',
     },
     {
-        title: 'Advanced Security',
+        number: '04',
+        title: 'Secure Infrastructure',
         description:
-            'Bank-grade security with end-to-end encryption, ensuring your financial data is protected at all times.',
+            'End-to-end encryption and strict access controls protect your financial data.',
     },
 ];
 
 import FadeIn from '@/components/ui/fade-in';
 
 function WhyChooseUsCard({
+    number,
     title,
     description,
     className,
 }: Readonly<{
+    number: string;
     title: string;
     description: string;
     className?: string;
@@ -44,20 +47,16 @@ function WhyChooseUsCard({
     return (
         <div
             className={cn(
-                'group flex h-full items-start gap-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl sm:gap-5 sm:p-8',
+                'group flex h-full flex-col gap-4 rounded-xl border border-gray-100 bg-white p-6 transition-all duration-300 hover:border-gray-200 hover:shadow-sm sm:p-8',
                 className,
             )}
         >
-            <div className="mt-1 flex-shrink-0">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent transition-all group-hover:scale-110 group-hover:bg-accent group-hover:text-white sm:h-14 sm:w-14">
-                    <Check className="h-6 w-6 sm:h-7 sm:w-7" />
-                </div>
-            </div>
+            <span className="text-sm font-medium text-accent/70">{number}</span>
             <div className="flex flex-col gap-2 sm:gap-3">
-                <h3 className="text-lg font-bold text-primary sm:text-xl lg:text-2xl">
+                <h3 className="text-lg font-semibold text-primary sm:text-xl">
                     {title}
                 </h3>
-                <p className="text-sm leading-relaxed text-gray-600 sm:text-base lg:text-lg">
+                <p className="text-sm leading-relaxed text-gray-600 sm:text-base">
                     {description}
                 </p>
             </div>
@@ -68,34 +67,27 @@ function WhyChooseUsCard({
 export default function WhyChooseUsSection() {
     return (
         <section className="relative w-full overflow-hidden bg-white py-24 sm:py-32">
-            <div className="container mx-auto relative z-20 flex w-full flex-col gap-16 px-5 sm:px-8 md:px-12 lg:px-16">
+            <div className="container mx-auto relative z-20 flex w-full flex-col gap-14 px-5 sm:gap-16 sm:px-8 md:px-12 lg:px-16">
                 {/* Heading */}
-                <FadeIn className="flex w-full flex-col items-center justify-center gap-4 text-center lg:items-start lg:text-left">
-                    <h2 className="text-center text-3xl leading-tight font-bold tracking-tight text-primary sm:text-4xl lg:text-5xl lg:text-left">
-                        Smarter Accounting.{' '}
-                        <span className="text-accent">Better Results</span>.
+                <FadeIn className="flex w-full flex-col items-center justify-center gap-4 text-center">
+                    <h2 className="text-[1.75rem] leading-tight font-bold tracking-[-0.02em] text-primary sm:text-3xl md:text-4xl lg:text-[2.75rem]">
+                        Why Businesses Work With Us
                     </h2>
-                    <p className="max-w-3xl text-center text-sm leading-relaxed text-gray-600 sm:text-base lg:text-left lg:text-lg">
-                        We simplify bookkeeping with smart, expert
-                        solutions—saving you time, ensuring accuracy, and
-                        letting you focus on growing your business.
+                    <p className="max-w-2xl text-sm leading-relaxed text-gray-600 sm:text-base lg:text-lg">
+                        We handle the work so you can focus on running your business.
                     </p>
                 </FadeIn>
 
-                {/* Bento Grid */}
-                <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8">
+                {/* Grid */}
+                <div className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:gap-6">
                     {benefits.map((benefit, index) => (
                         <FadeIn
                             key={index}
-                            delay={index * 0.1}
-                            className={cn(
-                                'h-full',
-                                index === 0 || index === 3
-                                    ? 'md:col-span-2'
-                                    : 'md:col-span-1',
-                            )}
+                            delay={index * 0.08}
+                            className="h-full"
                         >
                             <WhyChooseUsCard
+                                number={benefit.number}
                                 title={benefit.title}
                                 description={benefit.description}
                                 className="h-full"
@@ -107,3 +99,4 @@ export default function WhyChooseUsSection() {
         </section>
     );
 }
+
