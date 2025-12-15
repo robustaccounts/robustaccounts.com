@@ -15,7 +15,7 @@ export function HeroSection() {
                 <FadeIn className="flex flex-col items-center justify-center space-y-6 sm:space-y-8">
                     <h1 className="text-center text-4xl leading-[1.1] font-extrabold tracking-tighter text-primary sm:text-5xl md:text-6xl lg:text-7xl">
                         Simple Process,{' '}
-                        <span className="text-accent">Exceptional Results</span>
+                        <span className="text-primary">Exceptional Results</span>
                     </h1>
                     <p className="max-w-3xl text-center text-base leading-relaxed text-gray-600 sm:text-lg md:text-xl lg:text-2xl">
                         Our streamlined 3-step process ensures smooth transition
@@ -38,7 +38,7 @@ export function HeroSection() {
                                 className="flex items-center justify-center gap-2 text-sm text-gray-600"
                             >
                                 {/* You can replace this with a real icon if desired */}
-                                <span className="inline-block h-4 w-4 rounded-full bg-accent" />
+                                <span className="inline-block h-4 w-4 rounded-full bg-primary" />
                                 <span>{indicator}</span>
                             </div>
                         ))}

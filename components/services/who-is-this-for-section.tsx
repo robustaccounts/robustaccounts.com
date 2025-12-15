@@ -29,7 +29,7 @@ export default function WhoIsThisForSection({
                         </p>
                         <div className="mt-8">
                             <ScheduleMyCallButton
-                                className="bg-accent text-white hover:bg-accent/90"
+                                className="bg-primary text-white hover:bg-primary/90"
                                 showSubtext={false}
                             />
                         </div>
@@ -42,8 +42,8 @@ export default function WhoIsThisForSection({
                                 delay={index * 0.1}
                                 className="flex items-start gap-4 rounded-xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:shadow-md"
                             >
-                                <div className="mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-accent/10">
-                                    <Check className="h-3.5 w-3.5 text-accent" />
+                                <div className="mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary/10">
+                                    <Check className="h-3.5 w-3.5 text-primary" />
                                 </div>
                                 <span className="text-base font-medium text-gray-700">
                                     {item}

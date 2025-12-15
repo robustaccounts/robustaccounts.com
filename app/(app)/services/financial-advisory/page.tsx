@@ -1,38 +1,37 @@
 'use client';
 
-import React from 'react';
+import { useGSAP } from '@gsap/react';
 
-import ServiceHero from '@/components/services/shared-hero';
-import FadeIn from '@/components/ui/fade-in';
-import { BarChart2, Target, LineChart, Briefcase } from 'lucide-react';
-import ProcessSection from '@/components/services/process-section';
-import WhoIsThisForSection from '@/components/services/who-is-this-for-section';
-import FAQSection from '@/components/services/faq-section';
+import gsap from 'gsap';
+import { Check } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import React, { useRef } from 'react';
+
+import usePrefersReducedMotion from '@/lib/hooks/use-prefers-reduced-motion';
+
+import FAQSection from '@/components/ui/faq-section';
 
 const features = [
     {
         title: 'Cash Flow Forecasting',
         description:
             'Predict future cash positions to make informed decisions about hiring, inventory, and expansion.',
-        icon: LineChart,
     },
     {
         title: 'Budgeting & Planning',
         description:
             'Create realistic budgets and track performance against them to keep your business on course.',
-        icon: Target,
     },
     {
         title: 'KPI Dashboarding',
         description:
             'Visualize your most important metrics with custom dashboards tailored to your industry.',
-        icon: BarChart2,
     },
     {
         title: 'Strategic CFO Guidance',
         description:
             'Regular meetings with a dedicated CFO to discuss strategy, risks, and opportunities.',
-        icon: Briefcase,
     },
 ];
 
@@ -40,17 +39,17 @@ const processSteps = [
     {
         title: 'Discovery & Analysis',
         description:
-            'We review your historical financials and business model to understand your profit drivers and cash flow cycle.',
+            'We review your historical financials and business model to understand your profit drivers.',
     },
     {
         title: 'Build the Roadmap',
         description:
-            'We create a financial model, set budgets, and define key performance indicators (KPIs) relevant to your goals.',
+            'We create a financial model, set budgets, and define KPIs relevant to your goals.',
     },
     {
         title: 'Regular Advisory Meetings',
         description:
-            'We meet monthly or quarterly to review performance, adjust the plan, and provide strategic advice for growth.',
+            'We meet monthly or quarterly to review performance and provide strategic advice.',
     },
 ];
 
@@ -65,73 +64,292 @@ const audience = [
 const faqs = [
     {
         question: 'Do I really need a CFO?',
-        answer: 'If you are making complex decisions about growth, hiring, or capital allocation based on gut feeling rather than data, fractional CFO services can provide high ROI.',
+        answer: "If you're making complex decisions based on gut feeling rather than data, fractional CFO services provide high ROI.",
     },
     {
         question: 'How often do we meet?',
-        answer: 'It depends on your needs. Standard advisory packages include monthly strategy sessions, but we also offer quarterly reviews or bi-weekly deep dives.',
+        answer: 'It depends on your needs. We offer monthly, quarterly, or bi-weekly sessions.',
     },
     {
         question: 'Is this different from bookkeeping?',
-        answer: 'Yes. Bookkeeping looks backward at what happened. Financial Advisory looks forward at what will happen and how to influence it.',
+        answer: 'Yes. Bookkeeping looks backward. Financial Advisory looks forward at what will happen.',
     },
     {
         question: 'Can you help with investor pitch decks?',
-        answer: 'Yes, we specialize in helping founders prepare robust financial models and narratives for investor meetings.',
+        answer: 'Yes, we help founders prepare robust financial models for investor meetings.',
     },
 ];
 
-import Image from 'next/image';
-
 export default function FinancialAdvisoryPage() {
+    const prefersReducedMotion = usePrefersReducedMotion();
+    const pageRef = useRef<HTMLElement>(null);
+
+    useGSAP(
+        () => {
+            if (prefersReducedMotion) return;
+
+            gsap.utils.toArray<HTMLElement>('[data-animate]').forEach((el) => {
+                gsap.fromTo(
+                    el,
+                    { autoAlpha: 0, y: 20 },
+                    {
+                        autoAlpha: 1,
+                        y: 0,
+                        duration: 0.6,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: el,
+                            start: 'top 85%',
+                            once: true,
+                        },
+                    },
+                );
+            });
+        },
+        { scope: pageRef, dependencies: [prefersReducedMotion] },
+    );
+
     return (
-        <main className="flex min-h-screen flex-col">
-            <ServiceHero
-                title="Strategic financial guidance for"
-                highlightedText="growth & clarity"
-                subtitle="Go beyond the numbers. Our CFO-level advisory services provide the insights, forecasting, and strategy you need to scale confidently."
-                image="/assets/images/financial-advisory-hero.png"
-                imageAlt="Financial advisor presenting data to a client"
-            />
+        <main ref={pageRef} className="flex min-h-screen flex-col">
+            {/* Hero Section */}
+            <section className="relative overflow-hidden bg-white py-24 lg:py-32">
+                <div className="grid-lines pointer-events-none absolute inset-0 opacity-30" />
+                <div className="cust-container relative z-10">
+                    <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-20">
+                        <div>
+                            <span
+                                className="mb-4 block text-xs font-bold tracking-[0.2em] text-primary uppercase"
+                                data-animate
+                            >
+                                Financial Advisory
+                            </span>
+                            <h1
+                                className="mb-6 text-4xl leading-[1.05] font-light tracking-tight text-theme-black md:text-5xl lg:text-6xl"
+                                data-animate
+                            >
+                                Strategic guidance for{' '}
+                                <span className="text-primary">
+                                    growth & clarity
+                                </span>
+                            </h1>
+                            <p
+                                className="mb-8 max-w-lg text-base leading-relaxed text-gray-600 md:text-lg"
+                                data-animate
+                            >
+                                Go beyond the numbers. Our CFO-level advisory
+                                services provide the insights, forecasting, and
+                                strategy you need to scale confidently.
+                            </p>
+                            <div data-animate>
+                                <Link
+                                    href="/lead-form/schedule?source=financial-advisory"
+                                    className="btn-div inline-flex uppercase"
+                                >
+                                    <span className="text-box">
+                                        Get Started
+                                    </span>
+                                    <span className="icon-box">
+                                        <svg
+                                            width="20"
+                                            height="20"
+                                            viewBox="0 0 20 20"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M5.67227 14.6363L4.59045 13.5545L12.0086 6.13632H5.36318V4.59087H14.6359V13.8636H13.0905V7.21814L5.67227 14.6363Z"
+                                                fill="white"
+                                            />
+                                        </svg>
+                                    </span>
+                                </Link>
+                            </div>
+                        </div>
+                        <div
+                            className="relative h-[400px] overflow-hidden shadow-2xl lg:h-[500px]"
+                            data-animate
+                        >
+                            <Image
+                                src="/assets/images/financial-advisory-hero.png"
+                                alt="Financial advisory service"
+                                fill
+                                className="object-cover"
+                                priority
+                                sizes="(max-width: 1024px) 100vw, 50vw"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             {/* Features Grid */}
-            <section className="w-full bg-gray-50 py-24 lg:py-32">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <FadeIn className="mb-16 text-center">
-                        <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
+            <section className="bg-theme-offwhite py-20 lg:py-28">
+                <div className="cust-container">
+                    <div className="mb-16">
+                        <span
+                            className="mb-4 block text-xs font-bold tracking-[0.2em] text-primary uppercase"
+                            data-animate
+                        >
+                            What's Included
+                        </span>
+                        <h2
+                            className="text-4xl leading-[1.05] font-light tracking-tight text-theme-black md:text-5xl"
+                            data-animate
+                        >
                             Unlock Your Potential
                         </h2>
-                        <p className="mt-4 text-lg text-gray-600">
-                            Expert financial guidance to drive your business
-                            forward.
-                        </p>
-                    </FadeIn>
+                    </div>
 
-                    <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                         {features.map((feature, index) => (
-                            <FadeIn
+                            <div
                                 key={index}
-                                delay={index * 0.1}
-                                className="group flex flex-col gap-4 rounded-2xl border border-gray-100 bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                                className="border-l-2 border-primary py-2 pl-6"
+                                data-animate
                             >
-                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent transition-colors group-hover:bg-accent group-hover:text-white">
-                                    <feature.icon className="h-6 w-6" />
-                                </div>
-                                <h3 className="text-xl font-bold text-gray-900">
+                                <h3 className="mb-2 text-lg font-semibold text-theme-black">
                                     {feature.title}
                                 </h3>
-                                <p className="text-base leading-relaxed text-gray-600">
+                                <p className="text-sm leading-relaxed text-gray-600">
                                     {feature.description}
                                 </p>
-                            </FadeIn>
+                            </div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            <ProcessSection steps={processSteps} />
-            <WhoIsThisForSection audience={audience} />
-            <FAQSection items={faqs} />
+            {/* Process Section */}
+            <section className="bg-white py-20 lg:py-28">
+                <div className="cust-container">
+                    <div className="mb-16">
+                        <span
+                            className="mb-4 block text-xs font-bold tracking-[0.2em] text-primary uppercase"
+                            data-animate
+                        >
+                            How It Works
+                        </span>
+                        <h2
+                            className="text-4xl leading-[1.05] font-light tracking-tight text-theme-black md:text-5xl"
+                            data-animate
+                        >
+                            Simple 3-Step Process
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+                        {processSteps.map((step, index) => (
+                            <div
+                                key={index}
+                                className="bg-theme-offwhite p-8 transition-shadow hover:shadow-lg"
+                                data-animate
+                            >
+                                <span className="mb-4 block text-sm font-bold text-primary">
+                                    0{index + 1}
+                                </span>
+                                <h3 className="mb-3 text-xl font-semibold text-theme-black">
+                                    {step.title}
+                                </h3>
+                                <p className="text-sm leading-relaxed text-gray-600">
+                                    {step.description}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Who Is This For - Dark Section */}
+            <section className="bg-theme-black py-20 text-white lg:py-28">
+                <div className="cust-container">
+                    <div className="mb-16">
+                        <span
+                            className="mb-4 block text-xs font-bold tracking-[0.2em] uppercase"
+                            style={{ color: '#34d399' }}
+                            data-animate
+                        >
+                            Perfect For
+                        </span>
+                        <h2
+                            className="text-4xl leading-[1.05] font-light tracking-tight md:text-5xl"
+                            data-animate
+                        >
+                            Who Is This For?
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {audience.map((item, index) => (
+                            <div
+                                key={index}
+                                className="border border-white/20 p-6 transition-colors hover:border-primary"
+                                data-animate
+                            >
+                                <p
+                                    className="text-sm"
+                                    style={{ color: '#ffffff' }}
+                                >
+                                    {item}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* FAQ Section */}
+            <FAQSection
+                faqs={faqs}
+                eyebrow="FAQ"
+                title={`Common
+Questions.`}
+                description="Answers to frequently asked questions about our financial advisory services."
+                showViewAllButton={false}
+            />
+
+            {/* CTA Section */}
+            <section className="bg-theme-offwhite py-20 lg:py-28">
+                <div className="cust-container">
+                    <div className="mx-auto max-w-3xl text-center">
+                        <h2
+                            className="mb-6 text-4xl leading-[1.05] font-light tracking-tight text-theme-black md:text-5xl"
+                            data-animate
+                        >
+                            Ready to Scale Strategically?
+                        </h2>
+                        <p
+                            className="mb-10 text-base text-gray-600"
+                            data-animate
+                        >
+                            Get CFO-level insights without the full-time cost.
+                        </p>
+                        <div data-animate>
+                            <Link
+                                href="/lead-form/schedule?source=financial-advisory"
+                                className="btn-div inline-flex uppercase"
+                            >
+                                <span className="text-box">
+                                    Schedule a Call
+                                </span>
+                                <span className="icon-box">
+                                    <svg
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 20 20"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M5.67227 14.6363L4.59045 13.5545L12.0086 6.13632H5.36318V4.59087H14.6359V13.8636H13.0905V7.21814L5.67227 14.6363Z"
+                                            fill="white"
+                                        />
+                                    </svg>
+                                </span>
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
     );
 }

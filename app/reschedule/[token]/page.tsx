@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { getAvailableDates, getTimeSlots, formatDate } from '@/lib/lead-form-utils';
 import { rescheduleLead, getLeadByToken } from '@/lib/reschedule-lead';
 import { ArrowRight, X, Calendar } from 'lucide-react';
-import cn from '@/utils/cn';
+import cn from '@/lib/cn';
 
 export default function ReschedulePage() {
     const params = useParams();

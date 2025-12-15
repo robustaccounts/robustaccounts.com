@@ -1,10 +1,12 @@
-import React from 'react';
+'use client';
 
-import { Check } from 'lucide-react';
+import gsap from 'gsap';
+import { Check, X } from 'lucide-react';
+import Link from 'next/link';
+import React, { useEffect, useRef } from 'react';
 
-import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
-
-import cn from '@/utils/cn';
+import usePrefersReducedMotion from '@/lib/hooks/use-prefers-reduced-motion';
+import { ArrowIcon } from '@/lib/icons';
 
 const comparisonData = [
     {
@@ -101,62 +103,88 @@ const comparisonData = [
     },
 ];
 
-import FadeIn from '@/components/ui/fade-in';
-
 export default function ComparisonSection() {
+    const sectionRef = useRef<HTMLElement>(null);
+    const prefersReducedMotion = usePrefersReducedMotion();
+
+    useEffect(() => {
+        if (prefersReducedMotion || !sectionRef.current) return;
+
+        const ctx = gsap.context(() => {
+            gsap.from('[data-animate]', {
+                y: 40,
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: 'top 80%',
+                    once: true,
+                },
+            });
+        }, sectionRef);
+
+        return () => ctx.revert();
+    }, [prefersReducedMotion]);
+
     return (
-        <section className={cn('bg-white py-24 lg:py-32')}>
-            <div
-                className={cn(
-                    'flex w-full flex-col items-center justify-center gap-12 px-4 sm:gap-16 sm:px-6 md:px-12 lg:px-16 xl:container xl:mx-auto',
-                )}
-            >
-                <FadeIn className="flex max-w-4xl flex-col items-center justify-center gap-6 text-center sm:gap-8">
-                    <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl lg:text-5xl">
-                        Robust Accounts vs{' '}
-                        <span className="text-accent">Traditional</span>{' '}
-                        Accounting Firms
+        <section ref={sectionRef} className="bg-theme-offwhite py-20 lg:py-28">
+            <div className="cust-container">
+                {/* Header */}
+                <div className="mb-16 text-center">
+                    <span
+                        data-animate
+                        className="mb-4 block text-xs font-bold tracking-[0.2em] text-primary uppercase"
+                    >
+                        Why Choose Us
+                    </span>
+                    <h2
+                        data-animate
+                        className="mb-4 text-3xl leading-[1.1] font-light tracking-tight text-theme-black md:text-4xl lg:text-5xl"
+                    >
+                        Robust Accounts vs Traditional Firms
                     </h2>
-                    <p className="max-w-3xl text-base leading-relaxed text-gray-600 sm:text-lg lg:text-xl">
+                    <p data-animate className="mx-auto max-w-2xl text-gray-600">
                         Discover why modern businesses choose our innovative
                         approach over traditional accounting methods.
                     </p>
-                </FadeIn>
+                </div>
 
-                <div className="w-full max-w-6xl space-y-8">
+                {/* Comparison Cards */}
+                <div className="space-y-8">
                     {comparisonData.map((category, index) => (
-                        <FadeIn
+                        <div
                             key={index}
-                            className="overflow-hidden rounded-3xl bg-gray-50/50 p-5 sm:p-8 border border-gray-100"
+                            data-animate
+                            className="border border-gray-200 bg-white p-6 lg:p-10"
                         >
-                            <div className="pb-6 text-center sm:pb-8">
-                                <h3 className="text-2xl font-bold text-accent sm:text-3xl">
-                                    {category.category}
-                                </h3>
-                            </div>
+                            {/* Category Header */}
+                            <h3 className="mb-8 text-center text-xl font-semibold text-theme-black lg:text-2xl">
+                                {category.category}
+                            </h3>
 
-                            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
+                            {/* Comparison Grid */}
+                            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-10">
                                 {/* Robust Accounts Column */}
-                                <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md lg:p-8">
-                                    <div className="mb-6 flex items-start justify-between">
-                                        <h4 className="text-xl font-bold text-primary sm:text-2xl">
+                                <div className="border border-primary/20 bg-primary/5 p-6 lg:p-8">
+                                    <div className="mb-6 flex items-center justify-between">
+                                        <h4 className="text-lg font-semibold text-primary">
                                             {category.robustAccounts.title}
                                         </h4>
-                                        <span className="hidden rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent sm:inline-flex">
+                                        <span className="text-xs font-bold tracking-wider text-primary uppercase">
                                             Robust Accounts
                                         </span>
                                     </div>
-                                    <ul className="space-y-4">
+                                    <ul className="space-y-3">
                                         {category.robustAccounts.features.map(
                                             (feature, featureIndex) => (
                                                 <li
                                                     key={featureIndex}
                                                     className="flex items-start gap-3"
                                                 >
-                                                    <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-accent/10">
-                                                        <Check className="h-3.5 w-3.5 text-accent" />
-                                                    </div>
-                                                    <span className="text-gray-700 font-medium">
+                                                    <Check className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" />
+                                                    <span className="text-gray-700">
                                                         {feature}
                                                     </span>
                                                 </li>
@@ -166,34 +194,23 @@ export default function ComparisonSection() {
                                 </div>
 
                                 {/* Traditional Firms Column */}
-                                <div className="rounded-2xl border border-gray-200/60 bg-gray-50 p-6 lg:p-8">
-                                    <div className="mb-6 flex items-start justify-between">
-                                        <h4 className="text-xl font-semibold text-gray-600 sm:text-2xl">
+                                <div className="border border-gray-200 bg-gray-50 p-6 lg:p-8">
+                                    <div className="mb-6 flex items-center justify-between">
+                                        <h4 className="text-lg font-semibold text-gray-500">
                                             {category.traditional.title}
                                         </h4>
-                                        <span className="hidden rounded-full bg-gray-200 px-3 py-1 text-xs font-medium text-gray-700 sm:inline-flex">
+                                        <span className="text-xs font-bold tracking-wider text-gray-400 uppercase">
                                             Traditional
                                         </span>
                                     </div>
-                                    <ul className="space-y-4">
+                                    <ul className="space-y-3">
                                         {category.traditional.features.map(
                                             (feature, featureIndex) => (
                                                 <li
                                                     key={featureIndex}
                                                     className="flex items-start gap-3"
                                                 >
-                                                    <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-gray-200">
-                                                        <svg
-                                                            className="h-3.5 w-3.5 fill-gray-500"
-                                                            viewBox="0 0 20 20"
-                                                        >
-                                                            <path
-                                                                fillRule="evenodd"
-                                                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                                                clipRule="evenodd"
-                                                            />
-                                                        </svg>
-                                                    </div>
+                                                    <X className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400" />
                                                     <span className="text-gray-500">
                                                         {feature}
                                                     </span>
@@ -203,20 +220,27 @@ export default function ComparisonSection() {
                                     </ul>
                                 </div>
                             </div>
-                        </FadeIn>
+                        </div>
                     ))}
                 </div>
 
-                <FadeIn className="max-w-3xl text-center">
-                    <p className="mb-8 text-lg text-gray-600">
+                {/* CTA */}
+                <div data-animate className="mt-16 text-center">
+                    <p className="mx-auto mb-6 max-w-xl text-gray-600">
                         Ready to experience the difference? Join thousands of
                         businesses that have already made the switch to modern
                         accounting.
                     </p>
-                    <div className="flex flex-col justify-center gap-4 sm:flex-row">
-                        <ScheduleMyCallButton size="lg" showSubtext={false} />
-                    </div>
-                </FadeIn>
+                    <Link
+                        href="/lead-form/contact"
+                        className="btn-div uppercase"
+                    >
+                        <span className="text-box">Schedule a Call</span>
+                        <span className="icon-box">
+                            <ArrowIcon size={14} className="text-white" />
+                        </span>
+                    </Link>
+                </div>
             </div>
         </section>
     );

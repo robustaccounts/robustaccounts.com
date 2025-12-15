@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Check } from 'lucide-react';
 
-import cn from '@/utils/cn';
+import cn from '@/lib/cn';
 
 const steps = [
     {
@@ -79,7 +79,7 @@ export function ProcessStepsSection() {
 
                         <div className="relative h-full rounded-2xl bg-secondary p-8 transition-all duration-300">
                             {/* Step Number */}
-                            <div className="absolute -top-4 left-8 rounded-full bg-accent px-4 py-2 text-sm font-bold text-white">
+                            <div className="absolute -top-4 left-8 rounded-full bg-primary px-4 py-2 text-sm font-bold text-white">
                                 {step.number}
                             </div>
 

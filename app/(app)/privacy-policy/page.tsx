@@ -1,387 +1,230 @@
 import siteConfig from '@/siteconfig';
 
+import Link from 'next/link';
 import React from 'react';
-
-import Link from '@/ui/link';
 
 export default function PrivacyPolicy() {
     const { contactInfo } = siteConfig;
-    const { address } = contactInfo;
-    const cityStatePostal = [address.stateProvince, address.postalCode]
-        .filter(Boolean)
-        .join(' ');
-    const addressDisplay = [
-        address.street,
-        [address.city, cityStatePostal].filter(Boolean).join(', '),
-        address.country,
-    ]
-        .filter(Boolean)
-        .join(', ');
 
     return (
-        <div className="mt-28 min-h-screen">
-            <div className="px-4 py-8 sm:px-6 lg:px-8">
-                <div className="container mx-auto">
-                    {/* Header */}
-                    <div className="mb-8 text-center">
-                        <h1 className="mb-4 text-3xl font-bold sm:text-4xl">
-                            Privacy Policy
-                        </h1>
-                        <p className="text-lg text-gray-600">
-                            Last updated:{' '}
-                            {new Date().toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                            })}
-                        </p>
-                    </div>
+        <main className="flex min-h-screen flex-col bg-white">
+            {/* Hero Section */}
+            <div className="cust-container pt-24 lg:pt-32">
+                <h1 className="text-4xl font-light tracking-tight text-theme-black md:text-5xl lg:text-6xl">
+                    Privacy Policy
+                </h1>
+            </div>
 
-                    {/* Content */}
-                    <div className="prose prose-lg rounded-lg bg-white p-4">
-                        <div className="space-y-8">
-                            {/* Introduction */}
-                            <section>
-                                <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-                                    1. Introduction
-                                </h2>
-                                <p className="leading-relaxed text-gray-700">
-                                    Robust Accounts ("we," "our," or "us") is
-                                    committed to protecting your privacy. This
-                                    Privacy Policy explains how we collect, use,
-                                    disclose, and safeguard your information
-                                    when you visit our website, use our
-                                    services, or interact with us in any way.
-                                </p>
-                                <p className="mt-4 leading-relaxed text-gray-700">
-                                    By using our services, you agree to the
-                                    collection and use of information in
-                                    accordance with this policy. If you do not
-                                    agree with our policies and practices,
-                                    please do not use our services.
-                                </p>
-                            </section>
+            {/* Content */}
+            <div className="py-12">
+                <div className="cust-container">
+                    <div className="space-y-8">
+                        {/* Important Notice */}
+                        <div className="pb-12">
+                            <p className="mb-4 text-xl font-semibold tracking-wide text-primary uppercase">
+                                IMPORTANT NOTICE: PLEASE READ CAREFULLY BEFORE
+                                USING THIS WEBSITE:
+                            </p>
+                            <p className="leading-relaxed text-gray-700">
+                                This policy explains how we collect and use your
+                                personal information on this website. The policy
+                                may be amended from time to time. When we do, we
+                                will let you know by appropriate means such as
+                                by posting the revised policy on this page with
+                                a new "Last Updated" date. By using this site
+                                you agree to the collection and use of your
+                                information in accordance with this policy. If
+                                you do not wish to accept our privacy practices,
+                                please do not use this site.
+                            </p>
+                            <p className="mt-4 text-sm text-gray-500">
+                                Last Updated: December 3, 2025
+                            </p>
+                        </div>
 
-                            {/* Information We Collect */}
-                            <section>
-                                <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-                                    2. Information We Collect
-                                </h2>
+                        {/* Section 1 */}
+                        <div>
+                            <h2 className="mb-3 text-xl !font-medium text-primary">
+                                1. Information We Collect
+                            </h2>
+                            <p className="leading-relaxed text-gray-700">
+                                We may collect personal information that you
+                                voluntarily provide to us, including your name,
+                                email address, phone number, mailing address,
+                                business information (company name, industry,
+                                business size), financial information (for
+                                service provision), and any information you
+                                provide through forms, surveys, or
+                                consultations. We also automatically collect
+                                certain information when you visit our website,
+                                including your IP address, browser type,
+                                operating system, pages visited, and cookies.
+                            </p>
+                        </div>
 
-                                <h3 className="mb-3 text-xl font-medium text-gray-900">
-                                    2.1 Personal Information
-                                </h3>
-                                <p className="mb-4 leading-relaxed text-gray-700">
-                                    We may collect personal information that you
-                                    voluntarily provide to us, including:
-                                </p>
-                                <ul className="list-disc space-y-2 pl-6 leading-relaxed text-gray-700">
-                                    <li>
-                                        Name and contact information (email
-                                        address, phone number, mailing address)
-                                    </li>
-                                    <li>
-                                        Business information (company name,
-                                        industry, business size)
-                                    </li>
-                                    <li>
-                                        Financial information (for service
-                                        provision)
-                                    </li>
-                                    <li>Communication preferences</li>
-                                    <li>
-                                        Information you provide in forms,
-                                        surveys, or consultations
-                                    </li>
-                                </ul>
+                        {/* Section 2 */}
+                        <div>
+                            <h2 className="mb-3 text-xl !font-medium text-primary">
+                                2. How We Use Your Information
+                            </h2>
+                            <p className="leading-relaxed text-gray-700">
+                                We use the information we collect for providing
+                                and maintaining our accounting and advisory
+                                services, processing transactions and managing
+                                accounts, communicating with you about our
+                                services, sending important updates and
+                                notifications, improving our website and
+                                services, analyzing usage patterns and trends,
+                                complying with legal obligations, and marketing
+                                and promotional purposes (with your consent).
+                            </p>
+                        </div>
 
-                                <h3 className="mt-6 mb-3 text-xl font-medium text-gray-900">
-                                    2.2 Automatically Collected Information
-                                </h3>
-                                <p className="mb-4 leading-relaxed text-gray-700">
-                                    When you visit our website, we automatically
-                                    collect certain information, including:
-                                </p>
-                                <ul className="list-disc space-y-2 pl-6 leading-relaxed text-gray-700">
-                                    <li>IP address and device information</li>
-                                    <li>Browser type and version</li>
-                                    <li>Operating system</li>
-                                    <li>
-                                        Pages visited and time spent on pages
-                                    </li>
-                                    <li>Referring website</li>
-                                    <li>
-                                        Cookies and similar tracking
-                                        technologies
-                                    </li>
-                                </ul>
-                            </section>
+                        {/* Section 3 */}
+                        <div>
+                            <h2 className="mb-3 text-xl !font-medium text-primary">
+                                3. Information Sharing
+                            </h2>
+                            <p className="leading-relaxed text-gray-700">
+                                We do not sell, trade, or otherwise transfer
+                                your personal information to third parties
+                                without your consent, except when sharing with
+                                trusted third-party service providers who assist
+                                us in operating our business, when required by
+                                law or to protect our rights and safety, in the
+                                event of a merger, acquisition, or sale of
+                                assets, or with your explicit consent.
+                            </p>
+                        </div>
 
-                            {/* How We Use Information */}
-                            <section>
-                                <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-                                    3. How We Use Your Information
-                                </h2>
-                                <p className="mb-4 leading-relaxed text-gray-700">
-                                    We use the information we collect for
-                                    various purposes, including:
-                                </p>
-                                <ul className="list-disc space-y-2 pl-6 leading-relaxed text-gray-700">
-                                    <li>
-                                        Providing and maintaining our accounting
-                                        and advisory services
-                                    </li>
-                                    <li>
-                                        Processing transactions and managing
-                                        accounts
-                                    </li>
-                                    <li>
-                                        Communicating with you about our
-                                        services
-                                    </li>
-                                    <li>
-                                        Sending important updates and
-                                        notifications
-                                    </li>
-                                    <li>Improving our website and services</li>
-                                    <li>Analyzing usage patterns and trends</li>
-                                    <li>Complying with legal obligations</li>
-                                    <li>
-                                        Marketing and promotional purposes (with
-                                        your consent)
-                                    </li>
-                                </ul>
-                            </section>
+                        {/* Section 4 */}
+                        <div>
+                            <h2 className="mb-3 text-xl !font-medium text-primary">
+                                4. Data Security
+                            </h2>
+                            <p className="leading-relaxed text-gray-700">
+                                We implement appropriate technical and
+                                organizational security measures to protect your
+                                personal information against unauthorized
+                                access, alteration, disclosure, or destruction.
+                                These measures include encryption of sensitive
+                                data, regular security assessments, access
+                                controls and authentication, secure data
+                                transmission protocols, and employee training on
+                                data protection.
+                            </p>
+                        </div>
 
-                            {/* Information Sharing */}
-                            <section>
-                                <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-                                    4. Information Sharing and Disclosure
-                                </h2>
-                                <p className="mb-4 leading-relaxed text-gray-700">
-                                    We do not sell, trade, or otherwise transfer
-                                    your personal information to third parties
-                                    without your consent, except in the
-                                    following circumstances:
-                                </p>
-                                <ul className="list-disc space-y-2 pl-6 leading-relaxed text-gray-700">
-                                    <li>
-                                        <strong>Service Providers:</strong> We
-                                        may share information with trusted
-                                        third-party service providers who assist
-                                        us in operating our business
-                                    </li>
-                                    <li>
-                                        <strong>Legal Requirements:</strong> We
-                                        may disclose information when required
-                                        by law or to protect our rights and
-                                        safety
-                                    </li>
-                                    <li>
-                                        <strong>Business Transfers:</strong> In
-                                        the event of a merger, acquisition, or
-                                        sale of assets, your information may be
-                                        transferred
-                                    </li>
-                                    <li>
-                                        <strong>Consent:</strong> We may share
-                                        information with your explicit consent
-                                    </li>
-                                </ul>
-                            </section>
+                        {/* Section 5 */}
+                        <div>
+                            <h2 className="mb-3 text-xl !font-medium text-primary">
+                                5. Cookies
+                            </h2>
+                            <p className="leading-relaxed text-gray-700">
+                                We use cookies and similar tracking technologies
+                                to enhance your experience on our website. For
+                                detailed information about our use of cookies,
+                                please see our{' '}
+                                <Link
+                                    href="/cookie-policy"
+                                    className="text-primary underline"
+                                >
+                                    Cookie Policy
+                                </Link>
+                                .
+                            </p>
+                        </div>
 
-                            {/* Data Security */}
-                            <section>
-                                <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-                                    5. Data Security
-                                </h2>
-                                <p className="leading-relaxed text-gray-700">
-                                    We implement appropriate technical and
-                                    organizational security measures to protect
-                                    your personal information against
-                                    unauthorized access, alteration, disclosure,
-                                    or destruction. These measures include:
-                                </p>
-                                <ul className="mt-4 list-disc space-y-2 pl-6 leading-relaxed text-gray-700">
-                                    <li>Encryption of sensitive data</li>
-                                    <li>Regular security assessments</li>
-                                    <li>Access controls and authentication</li>
-                                    <li>Secure data transmission protocols</li>
-                                    <li>
-                                        Employee training on data protection
-                                    </li>
-                                </ul>
-                            </section>
+                        {/* Section 6 */}
+                        <div>
+                            <h2 className="mb-3 text-xl !font-medium text-primary">
+                                6. Your Rights
+                            </h2>
+                            <p className="leading-relaxed text-gray-700">
+                                You have certain rights regarding your personal
+                                information, including the right to access your
+                                personal information, request correction of
+                                inaccurate information, request deletion of your
+                                personal information, request a copy of your
+                                data in a portable format, opt out of marketing
+                                communications, and request restriction of
+                                processing. To exercise these rights, please
+                                contact us using the information provided below.
+                            </p>
+                        </div>
 
-                            {/* Cookies */}
-                            <section>
-                                <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-                                    6. Cookies and Tracking Technologies
-                                </h2>
-                                <p className="mb-4 leading-relaxed text-gray-700">
-                                    We use cookies and similar tracking
-                                    technologies to enhance your experience on
-                                    our website. For detailed information about
-                                    our use of cookies, please see our{' '}
-                                    <a
-                                        href="/cookie-policy"
-                                        className="text-blue-600 underline hover:text-blue-800"
-                                    >
-                                        Cookie Policy
-                                    </a>
-                                    .
-                                </p>
-                            </section>
+                        {/* Section 7 */}
+                        <div>
+                            <h2 className="mb-3 text-xl !font-medium text-primary">
+                                7. Data Retention
+                            </h2>
+                            <p className="leading-relaxed text-gray-700">
+                                We retain your personal information for as long
+                                as necessary to fulfill the purposes outlined in
+                                this Privacy Policy, unless a longer retention
+                                period is required or permitted by law. When we
+                                no longer need your information, we will
+                                securely delete or anonymize it.
+                            </p>
+                        </div>
 
-                            {/* Your Rights */}
-                            <section>
-                                <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-                                    7. Your Rights and Choices
-                                </h2>
-                                <p className="mb-4 leading-relaxed text-gray-700">
-                                    You have certain rights regarding your
-                                    personal information, including:
-                                </p>
-                                <ul className="list-disc space-y-2 pl-6 leading-relaxed text-gray-700">
-                                    <li>
-                                        <strong>Access:</strong> Request access
-                                        to your personal information
-                                    </li>
-                                    <li>
-                                        <strong>Correction:</strong> Request
-                                        correction of inaccurate information
-                                    </li>
-                                    <li>
-                                        <strong>Deletion:</strong> Request
-                                        deletion of your personal information
-                                    </li>
-                                    <li>
-                                        <strong>Portability:</strong> Request a
-                                        copy of your data in a portable format
-                                    </li>
-                                    <li>
-                                        <strong>Opt-out:</strong> Opt out of
-                                        marketing communications
-                                    </li>
-                                    <li>
-                                        <strong>Restriction:</strong> Request
-                                        restriction of processing
-                                    </li>
-                                </ul>
-                                <p className="mt-4 leading-relaxed text-gray-700">
-                                    To exercise these rights, please contact us
-                                    using the information provided below.
-                                </p>
-                            </section>
+                        {/* Section 8 */}
+                        <div>
+                            <h2 className="mb-3 text-xl !font-medium text-primary">
+                                8. Children's Privacy
+                            </h2>
+                            <p className="leading-relaxed text-gray-700">
+                                Our services are not intended for children under
+                                the age of 13. We do not knowingly collect
+                                personal information from children under 13. If
+                                you believe we have collected information from a
+                                child under 13, please contact us immediately.
+                            </p>
+                        </div>
 
-                            {/* Data Retention */}
-                            <section>
-                                <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-                                    8. Data Retention
-                                </h2>
-                                <p className="leading-relaxed text-gray-700">
-                                    We retain your personal information for as
-                                    long as necessary to fulfill the purposes
-                                    outlined in this Privacy Policy, unless a
-                                    longer retention period is required or
-                                    permitted by law. When we no longer need
-                                    your information, we will securely delete or
-                                    anonymize it.
-                                </p>
-                            </section>
+                        {/* Section 9 */}
+                        <div>
+                            <h2 className="mb-3 text-xl !font-medium text-primary">
+                                9. Changes to This Policy
+                            </h2>
+                            <p className="leading-relaxed text-gray-700">
+                                We may update this Privacy Policy from time to
+                                time. We will notify you of any changes by
+                                posting the new Privacy Policy on this page and
+                                updating the "Last updated" date. We encourage
+                                you to review this Privacy Policy periodically.
+                            </p>
+                        </div>
 
-                            {/* Children's Privacy */}
-                            <section>
-                                <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-                                    9. Children's Privacy
-                                </h2>
-                                <p className="leading-relaxed text-gray-700">
-                                    Our services are not intended for children
-                                    under the age of 13. We do not knowingly
-                                    collect personal information from children
-                                    under 13. If you believe we have collected
-                                    information from a child under 13, please
-                                    contact us immediately.
-                                </p>
-                            </section>
-
-                            {/* International Transfers */}
-                            <section>
-                                <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-                                    10. International Data Transfers
-                                </h2>
-                                <p className="leading-relaxed text-gray-700">
-                                    Your information may be transferred to and
-                                    processed in countries other than your own.
-                                    We ensure that such transfers comply with
-                                    applicable data protection laws and
-                                    implement appropriate safeguards to protect
-                                    your information.
-                                </p>
-                            </section>
-
-                            {/* Changes to Policy */}
-                            <section>
-                                <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-                                    11. Changes to This Privacy Policy
-                                </h2>
-                                <p className="leading-relaxed text-gray-700">
-                                    We may update this Privacy Policy from time
-                                    to time. We will notify you of any changes
-                                    by posting the new Privacy Policy on this
-                                    page and updating the "Last updated" date.
-                                    We encourage you to review this Privacy
-                                    Policy periodically.
-                                </p>
-                            </section>
-
-                            {/* Contact Information */}
-                            <section className="flex flex-col gap-y-4">
-                                <h2 className="text-2xl font-semibold text-gray-900">
-                                    12. Contact Us
-                                </h2>
-                                <p className="leading-relaxed text-gray-700">
-                                    If you have any questions about this Privacy
-                                    Policy or our data practices, please contact
-                                    us:
-                                </p>
-                                <div className="flex flex-col gap-y-2 text-gray-700">
-                                    <div className="flex flex-col gap-y-2 md:flex-row">
-                                        <span className="font-bold">
-                                            Email:{' '}
-                                        </span>
-                                        <Link
-                                            className="text-accent"
-                                            href={`mailto:${contactInfo.emailHref}`}
-                                        >
-                                            {contactInfo.emailDisplay}
-                                        </Link>
-                                    </div>
-                                    <div className="flex flex-col gap-y-2 md:flex-row">
-                                        <span className="font-bold">
-                                            Phone:{' '}
-                                        </span>
-                                        <Link
-                                            className="text-accent"
-                                            href={`tel:${contactInfo.phoneHref}`}
-                                        >
-                                            {contactInfo.phoneDisplay}
-                                        </Link>
-                                    </div>
-                                    <div className="flex flex-col gap-y-2 md:flex-row">
-                                        <span className="font-bold">
-                                            Address:{' '}
-                                        </span>
-                                        <span className="text-accent">
-                                            {addressDisplay}
-                                        </span>
-                                    </div>
-                                </div>
-                            </section>
+                        {/* Section 10 */}
+                        <div>
+                            <h2 className="mb-3 text-xl !font-medium text-primary">
+                                10. Contact Us
+                            </h2>
+                            <p className="mb-2 leading-relaxed text-gray-700">
+                                If you have any questions about this Privacy
+                                Policy or our data practices, please contact us:
+                            </p>
+                            <p className="leading-relaxed text-gray-700">
+                                Email:{' '}
+                                <Link
+                                    href={`mailto:${contactInfo.emailHref}`}
+                                    className="text-primary underline"
+                                >
+                                    {contactInfo.emailDisplay}
+                                </Link>
+                                , Phone:{' '}
+                                <Link
+                                    href={`tel:${contactInfo.phoneHref}`}
+                                    className="text-primary underline"
+                                >
+                                    {contactInfo.phoneDisplay}
+                                </Link>
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }

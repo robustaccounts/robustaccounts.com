@@ -5,7 +5,7 @@ import siteConfig from '@/siteconfig';
 import Link from 'next/link';
 import React from 'react';
 
-import cn from '@/utils/cn';
+import cn from '@/lib/cn';
 
 const { contactInfo } = siteConfig;
 
@@ -43,8 +43,8 @@ export default function ScheduleMyCallButton({
     // };
 
     const variantClasses = {
-        primary: 'bg-accent hover:bg-accent/80 text-white',
-        secondary: 'bg-white hover:bg-gray-100 text-accent',
+        primary: 'bg-primary hover:bg-primary/80 text-white',
+        secondary: 'bg-white hover:bg-gray-100 text-primary',
     };
 
     return (
@@ -62,14 +62,14 @@ export default function ScheduleMyCallButton({
                     className={cn(
                         'rounded-full',
                         iconPadding[size],
-                        variant === 'primary' ? 'bg-white' : 'bg-accent',
+                        variant === 'primary' ? 'bg-white' : 'bg-primary',
                     )}
                 >
                     <ArrowForward
                         className={cn(
                             iconSizes[size],
                             variant === 'primary'
-                                ? 'text-accent'
+                                ? 'text-primary'
                                 : 'text-white',
                         )}
                     />

@@ -1,10 +1,14 @@
-import React from 'react';
+'use client';
 
+import { useGSAP } from '@gsap/react';
+
+import gsap from 'gsap';
 import { Check } from 'lucide-react';
+import Link from 'next/link';
+import React, { useRef } from 'react';
 
-import cn from '@/utils/cn';
+import usePrefersReducedMotion from '@/lib/hooks/use-prefers-reduced-motion';
 
-import LearnMoreButton from '../common/learn-more-button';
 
 const services = [
     {
@@ -16,11 +20,9 @@ const services = [
             'Daily transaction recording',
             'Bank reconciliation',
             'Accounts payable/receivable',
-            'General ledger maintenance',
             'Monthly financial statements',
-            'Expense tracking & categorization',
         ],
-        pricing: 'Starting at $299/month',
+        pricing: 'Starting at $160/month',
         popular: true,
     },
     {
@@ -32,11 +34,9 @@ const services = [
             'Employee payment processing',
             'Tax withholding & filings',
             'Benefits administration',
-            'Time tracking integration',
-            'Compliance reporting',
             'Direct deposit setup',
         ],
-        pricing: 'Starting at $149/month',
+        pricing: 'Starting at $150/month',
         popular: false,
     },
     {
@@ -48,88 +48,127 @@ const services = [
             'Budget planning & analysis',
             'Cash flow forecasting',
             'Financial reporting',
-            'Business performance analysis',
             'Growth strategy consulting',
-            'Investment planning',
         ],
-        pricing: 'Starting at $399/month',
+        pricing: 'Starting at $300/month',
         popular: false,
     },
 ];
 
-import FadeIn from '@/components/ui/fade-in';
-
 export default function ServicesGridSection() {
-    return (
-        <section className="w-full bg-gray-50 py-24 lg:py-32">
-            <div className="container mx-auto flex w-full flex-col items-center justify-center gap-12 px-5 sm:gap-16 sm:px-8 lg:px-12">
-                <FadeIn className="flex max-w-4xl flex-col items-center justify-center gap-4 text-center">
-                    <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl text-gray-900">
-                        Choose Your Perfect Service Package
-                    </h2>
-                    <p className="text-base text-gray-600 sm:text-lg">
-                        Professional accounting services designed to scale with your
-                        business
-                    </p>
-                </FadeIn>
+    const prefersReducedMotion = usePrefersReducedMotion();
+    const sectionRef = useRef<HTMLElement>(null);
 
-                <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    useGSAP(
+        () => {
+            if (prefersReducedMotion) return;
+
+            const cards = gsap.utils.toArray<HTMLElement>('.service-card');
+
+            gsap.fromTo(
+                cards,
+                { autoAlpha: 0, y: 24 },
+                {
+                    autoAlpha: 1,
+                    y: 0,
+                    duration: 0.5,
+                    stagger: 0.08,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: sectionRef.current,
+                        start: 'top 95%',
+                        once: true,
+                    },
+                },
+            );
+        },
+        { scope: sectionRef, dependencies: [prefersReducedMotion] },
+    );
+
+    return (
+        <section ref={sectionRef} className="bg-theme-offwhite py-20 lg:py-28">
+            <div className="cust-container">
+                {/* Header */}
+                <div className="mb-16">
+                    <span className="mb-4 block text-xs font-bold tracking-[0.2em] text-primary uppercase">
+                        What We Offer
+                    </span>
+                    <h2 className="mb-4 text-4xl leading-[1.05] font-light tracking-tight text-theme-black md:text-5xl">
+                        Choose Your Service
+                    </h2>
+                    <p className="max-w-lg text-base text-gray-600">
+                        Professional accounting services designed to scale with
+                        your business
+                    </p>
+                </div>
+
+                {/* Services Grid */}
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {services.map((service, index) => (
-                        <FadeIn
+                        <div
                             key={service.id}
-                            delay={index * 0.1}
-                            className="relative h-full"
+                            className={`service-card relative flex flex-col border bg-white p-8 transition-all duration-300 hover:shadow-lg ${
+                                service.popular
+                                    ? 'border-2 border-primary'
+                                    : 'border-gray-200 hover:border-primary'
+                            }`}
                         >
+                            {/* Popular Badge */}
                             {service.popular && (
-                                <div className="absolute -top-4 left-1/2 z-10 -translate-x-1/2 transform rounded-full bg-accent px-4 py-1 text-sm font-medium text-white shadow-md">
+                                <div className="absolute -top-3 left-6 bg-primary px-3 py-1 text-xs font-semibold tracking-wide text-white uppercase">
                                     Most Popular
                                 </div>
                             )}
-                            <div className={cn(
-                                "group flex h-full flex-col justify-between rounded-2xl border bg-white p-6 transition-all duration-300 hover:shadow-xl sm:p-8",
-                                service.popular ? "border-accent/20 ring-1 ring-accent/10" : "border-gray-100"
-                            )}>
-                                <div className="flex flex-col gap-6">
-                                    <div className="flex flex-col gap-2">
-                                        <h3 className="text-xl font-bold text-gray-900 sm:text-2xl">
-                                            {service.title}
-                                        </h3>
-                                        <p className="font-bold text-accent text-lg">
-                                            {service.pricing}
-                                        </p>
-                                    </div>
 
-                                    <p className="text-sm text-gray-600 sm:text-base leading-relaxed">
-                                        {service.description}
-                                    </p>
+                            {/* Content */}
+                            <div className="flex flex-grow flex-col">
+                                <h3 className="mb-2 text-xl font-semibold text-theme-black">
+                                    {service.title}
+                                </h3>
+                                <p className="mb-4 text-sm font-semibold text-primary">
+                                    {service.pricing}
+                                </p>
+                                <p className="mb-6 text-sm leading-relaxed text-gray-600">
+                                    {service.description}
+                                </p>
 
-                                    <div className="space-y-3">
-                                        {service.features.map(
-                                            (feature, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="flex items-start gap-3"
-                                                >
-                                                    <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-accent/10">
-                                                        <Check className="h-3 w-3 text-accent" />
-                                                    </div>
-                                                    <span className="text-sm text-gray-700 sm:text-base">
-                                                        {feature}
-                                                    </span>
-                                                </div>
-                                            ),
-                                        )}
-                                    </div>
+                                {/* Features */}
+                                <div className="mb-8 flex-grow space-y-3">
+                                    {service.features.map(
+                                        (feature, featureIndex) => (
+                                            <div
+                                                key={featureIndex}
+                                                className="flex items-start gap-2"
+                                            >
+                                                <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+                                                <span className="text-sm text-gray-700">
+                                                    {feature}
+                                                </span>
+                                            </div>
+                                        ),
+                                    )}
                                 </div>
 
-                                <div className="mt-8">
-                                    <LearnMoreButton
-                                        href={`/services/${service.id}`}
-                                        className="w-full justify-center"
-                                    />
-                                </div>
+                                {/* CTA */}
+                                <Link
+                                    href={`/services/${service.id}`}
+                                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+                                >
+                                    Learn More
+                                    <svg
+                                        className="h-4 w-4"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                </Link>
                             </div>
-                        </FadeIn>
+                        </div>
                     ))}
                 </div>
             </div>

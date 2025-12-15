@@ -1,65 +1,341 @@
 @import 'tailwindcss';
 
+@theme {
+    --font-display: var(--font-manrope);
+    --font-body: var(--font-manrope);
+    --font-sans: var(--font-manrope);
+
+    --color-theme-offwhite: #f6f6f6;
+    --color-theme-white: #ffffff;
+    --color-theme-black: #0f0f0f;
+    --color-theme-gray: #555555;
+    --color-theme-darkgray: #555555;
+    --color-theme-lightgray: #eaeaea;
+
+    /* Primary brand color for Tailwind classes */
+    --color-primary: #0f3d2e;
+    /* Lighter version for dark backgrounds */
+    --color-primary-light: #34d399;
+
+    --ease-custom: cubic-bezier(0.25, 1, 0.5, 1);
+
+    --spacing-30: 7.5rem;
+
+    --text-32: 2rem;
+    --text-54: 3.375rem;
+}
+
 :root {
-    --background: #ffffff;
-    --foreground: #000000;
+    --background: var(--color-theme-white);
+    --foreground: var(--color-theme-black);
+
     --primary: #0f3d2e;
     --accent: #2d8f5f;
     --secondary: #f5f9f7;
+
+    --card-bg: var(--color-theme-offwhite);
+    --border-color: rgba(0, 0, 0, 0.1);
+
+    --header-height: 90px;
 }
 
-@theme inline {
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --color-primary: var(--primary);
-    --color-accent: var(--accent);
-    --color-secondary: var(--secondary);
-
-    --font-inter: var(--font-inter);
-}
-
-/* @media (prefers-color-scheme: dark) {
-    :root {
-        --background: #0a0a0a;
-        --foreground: #ededed;
-    }
-} */
-
-html {
-    scroll-behavior: smooth;
+/* Base Styles */
+body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-body);
+    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-    background: var(--background);
-    color: var(--foreground);
-    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-    overflow-x: hidden;
+/* Lenis Smooth Scroll Styles */
+html.lenis,
+html.lenis body {
+    height: auto;
 }
 
-/* removed landing-specific helpers per request */
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
 
-/* Global top spacing helper for pages with the fixed header */
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+    pointer-events: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+}
+
+p {
+    line-height: 1.7;
+    color: inherit;
+    font-size: 1.05rem;
+}
+
+/* Layout Utilities */
+.cust-container {
+    width: 100%;
+    max-width: 1560px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .cust-container {
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+}
+
+@layer base {
+    /* Section Spacing */
+    section {
+        padding-top: 6rem;
+        padding-bottom: 6rem;
+        position: relative;
+    }
+
+    @media (min-width: 1024px) {
+        section {
+            padding-top: 10rem;
+            padding-bottom: 10rem;
+        }
+    }
+}
+
+/* Color Utilities */
+.text-primary {
+    color: var(--primary);
+}
+
+.bg-primary {
+    background-color: var(--primary);
+}
+
+.text-theme-black {
+    color: var(--color-theme-black);
+}
+
+.bg-theme-offwhite {
+    background-color: var(--color-theme-offwhite);
+}
+
+.bg-theme-white {
+    background-color: var(--color-theme-white);
+}
+
+/* Component Styles */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1.1rem 2.5rem;
+    background-color: var(--primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    transition: all 0.4s var(--ease-custom);
+}
+
+.btn-primary:hover {
+    background-color: #0a2d21;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(15, 61, 46, 0.2);
+}
+
+.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1.1rem 2.5rem;
+    background-color: transparent;
+    color: var(--color-theme-black);
+    border: 1px solid var(--border-color);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    transition: all 0.4s var(--ease-custom);
+}
+
+.btn-outline:hover {
+    background-color: var(--color-theme-black);
+    color: #fff;
+    border-color: var(--color-theme-black);
+}
+
+@layer components {
+    .btn-div {
+        display: inline-flex;
+        align-items: center;
+        gap: 0;
+        background-color: var(--primary);
+        color: #fff;
+        border-width: 1px;
+        border-style: solid;
+        border-color: transparent;
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 0.1em;
+        transition:
+            background-color 0.35s var(--ease-custom),
+            border-color 0.35s var(--ease-custom),
+            transform 0.35s var(--ease-custom);
+    }
+
+    .btn-div:hover {
+        background-color: #0a2d21;
+        transform: translateY(-1px);
+    }
+
+    .btn-div .text-box {
+        padding: 1rem 1.5rem;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-div .icon-box {
+        padding: 1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-left: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Secondary button that matches btn-div height */
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem 2rem;
+        background-color: transparent;
+        color: var(--color-theme-black);
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        transition: all 0.35s var(--ease-custom);
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+}
+
+/* Card Styles */
+.module-card {
+    background-color: var(--card-bg);
+    padding: 2.5rem;
+    border: 1px solid var(--border-color);
+    transition:
+        transform 0.5s var(--ease-custom),
+        box-shadow 0.5s var(--ease-custom),
+        border-color 0.5s var(--ease-custom);
+}
+
+.module-card:hover {
+    transform: translateY(-5px);
+    border-color: transparent;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+/* Typography Helpers */
+.heading-xl {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+}
+
+@media (min-width: 1024px) {
+    .heading-xl {
+        font-size: 5.5rem;
+    }
+}
+
+.heading-lg {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    letter-spacing: -0.03em;
+}
+
+@media (min-width: 1024px) {
+    .heading-lg {
+        font-size: 3.5rem;
+    }
+}
+
+/* Refined Grid Lines */
+.grid-lines {
+    background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    background-size: 120px 120px;
+}
+
+.shapecut-box {
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        100% calc(100% - 20px),
+        calc(100% - 20px) 100%,
+        0 100%
+    );
+}
+
+@layer utilities {
+    .transitionAll {
+        transition: all 0.35s var(--ease-custom);
+    }
+}
+
+/* Hero Section Spacing */
 .hero-section {
-    /* Ensure content starts below the fixed header (which sits at top-4 with a pill height) */
-    padding-top: 5.5rem; /* ~88px on small screens */
+    padding-top: 5.5rem;
 }
 
 @media (min-width: 640px) {
     .hero-section {
-        padding-top: 6rem; /* ~96px on sm */
+        padding-top: 6rem;
     }
 }
 
 @media (min-width: 768px) {
     .hero-section {
-        padding-top: 6.5rem; /* ~104px on md */
+        padding-top: 6.5rem;
     }
 }
 
 @media (min-width: 1024px) {
     .hero-section {
-        padding-top: 7rem; /* ~112px on lg+ */
+        padding-top: 7rem;
     }
 }

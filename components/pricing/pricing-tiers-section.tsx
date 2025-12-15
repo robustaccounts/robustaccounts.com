@@ -1,9 +1,10 @@
 'use client';
 
+import { Check, Info } from 'lucide-react';
 import React, { useState } from 'react';
 
-import { Check, Info } from 'lucide-react';
-import Link from '@/ui/link';
+import Link from '@/components/ui/link';
+
 import ExpenseSlider from './expense-slider';
 
 interface PricingTier {
@@ -26,27 +27,26 @@ const getPriceForExpense = (basePrice: number, expense: number): number => {
     // Base prices are for $10K expenses (minimum)
     // At $200K expenses, prices are approximately 2-2.5x the base
     // Using logarithmic scaling for natural pricing curve
-    
+
     const minExpense = 10000;
     const maxExpense = 200000;
-    
+
     // Clamp expense to valid range
     const clampedExpense = Math.max(minExpense, Math.min(maxExpense, expense));
-    
+
     // Calculate position in range (0 to 1)
     const position = (clampedExpense - minExpense) / (maxExpense - minExpense);
-    
+
     // Industry standard: ~2.2x multiplier at max expense
     // Using exponential curve for natural pricing progression
     const maxMultiplier = 2.2;
     const scaleFactor = 1 + (maxMultiplier - 1) * Math.pow(position, 0.85);
-    
+
     const rawPrice = basePrice * scaleFactor;
-    
+
     // Round to nearest $10
     return Math.round(rawPrice / 10) * 10;
 };
-
 
 // Determine which plan is recommended based on expense level
 const getRecommendedPlanIndex = (expense: number): number => {
@@ -70,8 +70,7 @@ const defaultPricingTiers: PricingTier[] = [
             },
             {
                 text: 'Daily transaction categorization',
-                tooltip:
-                    'Transactions coded and organized every business day',
+                tooltip: 'Transactions coded and organized every business day',
             },
             {
                 text: 'Bank & credit card reconciliation',
@@ -121,8 +120,7 @@ const defaultPricingTiers: PricingTier[] = [
             },
             {
                 text: 'Senior accountant as your lead',
-                tooltip:
-                    'Work directly with an experienced senior accountant',
+                tooltip: 'Work directly with an experienced senior accountant',
             },
             {
                 text: '10-day GAAP-compliant close',
@@ -130,8 +128,7 @@ const defaultPricingTiers: PricingTier[] = [
             },
             {
                 text: 'Full payroll processing',
-                tooltip:
-                    'Direct deposit, tax filings, W-2s handled for you',
+                tooltip: 'Direct deposit, tax filings, W-2s handled for you',
             },
             {
                 text: 'Accounts payable & bill pay',
@@ -173,8 +170,7 @@ const defaultPricingTiers: PricingTier[] = [
             },
             {
                 text: 'Dedicated CFO advisor',
-                tooltip:
-                    'Strategic financial guidance from an experienced CFO',
+                tooltip: 'Strategic financial guidance from an experienced CFO',
             },
             {
                 text: 'Unlimited payroll & AP processing',
@@ -225,17 +221,16 @@ export default function PricingTiersSection({
 }: PricingTiersSectionProps) {
     // Single synchronized expense value shared across all cards
     const [expenseValue, setExpenseValue] = useState(50000);
-    
+
     // Get recommended plan based on current expense level
     const recommendedIndex = getRecommendedPlanIndex(expenseValue);
-    
+
     // Check if at Custom pricing (beyond $200K)
     const isCustomPricing = expenseValue > 200000;
 
-
     return (
-        <section className="flex items-center" id="pricing-plans">
-            <div className="container mx-auto flex flex-col items-center justify-center gap-14 px-4 sm:px-6 lg:px-12">
+        <section className="py-16 pb-0 lg:py-24 lg:pb-0!" id="pricing-plans">
+            <div className="cust-container">
                 {/* Optional Title and Subtitle */}
                 {(title || subtitle) && (
                     <div className="text-center">
@@ -263,27 +258,25 @@ export default function PricingTiersSection({
                         return (
                             <div
                                 key={index}
-                                className={`group relative flex flex-col rounded-2xl p-8 transition-all duration-300 ${
+                                className={`group relative flex flex-col p-8 transition-all duration-300 ${
                                     isRecommended
-                                        ? 'border-2 border-accent bg-secondary ring-1 ring-accent/20'
-                                        : 'border border-gray-200 bg-white hover:border-accent hover:bg-primary hover:text-white'
+                                        ? 'border-2 border-primary bg-theme-offwhite'
+                                        : 'border border-gray-200 bg-white hover:border-primary hover:shadow-lg'
                                 }`}
                             >
                                 {/* Recommended Badge */}
                                 {isRecommended && (
-                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-accent px-4 py-1.5 text-xs font-semibold tracking-wide text-white uppercase">
+                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold tracking-wide text-white uppercase">
                                         Recommended
                                     </div>
                                 )}
 
                                 {/* Header */}
                                 <div className="mb-4">
-                                    <h3
-                                        className={`text-xl font-semibold text-gray-900 ${!isRecommended ? 'group-hover:text-white' : ''}`}
-                                    >
+                                    <h3 className="text-xl font-semibold text-theme-black">
                                         {tier.name}
                                     </h3>
-                                    <p className={`mt-1 text-sm font-medium text-accent ${!isRecommended ? 'group-hover:text-accent' : ''}`}>
+                                    <p className="mt-1 text-sm font-medium text-primary">
                                         {tier.tagline}
                                     </p>
                                 </div>
@@ -292,39 +285,32 @@ export default function PricingTiersSection({
                                 <div className="mb-4">
                                     <div className="flex items-baseline">
                                         {isCustomPricing ? (
-                                            <span
-                                                className={`text-4xl font-bold tracking-tight text-gray-900 ${!isRecommended ? 'group-hover:text-white' : ''}`}
-                                            >
+                                            <span className="text-4xl font-bold tracking-tight text-theme-black">
                                                 Custom Pricing
                                             </span>
                                         ) : (
                                             <>
-                                                <span
-                                                    className={`text-5xl font-bold tracking-tight transition-all duration-300 text-gray-900 ${!isRecommended ? 'group-hover:text-white' : ''}`}
-                                                >
-                                                    ${currentPrice.toLocaleString()}
+                                                <span className="text-5xl font-bold tracking-tight text-theme-black">
+                                                    $
+                                                    {currentPrice.toLocaleString()}
                                                 </span>
-                                                <span
-                                                    className={`ml-1 text-lg font-normal text-gray-600 ${!isRecommended ? 'group-hover:text-gray-100' : ''}`}
-                                                >
+                                                <span className="ml-1 text-lg font-normal text-gray-600">
                                                     /month
                                                 </span>
                                             </>
                                         )}
                                     </div>
-                                    <p className={`mt-1 text-sm font-medium text-accent ${!isRecommended ? 'group-hover:text-accent' : ''}`}>
-                                        {isCustomPricing ? 'Contact us for pricing' : 'Billed annually (save 10%)'}
+                                    <p className="mt-1 text-sm font-medium text-primary">
+                                        {isCustomPricing
+                                            ? 'Contact us for pricing'
+                                            : 'Billed annually (save 10%)'}
                                     </p>
                                 </div>
 
-
                                 {/* Description */}
-                                <p
-                                    className={`mb-6 text-sm font-normal leading-relaxed text-gray-600 ${!isRecommended ? 'group-hover:text-gray-100' : ''}`}
-                                >
+                                <p className="mb-6 text-sm leading-relaxed text-gray-600">
                                     {tier.description}
                                 </p>
-
 
                                 {/* Expense Slider - Per card but synced */}
                                 <div className="mb-6">
@@ -335,12 +321,9 @@ export default function PricingTiersSection({
                                     />
                                 </div>
 
-
                                 {/* Features */}
                                 <div className="mb-6 flex-grow">
-                                    <h4
-                                        className={`mb-4 text-sm font-medium text-gray-700 ${!isRecommended ? 'group-hover:text-gray-100' : ''}`}
-                                    >
+                                    <h4 className="mb-4 text-sm font-medium text-gray-700">
                                         What&apos;s included:
                                     </h4>
                                     <div className="space-y-3">
@@ -351,23 +334,19 @@ export default function PricingTiersSection({
                                                     className="group/feature flex items-start justify-between gap-2"
                                                 >
                                                     <div className="flex items-start gap-2">
-                                                        <Check
-                                                            className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent"
-                                                        />
-                                                        <span
-                                                            className={`text-sm font-normal text-gray-700 ${!isRecommended ? 'group-hover:text-gray-100' : ''}`}
-                                                        >
+                                                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+                                                        <span className="text-sm text-gray-700">
                                                             {feature.text}
                                                         </span>
                                                     </div>
                                                     {feature.tooltip && (
                                                         <div className="relative">
-                                                            <Info
-                                                                className={`h-4 w-4 cursor-help text-gray-400 ${!isRecommended ? 'group-hover:text-gray-200' : ''}`}
-                                                            />
+                                                            <Info className="h-4 w-4 cursor-help text-gray-400" />
                                                             {/* Tooltip */}
-                                                            <div className="invisible absolute right-0 bottom-full z-10 mb-2 w-48 rounded-lg bg-gray-900 px-3 py-2 text-xs font-normal text-white opacity-0 transition-all duration-200 group-hover/feature:visible group-hover/feature:opacity-100">
-                                                                {feature.tooltip}
+                                                            <div className="invisible absolute right-0 bottom-full z-10 mb-2 w-48 rounded-lg bg-gray-900 px-3 py-2 text-xs text-white opacity-0 transition-all duration-200 group-hover/feature:visible group-hover/feature:opacity-100">
+                                                                {
+                                                                    feature.tooltip
+                                                                }
                                                                 <div className="absolute top-full right-2 h-2 w-2 rotate-45 bg-gray-900" />
                                                             </div>
                                                         </div>
@@ -382,13 +361,28 @@ export default function PricingTiersSection({
                                 <div className="mt-auto">
                                     <Link
                                         href={tier.href}
-                                        className={`block w-full rounded-full py-3.5 text-center text-sm font-semibold transition-all ${
-                                            isRecommended
-                                                ? 'bg-accent text-white hover:bg-accent/90'
-                                                : 'bg-accent text-white hover:bg-white hover:text-primary group-hover:bg-white group-hover:text-primary'
-                                        }`}
+                                        className="btn-div w-full justify-center uppercase"
                                     >
-                                        {isCustomPricing ? 'Contact Us' : tier.cta}
+                                        <span className="text-box w-full">
+                                            {isCustomPricing
+                                                ? 'Contact Us'
+                                                : tier.cta}
+                                        </span>
+                                        <span className="icon-box">
+                                            <svg
+                                                width="20"
+                                                height="20"
+                                                viewBox="0 0 20 20"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                aria-hidden="true"
+                                            >
+                                                <path
+                                                    d="M5.67227 14.6363L4.59045 13.5545L12.0086 6.13632H5.36318V4.59087H14.6359V13.8636H13.0905V7.21814L5.67227 14.6363Z"
+                                                    fill="white"
+                                                />
+                                            </svg>
+                                        </span>
                                     </Link>
                                 </div>
                             </div>

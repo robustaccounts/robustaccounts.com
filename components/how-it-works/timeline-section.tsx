@@ -1,6 +1,6 @@
 import React from 'react';
 
-import cn from '@/utils/cn';
+import cn from '@/lib/cn';
 
 const timeline = [
     {
@@ -39,7 +39,7 @@ export function TimelineSection() {
                 <p className="text-base lg:text-lg">
                     From initial consultation to full implementation
                 </p>
-                <div className="rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent sm:text-sm">
+                <div className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary sm:text-sm">
                     Typical go-live in under 3 weeks
                 </div>
             </div>
@@ -54,10 +54,10 @@ export function TimelineSection() {
 
                         <div className="flex h-full flex-col gap-4 rounded-xl bg-secondary p-6 transition-all duration-300">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-sm font-bold text-white">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
                                     {index + 1}
                                 </div>
-                                <div className="text-sm font-medium text-accent">
+                                <div className="text-sm font-medium text-primary">
                                     {item.duration}
                                 </div>
                             </div>

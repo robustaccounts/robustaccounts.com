@@ -1,73 +1,53 @@
-import siteConfig from '@/siteconfig';
-
 import Link from 'next/link';
 
-import Footer from '@/components/footer/footer';
-import Header from '@/components/header/header';
+import { ArrowIcon } from '@/lib/icons';
 
 export default function NotFound() {
-    const { contactInfo } = siteConfig;
-
     return (
-        <>
-            <Header />
-            <div
-                className="flex min-h-screen items-center justify-center bg-white px-4"
-                style={{
-                    backgroundColor: 'var(--background)',
-                    color: 'var(--foreground)',
-                }}
-            >
-                <div className="w-full max-w-md text-center">
-                    <div className="mb-8">
-                        <h1
-                            className="mb-4 text-9xl font-bold"
-                            style={{ color: 'var(--primary)' }}
-                        >
-                            404
-                        </h1>
-                        <h2
-                            className="mb-4 text-2xl font-semibold"
-                            style={{ color: 'var(--foreground)' }}
-                        >
-                            Page Not Found
-                        </h2>
-                        <p
-                            className="mb-8"
-                            style={{ color: 'var(--color-accent)' }}
-                        >
-                            Sorry, the page you're looking for doesn't exist or
-                            has been moved.
-                        </p>
-                    </div>
+        <main className="flex min-h-screen flex-col items-center justify-center bg-white">
+            {/* Grid lines background */}
+            <div className="grid-lines pointer-events-none absolute inset-0" />
 
-                    <div className="space-y-4">
-                        <Link href="/" passHref>
-                            <button className="w-auto cursor-pointer rounded-lg bg-primary px-4 py-2 font-semibold text-white transition hover:bg-primary/90">
-                                Go Back Home
-                            </button>
+            <div className="cust-container relative z-10">
+                <div className="mx-auto max-w-2xl text-center">
+                    {/* 404 Badge */}
+                    <span className="mb-6 inline-block text-xs font-bold tracking-[0.2em] text-primary uppercase">
+                        Error 404
+                    </span>
+
+                    {/* Large 404 */}
+                    <h1 className="mb-6 text-8xl font-light tracking-tight text-theme-black md:text-9xl">
+                        404
+                    </h1>
+
+                    {/* Title */}
+                    <h2 className="mb-4 text-2xl font-semibold tracking-tight text-theme-black md:text-3xl">
+                        Page Not Found
+                    </h2>
+
+                    {/* Description */}
+                    <p className="mx-auto mb-10 max-w-md text-base leading-relaxed text-gray-600">
+                        Sorry, the page you're looking for doesn't exist or has
+                        been moved. Let's get you back on track.
+                    </p>
+
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+                        <Link href="/" className="btn-div uppercase">
+                            <span className="text-box">Back to Home</span>
+                            <span className="icon-box">
+                                <ArrowIcon size={14} className="text-white" />
+                            </span>
                         </Link>
-                    </div>
-
-                    <div
-                        className="mt-12 text-sm"
-                        style={{ color: 'var(--color-accent)' }}
-                    >
-                        <p>Need help? Our team is here to assist you.</p>
-                        <p className="mt-1">
-                            Call us at{' '}
-                            <a
-                                href={`tel:${contactInfo.phoneHref}`}
-                                style={{ color: 'var(--primary)' }}
-                                className="hover:underline"
-                            >
-                                {contactInfo.phoneDisplay}
-                            </a>
-                        </p>
+                        <Link
+                            href="/contact"
+                            className="inline-flex items-center justify-center border border-theme-black/15 px-8 py-[1rem] text-[0.85rem] font-bold tracking-[0.1em] text-theme-black uppercase transition-all hover:border-primary hover:text-primary"
+                        >
+                            Contact Support
+                        </Link>
                     </div>
                 </div>
             </div>
-            <Footer />
-        </>
+        </main>
     );
 }

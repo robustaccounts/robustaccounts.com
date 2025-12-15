@@ -2,7 +2,7 @@ import React from 'react';
 
 import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
 
-import cn from '@/utils/cn';
+import cn from '@/lib/cn';
 
 const benefits = [
     {

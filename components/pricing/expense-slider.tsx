@@ -85,7 +85,7 @@ export default function ExpenseSlider({
 
                 {/* Active Track Fill */}
                 <div
-                    className="absolute top-1/2 left-0 h-2 -translate-y-1/2 rounded-full bg-accent transition-all duration-150"
+                    className="absolute top-1/2 left-0 h-2 -translate-y-1/2 rounded-full bg-primary transition-all duration-150"
                     style={{ width: `${percentage}%` }}
                 />
 
@@ -103,7 +103,7 @@ export default function ExpenseSlider({
                         [&::-webkit-slider-thumb]:appearance-none
                         [&::-webkit-slider-thumb]:rounded-full
                         [&::-webkit-slider-thumb]:border-2
-                        [&::-webkit-slider-thumb]:border-accent
+                        [&::-webkit-slider-thumb]:border-primary
                         [&::-webkit-slider-thumb]:bg-white
                         [&::-webkit-slider-thumb]:shadow-lg
                         [&::-webkit-slider-thumb]:transition-transform
@@ -114,7 +114,7 @@ export default function ExpenseSlider({
                         [&::-moz-range-thumb]:appearance-none
                         [&::-moz-range-thumb]:rounded-full
                         [&::-moz-range-thumb]:border-2
-                        [&::-moz-range-thumb]:border-accent
+                        [&::-moz-range-thumb]:border-primary
                         [&::-moz-range-thumb]:bg-white
                         [&::-moz-range-thumb]:shadow-lg
                         [&::-moz-range-thumb]:transition-transform
@@ -132,7 +132,7 @@ export default function ExpenseSlider({
             {/* Current Value Display */}
             <div className={`mt-4 text-center transition-colors duration-300 ${valueColorClass}`}>
                 {isCustom ? (
-                    <span className="text-lg font-bold text-accent">
+                    <span className="text-lg font-bold text-primary">
                         {'>'} $200K / month
                     </span>
                 ) : (

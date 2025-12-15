@@ -3,7 +3,7 @@
 import { motion, useInView } from 'framer-motion';
 import React, { useRef } from 'react';
 
-import cn from '@/utils/cn';
+import cn from '@/lib/cn';
 
 interface FadeInProps {
     children: React.ReactNode;

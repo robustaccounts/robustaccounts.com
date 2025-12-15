@@ -1,65 +1,78 @@
-import siteConfig from '@/siteconfig';
+'use client';
 
-import React from 'react';
+import gsap from 'gsap';
+import Link from 'next/link';
+import React, { useEffect, useRef } from 'react';
 
-import cn from '@/utils/cn';
-import FadeIn from '@/components/ui/fade-in';
+import usePrefersReducedMotion from '@/lib/hooks/use-prefers-reduced-motion';
+import { ArrowIcon } from '@/lib/icons';
 
-import ScheduleMyCallButton from '../ui/schedule-my-call-button';
+export default function ContactHeroSection() {
+    const sectionRef = useRef<HTMLElement>(null);
+    const prefersReducedMotion = usePrefersReducedMotion();
 
-const { contactInfo } = siteConfig;
+    useEffect(() => {
+        if (prefersReducedMotion || !sectionRef.current) return;
 
-const stats = [
-    { value: contactInfo.responseTime, label: 'Response Time' },
-    { value: '500+', label: 'Happy Clients' },
-    { value: '99.9%', label: 'Uptime' },
-    { value: '5★', label: 'Client Rating' },
-];
+        const ctx = gsap.context(() => {
+            gsap.from('[data-animate]', {
+                y: 30,
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.15,
+                ease: 'power2.out',
+            });
+        }, sectionRef);
 
-const ContactHeroSection = () => {
+        return () => ctx.revert();
+    }, [prefersReducedMotion]);
+
     return (
         <section
-            className={cn(
-                'hero-section relative flex min-h-screen w-full flex-col items-center justify-center bg-white',
-            )}
+            ref={sectionRef}
+            className="relative min-h-[80vh] w-full overflow-hidden bg-white"
         >
-            <div className="relative z-20 flex w-full flex-col items-center justify-center gap-10 px-4 py-24 sm:gap-14 sm:px-6 md:px-12 lg:px-16 xl:container xl:mx-auto">
-                <div className="flex w-full flex-col items-center gap-8 pt-8">
-                    {/* Main Content */}
-                    <FadeIn className="flex flex-col items-center justify-center space-y-6 text-center sm:space-y-8 xl:max-w-4/5">
-                        <h1 className="text-center text-3xl font-extrabold sm:text-4xl md:text-5xl lg:text-6xl">
-                            Let's <span className="text-accent">Transform</span>{' '}
-                            Your Business Together
-                        </h1>
-                        <p className="max-w-3xl text-center text-base leading-relaxed text-gray-600 sm:text-lg lg:text-xl">
-                            Ready to streamline your finances and focus on growing
-                            your business? Get in touch with our expert team for a
-                            free consultation and discover how we can help you
-                            achieve your financial goals.
-                        </p>
-                        {/* CTA Button */}
-                        <ScheduleMyCallButton subTextClassName="text-gray-500 text-xs" />
-                    </FadeIn>
-                    
-                    {/* Stats Section */}
-                    <FadeIn delay={0.2} className="w-full max-w-4xl">
-                        <div className="mt-8 grid w-full grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-8">
-                            {stats.map((stat, idx) => (
-                                <div className="text-center" key={idx}>
-                                    <div className="text-2xl font-bold text-accent sm:text-3xl lg:text-4xl">
-                                        {stat.value}
-                                    </div>
-                                    <div className="text-sm text-gray-600 sm:text-base">
-                                        {stat.label}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </FadeIn>
+            {/* Grid lines background */}
+            <div className="grid-lines pointer-events-none absolute inset-0" />
+
+            <div className="cust-container relative z-10 flex min-h-[80vh] flex-col justify-center py-24 lg:py-32">
+                <div className="max-w-4xl">
+                    <span
+                        data-animate
+                        className="mb-6 block text-xs font-bold tracking-[0.2em] text-primary uppercase"
+                    >
+                        Contact Us
+                    </span>
+                    <h1
+                        data-animate
+                        className="mb-6 text-4xl leading-[1.05] font-light tracking-tight text-theme-black md:text-5xl lg:text-6xl"
+                    >
+                        Let&apos;s Talk Accounting.
+                        <br />
+                        Let&apos;s Build Smart.
+                    </h1>
+                    <p
+                        data-animate
+                        className="mb-8 max-w-3xl text-lg leading-relaxed text-gray-600 md:text-xl"
+                    >
+                        Whether you&apos;re cleaning up your books, streamlining
+                        payroll, or planning for growth, we&apos;re here to
+                        guide you every step of the way. Connect with our team
+                        and turn financial clarity into confident decisions.
+                    </p>
+                    <div data-animate>
+                        <Link
+                            href="/lead-form/schedule?source=contact"
+                            className="btn-div uppercase"
+                        >
+                            <span className="text-box">Talk To Us</span>
+                            <span className="icon-box">
+                                <ArrowIcon size={14} className="text-white" />
+                            </span>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </section>
     );
-};
-
-export default ContactHeroSection;
+}

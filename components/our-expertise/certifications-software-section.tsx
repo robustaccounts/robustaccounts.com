@@ -1,6 +1,6 @@
 import React from 'react';
 
-import cn from '@/utils/cn';
+import cn from '@/lib/cn';
 
 const certifications = [
     { name: 'CPA', description: 'Certified Public Accountants' },

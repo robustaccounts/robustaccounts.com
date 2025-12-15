@@ -3,7 +3,7 @@
 import { Minus, Plus } from 'lucide-react';
 import { useState } from 'react';
 
-import cn from '@/utils/cn';
+import cn from '@/lib/cn';
 
 export default function FrequentlyAskedQuestion({
     question,
@@ -19,12 +19,12 @@ export default function FrequentlyAskedQuestion({
             onClick={() => setIsOpen(!isOpen)}
             className="group flex w-full cursor-pointer gap-4 rounded-xl bg-secondary p-5 shadow-sm transition-all duration-300 hover:bg-secondary/80 hover:shadow-md sm:gap-5 sm:p-6"
         >
-            <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-accent/10 transition-all group-hover:bg-accent/20 sm:h-8 sm:w-8">
+            <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 transition-all group-hover:bg-primary/20 sm:h-8 sm:w-8">
                 <div className="transition-all">
                     {isOpen ? (
-                        <Minus className="h-5 w-5 text-accent transition-all sm:h-6 sm:w-6" />
+                        <Minus className="h-5 w-5 text-primary transition-all sm:h-6 sm:w-6" />
                     ) : (
-                        <Plus className="h-5 w-5 text-accent transition-all sm:h-6 sm:w-6" />
+                        <Plus className="h-5 w-5 text-primary transition-all sm:h-6 sm:w-6" />
                     )}
                 </div>
             </div>

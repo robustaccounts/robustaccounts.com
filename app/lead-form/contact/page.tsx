@@ -9,11 +9,11 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
 
-import Checkbox from '@/ui/checkbox';
-import Dropdown, { DropdownOption } from '@/ui/dropdown';
-import Input from '@/ui/input';
-import PhoneInput from '@/ui/phone-input';
-import Textarea from '@/ui/textarea';
+import Checkbox from '@/components/ui/checkbox';
+import Dropdown, { DropdownOption } from '@/components/ui/dropdown';
+import Input from '@/components/ui/input';
+import PhoneInput from '@/components/ui/phone-input';
+import Textarea from '@/components/ui/textarea';
 
 import { getTimeSlots } from '@/lib/lead-form-utils';
 import { saveLead } from '@/lib/save-lead';
@@ -43,34 +43,12 @@ const contactFormSchema = z.object({
     industry: z.string().min(1, 'Please select an industry'),
 });
 
-// Field names for touched tracking
-type FieldName =
-    | 'firstName'
-    | 'lastName'
-    | 'email'
-    | 'phone'
-    | 'businessName'
-    | 'industry';
-
 export default function ContactPage() {
     const router = useRouter();
     const { formData, setContactData, setEmailConsent, setSmsConsent } =
         useLeadForm();
-    const [errors, setErrors] = useState<Record<string, string>>({});
-    const [touched, setTouched] = useState<Record<FieldName, boolean>>({
-        firstName: false,
-        lastName: false,
-        email: false,
-        phone: false,
-        businessName: false,
-        industry: false,
-    });
+    const [submitError, setSubmitError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    // Mark a field as touched
-    const handleBlur = (field: FieldName) => {
-        setTouched((prev) => ({ ...prev, [field]: true }));
-    };
 
     useEffect(() => {
         // Redirect to schedule if no date or time is selected
@@ -78,36 +56,6 @@ export default function ContactPage() {
             router.push('/lead-form/schedule');
         }
     }, [formData.selectedDate, formData.selectedTimeSlot, router]);
-
-    // Validate and update errors for touched fields
-    useEffect(() => {
-        const result = contactFormSchema.safeParse({
-            firstName: formData.contactData.firstName.trim(),
-            lastName: formData.contactData.lastName.trim(),
-            email: formData.contactData.email.trim(),
-            phone: formData.contactData.phone.trim(),
-            businessName: formData.contactData.businessName.trim(),
-            industry: formData.contactData.industry,
-        });
-
-        if (!result.success) {
-            const newErrors: Record<string, string> = {};
-            // Safely access errors array, handling potential API differences or undefined values
-            const issues = result.error?.errors || result.error?.issues || [];
-            if (Array.isArray(issues)) {
-                issues.forEach((err: any) => {
-                    const field = err.path[0] as FieldName;
-                    // Only show error if field is touched
-                    if (touched[field]) {
-                        newErrors[field] = err.message;
-                    }
-                });
-            }
-            setErrors(newErrors);
-        } else {
-            setErrors({});
-        }
-    }, [formData.contactData, touched]);
 
     // Check if form is valid for enabling/disabling submit button
     const isFormValid = useMemo(() => {
@@ -126,51 +74,14 @@ export default function ContactPage() {
         return null;
     }
 
-    const validateForm = (): boolean => {
-        // Mark all fields as touched on submit
-        setTouched({
-            firstName: true,
-            lastName: true,
-            email: true,
-            phone: true,
-            businessName: true,
-            industry: true,
-        });
-
-        const result = contactFormSchema.safeParse({
-            firstName: formData.contactData.firstName.trim(),
-            lastName: formData.contactData.lastName.trim(),
-            email: formData.contactData.email.trim(),
-            phone: formData.contactData.phone.trim(),
-            businessName: formData.contactData.businessName.trim(),
-            industry: formData.contactData.industry,
-        });
-
-        if (!result.success) {
-            const newErrors: Record<string, string> = {};
-            // Safely access errors array
-            const issues = result.error?.errors || result.error?.issues || [];
-            if (Array.isArray(issues)) {
-                issues.forEach((err: any) => {
-                    const field = err.path[0] as string;
-                    newErrors[field] = err.message;
-                });
-            }
-            setErrors(newErrors);
-            return false;
-        }
-
-        setErrors({});
-        return true;
-    };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!validateForm()) {
+        if (!isFormValid) {
             return;
         }
 
+        setSubmitError(null);
         setIsSubmitting(true);
 
         try {
@@ -239,13 +150,11 @@ export default function ContactPage() {
                 router.push('/lead-form/success');
             } else {
                 console.error('Failed to save lead:', result.error);
-                setErrors({
-                    submit: 'Failed to submit form. Please try again.',
-                });
+                setSubmitError('Failed to submit form. Please try again.');
             }
         } catch (error) {
             console.error('Submission error:', error);
-            setErrors({ submit: 'An error occurred. Please try again.' });
+            setSubmitError('An error occurred. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
@@ -256,7 +165,7 @@ export default function ContactPage() {
     };
 
     return (
-        <div className="flex h-screen flex-col overflow-hidden bg-white">
+        <div className="flex h-screen flex-col overflow-hidden bg-theme-offwhite">
             {/* Header */}
             <div className="flex w-full shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 py-4 sm:px-6 sm:py-5">
                 <div className="w-10"></div>
@@ -264,13 +173,13 @@ export default function ContactPage() {
                     <p className="text-xs font-medium text-gray-500">
                         Step 2 of 2
                     </p>
-                    <h2 className="mt-0.5 text-base font-bold text-foreground sm:text-lg">
+                    <h2 className="mt-0.5 text-base font-bold text-theme-black sm:text-lg">
                         Your Details
                     </h2>
                 </div>
                 <Link
                     href="/"
-                    className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-all duration-300 hover:bg-gray-200 sm:h-10 sm:w-10"
+                    className="flex h-8 w-8 cursor-pointer items-center justify-center bg-gray-100 transition-all duration-300 hover:bg-gray-200 sm:h-10 sm:w-10"
                     aria-label="Close"
                 >
                     <X className="h-5 w-5 text-gray-600" />
@@ -295,8 +204,6 @@ export default function ContactPage() {
                                         firstName: value,
                                     })
                                 }
-                                onBlur={() => handleBlur('firstName')}
-                                error={errors.firstName}
                                 required
                             />
                             <Input
@@ -307,8 +214,6 @@ export default function ContactPage() {
                                         lastName: value,
                                     })
                                 }
-                                onBlur={() => handleBlur('lastName')}
-                                error={errors.lastName}
                                 required
                             />
                         </div>
@@ -322,8 +227,6 @@ export default function ContactPage() {
                                 onChange={(value) =>
                                     setContactData({ email: value })
                                 }
-                                onBlur={() => handleBlur('email')}
-                                error={errors.email}
                                 required
                             />
                             <PhoneInput
@@ -336,8 +239,6 @@ export default function ContactPage() {
                                 onCountryChange={(code) =>
                                     setContactData({ countryCode: code })
                                 }
-                                onBlur={() => handleBlur('phone')}
-                                error={errors.phone}
                                 required
                             />
                         </div>
@@ -351,8 +252,6 @@ export default function ContactPage() {
                                     businessName: value,
                                 })
                             }
-                            onBlur={() => handleBlur('businessName')}
-                            error={errors.businessName}
                             required
                         />
 
@@ -364,9 +263,7 @@ export default function ContactPage() {
                             onChange={(value) =>
                                 setContactData({ industry: value })
                             }
-                            onBlur={() => handleBlur('industry')}
                             placeholder="Select your industry"
-                            error={errors.industry}
                             required
                         />
 
@@ -400,14 +297,14 @@ export default function ContactPage() {
                         </div>
 
                         {/* Terms Agreement */}
-                        <div className="rounded-lg bg-gray-50 p-3 lg:p-4">
-                            <p className="text-xs text-gray-600">
+                        <div className="pt-4">
+                            <p className="text-sm! text-gray-600">
                                 By clicking 'Confirm My Appointment' you agree
                                 to our{' '}
                                 <Link
                                     href="/terms-of-service"
                                     target="_blank"
-                                    className="cursor-pointer text-accent underline hover:text-accent/80"
+                                    className="cursor-pointer text-primary underline hover:text-primary/80"
                                 >
                                     Terms of Service
                                 </Link>{' '}
@@ -415,7 +312,7 @@ export default function ContactPage() {
                                 <Link
                                     href="/privacy-policy"
                                     target="_blank"
-                                    className="cursor-pointer text-accent underline hover:text-accent/80"
+                                    className="cursor-pointer text-primary underline hover:text-primary/80"
                                 >
                                     Privacy Policy
                                 </Link>
@@ -425,10 +322,10 @@ export default function ContactPage() {
                         </div>
 
                         {/* Error Message */}
-                        {errors.submit && (
-                            <div className="rounded-lg bg-red-50 p-3 lg:p-4">
+                        {submitError && (
+                            <div className="bg-red-50 p-3 lg:p-4">
                                 <p className="text-sm text-red-900">
-                                    {errors.submit}
+                                    {submitError}
                                 </p>
                             </div>
                         )}
@@ -442,7 +339,7 @@ export default function ContactPage() {
                     <button
                         type="button"
                         onClick={handleBack}
-                        className="cursor-pointer rounded-xl border-2 border-gray-300 px-6 py-3 text-center text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 sm:text-base"
+                        className="cursor-pointer border-2 border-gray-300 px-6 py-3 text-center text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 sm:text-base"
                     >
                         Back
                     </button>
@@ -450,7 +347,7 @@ export default function ContactPage() {
                         type="submit"
                         onClick={handleSubmit}
                         disabled={isSubmitting || !isFormValid}
-                        className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50 sm:text-base"
+                        className="flex cursor-pointer items-center justify-center gap-2 bg-primary px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 sm:text-base"
                     >
                         {isSubmitting ? (
                             <>

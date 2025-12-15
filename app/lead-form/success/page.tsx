@@ -2,17 +2,26 @@
 
 import { useLeadForm } from '@/contexts/lead-form-context';
 
+import { Calendar, Check, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { Calendar } from 'lucide-react';
+import GoogleCalendarIcon from '@/components/ui/icons/google-calendar';
 
 import { formatDate, getTimeSlots } from '@/lib/lead-form-utils';
+
+const AUTO_REDIRECT_SECONDS = 15;
 
 export default function SuccessPage() {
     const router = useRouter();
     const { formData, resetForm } = useLeadForm();
+    const [countdown, setCountdown] = useState(AUTO_REDIRECT_SECONDS);
+
+    const handleReturnHome = useCallback(() => {
+        resetForm();
+        window.location.href = '/';
+    }, [resetForm]);
 
     useEffect(() => {
         // Redirect if no data exists
@@ -20,6 +29,24 @@ export default function SuccessPage() {
             router.push('/lead-form/schedule');
         }
     }, [formData.selectedDate, formData.selectedTimeSlot, router]);
+
+    // Auto-redirect countdown
+    useEffect(() => {
+        if (!formData.selectedDate || !formData.selectedTimeSlot) return;
+
+        const timer = setInterval(() => {
+            setCountdown((prev) => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    handleReturnHome();
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [formData.selectedDate, formData.selectedTimeSlot, handleReturnHome]);
 
     if (!formData.selectedDate || !formData.selectedTimeSlot) {
         return null;
@@ -29,11 +56,6 @@ export default function SuccessPage() {
     const selectedSlot = timeSlots.find(
         (slot) => slot.id === formData.selectedTimeSlot,
     );
-
-    const handleReturnHome = () => {
-        resetForm();
-        window.location.href = '/';
-    };
 
     const handleAddToCalendar = () => {
         if (!selectedSlot) return;
@@ -62,98 +84,130 @@ export default function SuccessPage() {
     };
 
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
-            <div className="w-full max-w-2xl">
-                <div className="rounded-lg bg-white p-6 text-center sm:p-10">
+        <div className="flex h-screen flex-col overflow-hidden bg-theme-offwhite">
+            {/* Header */}
+            <div className="flex w-full shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 py-4 sm:px-6 sm:py-5">
+                <div className="w-10"></div>
+                <div className="text-center">
+                    <p className="text-xs font-medium text-primary">
+                        Confirmed
+                    </p>
+                    <h2 className="mt-0.5 text-base font-bold text-theme-black sm:text-lg">
+                        Consultation Scheduled
+                    </h2>
+                </div>
+                <Link
+                    href="/"
+                    onClick={handleReturnHome}
+                    className="flex h-8 w-8 cursor-pointer items-center justify-center bg-gray-100 transition-all duration-300 hover:bg-gray-200 sm:h-10 sm:w-10"
+                    aria-label="Close"
+                >
+                    <X className="h-5 w-5 text-gray-600" />
+                </Link>
+            </div>
+
+            {/* Main Content - Scrollable */}
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6">
+                <div className="mx-auto w-full max-w-2xl py-6 sm:py-10 lg:py-12">
                     {/* Success Icon */}
-                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 sm:h-20 sm:w-20">
-                        <svg
-                            className="h-10 w-10 fill-green-600 sm:h-12 sm:w-12"
-                            viewBox="0 0 24 24"
-                        >
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                        </svg>
+                    <div className="mb-6 flex justify-center">
+                        <div className="flex h-16 w-16 items-center justify-center bg-primary sm:h-20 sm:w-20">
+                            <Check
+                                className="h-10 w-10 text-white sm:h-12 sm:w-12"
+                                strokeWidth={3}
+                            />
+                        </div>
                     </div>
 
-                    {/* Title */}
-                    <h1 className="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
-                        Consultation Scheduled!
-                    </h1>
+                    {/* Title & Description */}
+                    <div className="mb-8 text-center">
+                        <h1 className="mb-3 text-2xl font-bold text-theme-black sm:text-3xl">
+                            You're All Set!
+                        </h1>
+                        <p className="text-base text-gray-600">
+                            Thank you, {formData.contactData.firstName}! Your
+                            consultation has been successfully scheduled.
+                        </p>
+                    </div>
 
-                    {/* Description */}
-                    <p className="mb-8 text-base text-gray-600 sm:text-lg">
-                        Thank you, {formData.contactData.firstName}! Your
-                        consultation has been successfully scheduled.
-                    </p>
-
-                    {/* Appointment Details */}
-                    <div className="mb-8 rounded-lg bg-accent/5 p-6">
-                        <div className="mb-4 flex items-center justify-center gap-2">
-                            <Calendar className="h-6 w-6 text-accent" />
-                            <h2 className="text-lg font-semibold text-gray-900">
+                    {/* Appointment Details Card */}
+                    <div className="mb-6 border-l-4 border-primary bg-white p-5 sm:p-6">
+                        <div className="mb-4 flex items-center gap-2">
+                            <Calendar className="h-5 w-5 text-primary" />
+                            <h2 className="text-base font-semibold text-theme-black">
                                 Appointment Details
                             </h2>
                         </div>
-                        <div className="space-y-2 text-sm text-gray-700 sm:text-base">
-                            <p>
-                                <strong>Date:</strong>{' '}
-                                {formatDate(formData.selectedDate)}
-                            </p>
-                            <p>
-                                <strong>Time:</strong>{' '}
-                                {selectedSlot?.time}{' '}
-                                {selectedSlot?.timezoneAbbrev}
-                            </p>
-                            <p>
-                                <strong>Duration:</strong> 30 minutes
-                            </p>
+                        <div className="grid gap-3 text-sm sm:grid-cols-3">
+                            <div>
+                                <p className="font-medium text-gray-500">
+                                    Date
+                                </p>
+                                <p className="text-theme-black">
+                                    {formatDate(formData.selectedDate)}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="font-medium text-gray-500">
+                                    Time
+                                </p>
+                                <p className="text-theme-black">
+                                    {selectedSlot?.time}{' '}
+                                    {selectedSlot?.timezoneAbbrev}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="font-medium text-gray-500">
+                                    Duration
+                                </p>
+                                <p className="text-theme-black">30 minutes</p>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Confirmation Message */}
-                    <div className="mb-8 p-4">
-                        <p className="text-sm text-blue-900">
-                            A confirmation email has been sent to{' '}
-                            <strong>{formData.contactData.email}</strong> with
-                            your appointment details and a meeting link.
-                        </p>
+                    {/* Confirmation Email Notice */}
+                    <div className="mb-6 bg-white p-4 text-center text-sm text-gray-600">
+                        A confirmation email has been sent to{' '}
+                        <span className="font-medium text-theme-black">
+                            {formData.contactData.email}
+                        </span>{' '}
+                        with your appointment details and a meeting link.
                     </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-                        <button
-                            onClick={handleAddToCalendar}
-                            className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-accent bg-white px-6 py-3 text-sm font-medium text-accent transition-colors hover:bg-accent/5 sm:text-base"
+                    {/* Need Changes Notice */}
+                    <div className="text-center text-sm text-gray-500">
+                        Need to make changes? Contact us at{' '}
+                        <Link
+                            href="mailto:consultations@robustaccounts.com"
+                            className="text-primary hover:underline"
                         >
-                            <Calendar className="h-5 w-5" />
-                            Add to Google Calendar
-                        </button>
+                            consultations@robustaccounts.com
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
+            {/* Footer */}
+            <div className="shrink-0 border-t border-gray-200 bg-white px-4 py-4 sm:px-6">
+                <div className="mx-auto flex max-w-2xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <button
+                        onClick={handleAddToCalendar}
+                        className="flex cursor-pointer items-center justify-center gap-2 border-2 border-gray-300 px-6 py-3 text-sm font-semibold text-gray-700 transition-colors hover:border-primary hover:text-primary sm:text-base"
+                    >
+                        <GoogleCalendarIcon className="h-5 w-5" />
+                        Add to Calendar
+                    </button>
+
+                    <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
+                        <p className="text-xs text-gray-400">
+                            Redirecting in {countdown}s
+                        </p>
                         <button
                             onClick={handleReturnHome}
-                            className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-accent px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-accent/90 sm:text-base"
+                            className="flex w-full cursor-pointer items-center justify-center gap-2 bg-primary px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-primary/90 sm:w-auto sm:text-base"
                         >
-                            <svg
-                                className="h-5 w-5"
-                                viewBox="0 0 24 24"
-                            >
-                                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-                            </svg>
-                            Return Home
+                            Back to Website
                         </button>
-                    </div>
-
-                    {/* Additional Info */}
-                    <div className="mt-8 border-t border-gray-200 pt-6 text-sm text-gray-500">
-                        <p>
-                            Need to make changes? Contact us at{' '}
-                            <Link
-                                href="mailto:consultations@robustaccounts.com"
-                                className="text-accent hover:underline"
-                            >
-                                consultations@robustaccounts.com
-                            </Link>
-                            .
-                        </p>
                     </div>
                 </div>
             </div>

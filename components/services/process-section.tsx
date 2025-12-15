@@ -43,7 +43,7 @@ export default function ProcessSection({
                             {/* Card Container */}
                             <div className="relative flex h-full flex-col rounded-2xl bg-secondary/30 p-8 transition-all duration-300 hover:bg-secondary/50">
                                 {/* Number Badge */}
-                                <div className="absolute -top-4 left-8 flex h-8 items-center justify-center rounded-full bg-accent px-4 text-sm font-bold text-white shadow-sm">
+                                <div className="absolute -top-4 left-8 flex h-8 items-center justify-center rounded-full bg-primary px-4 text-sm font-bold text-white shadow-sm">
                                     Step {index + 1}
                                 </div>
 

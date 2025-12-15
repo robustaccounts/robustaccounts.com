@@ -1,21 +1,23 @@
 import { Analytics } from '@vercel/analytics/next';
-import { Inter } from 'next/font/google';
+import { Manrope } from 'next/font/google';
 
 import type { Metadata } from 'next';
 
 import { Providers } from '@/providers/providers';
+import SiteShell from '@/components/layout/site-shell';
 
 import './globals.css';
 
-const inter = Inter({
+const manrope = Manrope({
     subsets: ['latin'],
     display: 'swap',
-    variable: '--font-inter',
+    variable: '--font-manrope',
+    weight: ['300', '400', '500', '600', '700', '800'],
 });
 
 export const metadata: Metadata = {
-    title: 'Accounting Outsourcing Agency',
-    description: 'Accounting Outsourcing Agency',
+    title: 'Robust Accounts | Professional Accounting Services',
+    description: 'Professional accounting and bookkeeping services designed to help your business grow. We handle the numbers so you can focus on what matters.',
 };
 
 export default function RootLayout({
@@ -24,11 +26,12 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={inter.variable} suppressHydrationWarning>
-            <body className={`${inter.className} antialiased`} suppressHydrationWarning>
+        <html lang="en" className={manrope.variable} suppressHydrationWarning>
+            <body className={`${manrope.className} antialiased`} suppressHydrationWarning>
                 <Providers>
-                    {children}
-
+                    <SiteShell>
+                        {children}
+                    </SiteShell>
                     <Analytics />
                 </Providers>
             </body>

@@ -1,13 +1,13 @@
+'use client';
+
 import React from 'react';
 
-import { Check } from 'lucide-react';
-
-const comparisonFeatures = [
+const comparisonData = [
     {
         feature: 'Monthly Bookkeeping',
-        starter: true,
-        professional: true,
-        enterprise: true,
+        starter: '✓',
+        professional: '✓',
+        enterprise: '✓',
     },
     {
         feature: 'Financial Statements',
@@ -16,122 +16,179 @@ const comparisonFeatures = [
         enterprise: 'Custom',
     },
     {
+        feature: 'Month-End Close',
+        starter: '15 days',
+        professional: '10 days (GAAP)',
+        enterprise: '5 days',
+    },
+    {
         feature: 'Dedicated Account Manager',
-        starter: false,
-        professional: true,
-        enterprise: true,
+        starter: '—',
+        professional: '✓',
+        enterprise: '✓',
     },
     {
         feature: 'Phone Support',
-        starter: false,
-        professional: true,
-        enterprise: true,
+        starter: '—',
+        professional: '✓',
+        enterprise: 'Priority',
     },
     {
-        feature: 'Financial Advisory',
-        starter: false,
-        professional: 'Limited',
+        feature: 'Payroll Processing',
+        starter: '—',
+        professional: '✓',
         enterprise: 'Unlimited',
     },
     {
+        feature: 'Accounts Payable / Bill Pay',
+        starter: '—',
+        professional: '✓',
+        enterprise: '✓',
+    },
+    {
+        feature: 'Financial Advisory',
+        starter: '—',
+        professional: 'Quarterly',
+        enterprise: 'Monthly',
+    },
+    {
         feature: 'Custom Reporting',
-        starter: false,
-        professional: false,
-        enterprise: true,
+        starter: '—',
+        professional: '—',
+        enterprise: '✓',
     },
     {
         feature: 'Multi-Entity Management',
-        starter: false,
-        professional: false,
-        enterprise: true,
+        starter: '—',
+        professional: '—',
+        enterprise: '✓',
     },
     {
         feature: 'CFO Advisory',
-        starter: false,
-        professional: false,
-        enterprise: true,
-    },
-    {
-        feature: 'Priority Support',
-        starter: false,
-        professional: false,
-        enterprise: true,
+        starter: '—',
+        professional: '—',
+        enterprise: '✓',
     },
 ];
 
 export default function ComparisonTableSection() {
     return (
-        <section className="flex min-h-screen items-center py-16 lg:py-20">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="mb-12 text-center">
-                    <h2 className="mb-4 text-2xl font-semibold sm:text-3xl lg:text-4xl">
-                        Compare Plans
-                    </h2>
-                    <p className="mx-auto max-w-3xl text-base text-gray-600 sm:text-lg">
-                        See what's included in each plan at a glance
-                    </p>
-                </div>
+        <section className="bg-white py-20 lg:py-28">
+            <div className="cust-container">
+                <span className="mb-4 block text-xs font-semibold tracking-[0.2em] text-primary uppercase">
+                    Plan Comparison
+                </span>
+                <h2 className="mb-6 text-4xl leading-[1.05] font-light tracking-tight text-theme-black md:text-5xl">
+                    Compare Features
+                </h2>
+                <p className="mb-12 max-w-2xl text-gray-600">
+                    See what's included in each plan at a glance. All plans
+                    include dedicated support and secure access.
+                </p>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full rounded-xl">
-                        <thead className="">
-                            <tr>
-                                <th className="p-4 text-left text-sm font-semibold text-gray-900">
-                                    Features
+                    <table className="w-full min-w-[600px] border-collapse">
+                        <thead>
+                            <tr className="bg-theme-black text-white">
+                                <th className="p-4 text-left text-sm font-semibold">
+                                    Feature
                                 </th>
-                                <th className="p-4 text-center text-sm font-semibold text-gray-900">
+                                <th className="p-4 text-center text-sm font-semibold">
                                     Starter
                                 </th>
-                                <th className="p-4 text-center text-sm font-semibold text-gray-900">
+                                <th className="p-4 text-center text-sm font-semibold">
                                     Professional
                                 </th>
-                                <th className="p-4 text-center text-sm font-semibold text-gray-900">
+                                <th className="p-4 text-center text-sm font-semibold">
                                     Enterprise
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {comparisonFeatures.map((feature, index) => (
-                                <tr key={index} className="hover:">
-                                    <td className="p-4 text-sm text-gray-900">
-                                        {feature.feature}
+                        <tbody>
+                            {comparisonData.map((row, index) => (
+                                <tr
+                                    key={index}
+                                    className={
+                                        index % 2 === 0
+                                            ? 'bg-theme-offwhite'
+                                            : 'bg-white'
+                                    }
+                                >
+                                    <td className="p-4 text-sm font-medium text-theme-black">
+                                        {row.feature}
                                     </td>
                                     <td className="p-4 text-center text-sm">
-                                        {feature.starter === true ? (
-                                            <Check className="mx-auto h-5 w-5 text-accent" />
-                                        ) : feature.starter === false ? (
+                                        {row.starter === '✓' ? (
+                                            <span className="inline-flex items-center justify-center">
+                                                <svg
+                                                    className="h-5 w-5 text-primary"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 20 20"
+                                                >
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                        clipRule="evenodd"
+                                                    />
+                                                </svg>
+                                            </span>
+                                        ) : row.starter === '—' ? (
                                             <span className="text-gray-400">
                                                 —
                                             </span>
                                         ) : (
                                             <span className="text-gray-600">
-                                                {feature.starter}
+                                                {row.starter}
                                             </span>
                                         )}
                                     </td>
                                     <td className="p-4 text-center text-sm">
-                                        {feature.professional === true ? (
-                                            <Check className="mx-auto h-5 w-5 text-accent" />
-                                        ) : feature.professional === false ? (
+                                        {row.professional === '✓' ? (
+                                            <span className="inline-flex items-center justify-center">
+                                                <svg
+                                                    className="h-5 w-5 text-primary"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 20 20"
+                                                >
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                        clipRule="evenodd"
+                                                    />
+                                                </svg>
+                                            </span>
+                                        ) : row.professional === '—' ? (
                                             <span className="text-gray-400">
                                                 —
                                             </span>
                                         ) : (
                                             <span className="text-gray-600">
-                                                {feature.professional}
+                                                {row.professional}
                                             </span>
                                         )}
                                     </td>
                                     <td className="p-4 text-center text-sm">
-                                        {feature.enterprise === true ? (
-                                            <Check className="mx-auto h-5 w-5 text-accent" />
-                                        ) : feature.enterprise === false ? (
+                                        {row.enterprise === '✓' ? (
+                                            <span className="inline-flex items-center justify-center">
+                                                <svg
+                                                    className="h-5 w-5 text-primary"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 20 20"
+                                                >
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                        clipRule="evenodd"
+                                                    />
+                                                </svg>
+                                            </span>
+                                        ) : row.enterprise === '—' ? (
                                             <span className="text-gray-400">
                                                 —
                                             </span>
                                         ) : (
                                             <span className="text-gray-600">
-                                                {feature.enterprise}
+                                                {row.enterprise}
                                             </span>
                                         )}
                                     </td>

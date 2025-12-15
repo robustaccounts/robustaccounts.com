@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Check } from 'lucide-react';
 
-import cn from '@/utils/cn';
+import cn from '@/lib/cn';
 
 const industries = [
     {
@@ -134,7 +134,7 @@ export default function IndustriesSection() {
                                             key={serviceIndex}
                                             className="flex items-center gap-2"
                                         >
-                                            <Check className="h-3 w-3 flex-shrink-0 text-accent" />
+                                            <Check className="h-3 w-3 flex-shrink-0 text-primary" />
                                             <span className="text-sm">
                                                 {service}
                                             </span>
