@@ -1,53 +1,165 @@
 'use client';
 
+import { useGSAP } from '@gsap/react';
 
-import React from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Image from 'next/image';
+import Link from 'next/link';
+import React, { useRef } from 'react';
 
-import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
-import FadeIn from '@/components/ui/fade-in';
+import usePrefersReducedMotion from '@/lib/hooks/use-prefers-reduced-motion';
+import { ArrowIcon } from '@/lib/icons';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function HeroSection() {
+    const prefersReducedMotion = usePrefersReducedMotion();
+    const containerRef = useRef<HTMLDivElement>(null);
+    const backgroundRef = useRef<HTMLDivElement>(null);
+    const overlayRef = useRef<HTMLDivElement>(null);
+
+    useGSAP(
+        () => {
+            if (prefersReducedMotion) return;
+
+            const tl = gsap.timeline();
+            const reveals = gsap.utils.toArray<HTMLElement>(
+                '[data-hero-reveal]',
+                containerRef.current || undefined,
+            );
+
+            tl.fromTo(
+                reveals,
+                { y: 60, autoAlpha: 0 },
+                {
+                    y: 0,
+                    autoAlpha: 1,
+                    duration: 1,
+                    stagger: 0.16,
+                    ease: 'power3.out',
+                    delay: 0.25,
+                },
+            );
+
+            // Background scale animation
+            if (backgroundRef.current) {
+                gsap.fromTo(
+                    backgroundRef.current,
+                    { scale: 1.08 },
+                    {
+                        scale: 1,
+                        duration: 1.6,
+                        ease: 'power2.out',
+                        overwrite: true,
+                    },
+                );
+
+                // Parallax scroll effect
+                gsap.to(backgroundRef.current, {
+                    yPercent: 10,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: containerRef.current,
+                        start: 'top top',
+                        end: 'bottom top',
+                        scrub: true,
+                    },
+                });
+            }
+
+            // Overlay fade on scroll
+            if (overlayRef.current) {
+                gsap.fromTo(
+                    overlayRef.current,
+                    { opacity: 0.7 },
+                    {
+                        opacity: 0.9,
+                        ease: 'none',
+                        scrollTrigger: {
+                            trigger: containerRef.current,
+                            start: 'top top',
+                            end: 'bottom top',
+                            scrub: true,
+                        },
+                    },
+                );
+            }
+        },
+        { scope: containerRef, dependencies: [prefersReducedMotion] },
+    );
+
     return (
-        <section className="hero-section relative min-h-screen w-full bg-white">
-            {/* Content Container */}
-            <div className="relative z-20 flex min-h-screen w-full flex-col items-center justify-center gap-10 px-4 py-24 sm:gap-14 sm:px-6 md:px-12 lg:px-16 xl:container xl:mx-auto">
-                {/* Main Content */}
-                <FadeIn className="flex flex-col items-center justify-center space-y-6 sm:space-y-8">
-                    <h1 className="text-center text-4xl leading-[1.1] font-extrabold tracking-tighter text-primary sm:text-5xl md:text-6xl lg:text-7xl">
-                        Simple Process,{' '}
-                        <span className="text-primary">Exceptional Results</span>
+        <section
+            ref={containerRef}
+            className="relative h-screen w-full overflow-hidden bg-theme-black py-0 text-white"
+            data-header-tone="dark"
+        >
+            {/* Background Image */}
+            <div
+                ref={backgroundRef}
+                className="absolute inset-0 z-0 will-change-transform"
+            >
+                <Image
+                    src="/images/how-it-works-hero.webp"
+                    alt="How It Works"
+                    fill
+                    sizes="100vw"
+                    className="object-cover object-center"
+                    priority
+                />
+                <div
+                    ref={overlayRef}
+                    className="absolute inset-0 bg-gradient-to-t from-theme-black/90 via-theme-black/40 to-theme-black/60"
+                />
+            </div>
+
+            {/* Main Content Container */}
+            <div className="cust-container relative z-20 flex h-full flex-col items-center justify-center text-center">
+                {/* Centered Content */}
+                <div className="mx-auto max-w-5xl">
+                    {/* Eyebrow */}
+                    <span
+                        className="mb-6 block text-xs font-bold tracking-[0.2em] text-primary-light uppercase"
+                        data-hero-reveal
+                    >
+                        Our Process
+                    </span>
+
+                    <h1
+                        className="mb-8 text-4xl leading-[1.1] font-light tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl"
+                        data-hero-reveal
+                    >
+                        Simple Process,
+                        <br />
+                        <span className="font-medium">Exceptional Results</span>
                     </h1>
-                    <p className="max-w-3xl text-center text-base leading-relaxed text-gray-600 sm:text-lg md:text-xl lg:text-2xl">
+
+                    {/* CTA Button */}
+                    <div className="flex justify-center" data-hero-reveal>
+                        <Link
+                            href="/lead-form/schedule"
+                            className="btn-div uppercase"
+                        >
+                            <span className="text-box">Get Started Today</span>
+                            <span className="icon-box">
+                                <ArrowIcon size={14} className="text-white" />
+                            </span>
+                        </Link>
+                    </div>
+                </div>
+
+                {/* Bottom Left Description */}
+                <div
+                    className="cust-container absolute bottom-16 left-0 w-full"
+                    data-hero-reveal
+                >
+                    <p className="max-w-md text-left text-sm leading-relaxed text-white/80 md:text-base">
                         Our streamlined 3-step process ensures smooth transition
                         and timely management of your accounting needs.
                         Simplicity is our best policy.
                     </p>
-                </FadeIn>
-
-                {/* Trust Indicators */}
-                <FadeIn delay={0.2} className="w-full max-w-xl">
-                    <div className="mt-2 grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                        {[
-                            '100+ Clients',
-                            'Certified Experts',
-                            '99% Satisfaction',
-                            'Secure & Compliant',
-                        ].map((indicator, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center justify-center gap-2 text-sm text-gray-600"
-                            >
-                                {/* You can replace this with a real icon if desired */}
-                                <span className="inline-block h-4 w-4 rounded-full bg-primary" />
-                                <span>{indicator}</span>
-                            </div>
-                        ))}
-                    </div>
-                </FadeIn>
-
-                <FadeIn delay={0.4}>
-                    <ScheduleMyCallButton />
-                </FadeIn>
+                </div>
             </div>
         </section>
     );

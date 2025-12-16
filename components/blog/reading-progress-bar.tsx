@@ -2,6 +2,7 @@
 
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
 interface ReadingProgressBarProps {
@@ -13,6 +14,7 @@ export default function ReadingProgressBar({
 }: ReadingProgressBarProps) {
     const progressRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<ScrollTrigger | null>(null);
+    const pathname = usePathname();
 
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger);
@@ -20,7 +22,16 @@ export default function ReadingProgressBar({
         const progressBar = progressRef.current;
         if (!progressBar) return;
 
-        // Delay to ensure DOM is hydrated
+        // Reset progress bar immediately on route change
+        progressBar.style.transform = 'scaleX(0)';
+
+        // Kill any existing ScrollTrigger
+        if (triggerRef.current) {
+            triggerRef.current.kill();
+            triggerRef.current = null;
+        }
+
+        // Delay to ensure DOM is hydrated and Lenis is initialized
         const initTimer = setTimeout(() => {
             const contentElement = document.getElementById(contentId);
 
@@ -34,16 +45,25 @@ export default function ReadingProgressBar({
             // Create scroll-linked animation
             triggerRef.current = ScrollTrigger.create({
                 trigger: contentElement,
-                start: 'top 10%',
-                end: 'bottom 70%',
-                scrub: 0.5,
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 0,
+                invalidateOnRefresh: true,
                 onUpdate: (self) => {
                     if (progressBar) {
-                        progressBar.style.transform = `scaleX(${self.progress})`;
+                        // Clamp progress between 0 and 1
+                        const progress = Math.min(
+                            1,
+                            Math.max(0, self.progress),
+                        );
+                        progressBar.style.transform = `scaleX(${progress})`;
                     }
                 },
             });
-        }, 200);
+
+            // Refresh ScrollTrigger to ensure it calculates positions correctly with Lenis
+            ScrollTrigger.refresh();
+        }, 300);
 
         return () => {
             clearTimeout(initTimer);
@@ -52,7 +72,7 @@ export default function ReadingProgressBar({
                 triggerRef.current = null;
             }
         };
-    }, [contentId]);
+    }, [contentId, pathname]); // Re-run when pathname changes
 
     // Always render the bar - it starts at 0 scale
     return (

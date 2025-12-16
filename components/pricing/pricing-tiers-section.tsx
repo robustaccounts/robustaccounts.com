@@ -317,7 +317,6 @@ export default function PricingTiersSection({
                                     <ExpenseSlider
                                         value={expenseValue}
                                         onChange={setExpenseValue}
-                                        isRecommended={isRecommended}
                                     />
                                 </div>
 

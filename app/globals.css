@@ -131,6 +131,11 @@ p {
     background-color: var(--primary);
 }
 
+/* Contact card icon hover fix */
+.contact-card:hover .contact-icon {
+    color: #ffffff !important;
+}
+
 .text-theme-black {
     color: var(--color-theme-black);
 }

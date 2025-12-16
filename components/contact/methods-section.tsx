@@ -10,7 +10,6 @@ import React, { useRef } from 'react';
 
 import usePrefersReducedMotion from '@/lib/hooks/use-prefers-reduced-motion';
 
-
 const { contactInfo } = siteConfig;
 
 const contactMethods = [
@@ -92,8 +91,8 @@ export default function ContactMethodsGrid() {
                             href={method.href}
                             className="contact-card group border border-gray-200 bg-white p-8 transition-all duration-300 hover:border-primary hover:shadow-lg"
                         >
-                            <div className="mb-6 flex h-12 w-12 items-center justify-center bg-primary/10 transition-colors group-hover:bg-primary">
-                                <method.icon className="h-6 w-6 text-primary transition-colors group-hover:text-white" />
+                            <div className="contact-icon-box mb-6 flex h-12 w-12 items-center justify-center bg-primary/10 transition-colors group-hover:bg-primary">
+                                <method.icon className="contact-icon h-6 w-6 text-primary transition-colors" />
                             </div>
                             <h3 className="mb-2 text-xl font-semibold text-theme-black transition-colors group-hover:text-primary">
                                 {method.title}

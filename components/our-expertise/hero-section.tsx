@@ -2,8 +2,8 @@
 
 import React from 'react';
 
-import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
 import FadeIn from '@/components/ui/fade-in';
+import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
 
 export default function HeroSection() {
     return (
@@ -55,7 +55,7 @@ export default function HeroSection() {
                             </div>
                             <div className="flex flex-col items-center justify-center">
                                 <div className="text-2xl font-bold text-primary sm:text-3xl">
-                                    15+
+                                    5+
                                 </div>
                                 <div className="text-sm text-gray-600 sm:text-base">
                                     Years Experience
