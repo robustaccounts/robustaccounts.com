@@ -23,50 +23,50 @@ const comparisonData = [
     },
     {
         feature: 'Dedicated Account Manager',
-        starter: '—',
+        starter: '-',
         professional: '✓',
         enterprise: '✓',
     },
     {
         feature: 'Phone Support',
-        starter: '—',
+        starter: '-',
         professional: '✓',
         enterprise: 'Priority',
     },
     {
         feature: 'Payroll Processing',
-        starter: '—',
+        starter: '-',
         professional: '✓',
         enterprise: 'Unlimited',
     },
     {
         feature: 'Accounts Payable / Bill Pay',
-        starter: '—',
+        starter: '-',
         professional: '✓',
         enterprise: '✓',
     },
     {
         feature: 'Financial Advisory',
-        starter: '—',
+        starter: '-',
         professional: 'Quarterly',
         enterprise: 'Monthly',
     },
     {
         feature: 'Custom Reporting',
-        starter: '—',
-        professional: '—',
+        starter: '-',
+        professional: '-',
         enterprise: '✓',
     },
     {
         feature: 'Multi-Entity Management',
-        starter: '—',
-        professional: '—',
+        starter: '-',
+        professional: '-',
         enterprise: '✓',
     },
     {
         feature: 'CFO Advisory',
-        starter: '—',
-        professional: '—',
+        starter: '-',
+        professional: '-',
         enterprise: '✓',
     },
 ];
@@ -132,9 +132,9 @@ export default function ComparisonTableSection() {
                                                     />
                                                 </svg>
                                             </span>
-                                        ) : row.starter === '—' ? (
+                                        ) : row.starter === '-' ? (
                                             <span className="text-gray-400">
-                                                —
+                                                -
                                             </span>
                                         ) : (
                                             <span className="text-gray-600">
@@ -157,9 +157,9 @@ export default function ComparisonTableSection() {
                                                     />
                                                 </svg>
                                             </span>
-                                        ) : row.professional === '—' ? (
+                                        ) : row.professional === '-' ? (
                                             <span className="text-gray-400">
-                                                —
+                                                -
                                             </span>
                                         ) : (
                                             <span className="text-gray-600">
@@ -182,9 +182,9 @@ export default function ComparisonTableSection() {
                                                     />
                                                 </svg>
                                             </span>
-                                        ) : row.enterprise === '—' ? (
+                                        ) : row.enterprise === '-' ? (
                                             <span className="text-gray-400">
-                                                —
+                                                -
                                             </span>
                                         ) : (
                                             <span className="text-gray-600">

@@ -20,7 +20,7 @@ export const SERVICES_MEGA_MENU_ITEMS: MegaMenuItem[] = [
     label: "Overview",
     href: "/services",
     description:
-      "Full-service finance operations for growing businesses—bookkeeping, payroll, and advisory delivered by a dedicated team.",
+      "Full-service finance operations for growing businesses-bookkeeping, payroll, and advisory delivered by a dedicated team.",
     highlights: [
       "Monthly close + reconciliations",
       "Payroll processing + compliance",
@@ -44,7 +44,7 @@ export const SERVICES_MEGA_MENU_ITEMS: MegaMenuItem[] = [
     label: "Payroll",
     href: "/services/payroll",
     description:
-      "Reliable payroll processing with filings and compliance handled—so your team gets paid on time, every time.",
+      "Reliable payroll processing with filings and compliance handled-so your team gets paid on time, every time.",
     highlights: [
       "On-time payroll runs + direct deposit",
       "Tax withholdings + filings",
@@ -56,7 +56,7 @@ export const SERVICES_MEGA_MENU_ITEMS: MegaMenuItem[] = [
     label: "Financial Advisory",
     href: "/services/financial-advisory",
     description:
-      "CFO-style support for forecasting, budgeting, and reporting—turning financial data into clear, actionable insights.",
+      "CFO-style support for forecasting, budgeting, and reporting-turning financial data into clear, actionable insights.",
     highlights: [
       "Budgeting + cash flow forecasting",
       "Performance reporting + analysis",

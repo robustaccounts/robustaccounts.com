@@ -18,6 +18,6 @@ export default function DedicatedAccountantPage() {
 export const metadata: Metadata = {
     title: 'Dedicated Accountant | Personal Service, Not a Call Center',
     description:
-        'Your dedicated accountant — not a call center. Get personalized attention from an experienced accounting professional who knows your business.',
+        'Your dedicated accountant - not a call center. Get personalized attention from an experienced accounting professional who knows your business.',
     alternates: { canonical: '/solutions/dedicated-accountant' },
 };

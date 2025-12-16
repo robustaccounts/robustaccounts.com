@@ -22,6 +22,6 @@ export default function AboutPage() {
 export const metadata: Metadata = {
     title: 'About Us',
     description:
-        'Learn about Robust Accounts — our mission, values, and track record helping businesses with accurate, compliant accounting.',
+        'Learn about Robust Accounts - our mission, values, and track record helping businesses with accurate, compliant accounting.',
     alternates: { canonical: '/about' },
 };

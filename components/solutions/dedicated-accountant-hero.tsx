@@ -19,12 +19,12 @@ export default function HeroSection() {
                         <span className="text-primary">
                             Dedicated Accountant
                         </span>{' '}
-                        — Not a Call Center
+                        - Not a Call Center
                     </h1>
                     <p className="max-w-3xl text-base leading-relaxed text-gray-600 sm:text-lg lg:text-xl">
                         Experience personalized service from an experienced
                         accounting professional who truly knows your business.
-                        No more navigating automated systems—just direct access
+                        No more navigating automated systems-just direct access
                         to your trusted financial advisor.
                     </p>
                 </div>

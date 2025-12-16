@@ -71,7 +71,7 @@ export async function sendLeadNotificationEmail(lead: LeadNotification) {
             socketTimeout: 10000,
         });
 
-        const subject = `New lead #${lead.id}: ${lead.firstName} ${lead.lastName} — ${lead.businessName}`;
+        const subject = `New lead #${lead.id}: ${lead.firstName} ${lead.lastName} - ${lead.businessName}`;
 
         const textBody = [
             'A new lead has been submitted on robustaccounts.com',
@@ -524,7 +524,7 @@ export async function sendCustomerConfirmationEmail(
                                                     line-height: 1.6;
                                                 "
                                             >
-                                                Great news — your consultation with
+                                                Great news - your consultation with
                                                 <strong>Robust Accounts</strong> has been
                                                 scheduled successfully! We're looking
                                                 forward to learning more about your

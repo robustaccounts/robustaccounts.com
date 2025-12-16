@@ -57,7 +57,7 @@ const ServicesSection = () => {
                             data-animate="fade-up"
                         >
                             A complete finance function, managed offshore. We
-                            provide the dedicated team and expertise — you
+                            provide the dedicated team and expertise - you
                             maintain full control.
                         </p>
                         <div data-animate="fade-up">

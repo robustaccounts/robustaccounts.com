@@ -16,7 +16,7 @@ export default function HeroSection() {
                 <div className="flex max-w-4xl flex-col items-center justify-center gap-6 text-center">
                     <h1 className="text-center text-4xl leading-tight font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
                         Stop Wasting Sundays on{' '}
-                        <span className="text-primary">Spreadsheets</span> —
+                        <span className="text-primary">Spreadsheets</span> -
                         We'll Do It for You
                     </h1>
                     <p className="max-w-3xl text-base leading-relaxed text-gray-600 sm:text-lg lg:text-xl">

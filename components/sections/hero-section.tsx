@@ -3,6 +3,7 @@
 import { useGSAP } from '@gsap/react';
 
 import gsap from 'gsap';
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { useRef } from 'react';
 
@@ -72,66 +73,90 @@ const HeroSection = () => {
 
             {/* Main Content Container */}
             <div className="cust-container relative z-20 py-32 lg:py-40">
-                <div className="max-w-4xl">
-                    {/* Label */}
-                    <div className="mb-6" data-hero-reveal>
-                        <span className="text-xs font-bold tracking-[0.2em] text-primary uppercase">
-                            Accounting Operations
-                        </span>
+                <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
+                    {/* Left Column - Text Content */}
+                    <div className="max-w-2xl">
+                        {/* Label */}
+                        <div className="mb-6" data-hero-reveal>
+                            <span className="text-xs font-bold tracking-[0.2em] text-primary uppercase">
+                                Accounting Operations
+                            </span>
+                        </div>
+
+                        {/* Main Headline */}
+                        <h1
+                            className="mb-8 text-4xl leading-[1.05] font-light tracking-tight text-theme-black sm:text-5xl md:text-6xl lg:text-7xl"
+                            data-hero-reveal
+                        >
+                            A full finance team,
+                            <br />
+                            <span className="font-medium">
+                                without hiring one.
+                            </span>
+                        </h1>
+
+                        {/* Description */}
+                        <p
+                            className="mb-10 max-w-xl text-base leading-relaxed text-gray-600 md:text-lg"
+                            data-hero-reveal
+                        >
+                            Accounting, payroll, and financial reporting - fully
+                            owned and operated by a dedicated offshore team.
+                            Built for growing businesses that need control,
+                            accuracy, and accountability.
+                        </p>
+
+                        {/* CTA Buttons */}
+                        <div
+                            className="flex flex-col gap-4 sm:flex-row"
+                            data-hero-reveal
+                        >
+                            <Link
+                                href="/lead-form/schedule"
+                                className="btn-div uppercase"
+                            >
+                                <span className="text-box">
+                                    Get a Financial Ops Plan
+                                </span>
+                                <span className="icon-box">
+                                    <ArrowIcon
+                                        size={14}
+                                        className="text-white"
+                                    />
+                                </span>
+                            </Link>
+                            <Link
+                                href="/pricing"
+                                className="inline-flex items-center justify-center border border-theme-black/15 px-8 py-[1rem] text-[0.85rem] font-bold tracking-[0.1em] text-theme-black uppercase transition-all hover:border-primary hover:text-primary"
+                            >
+                                View Pricing
+                            </Link>
+                        </div>
+
+                        {/* Trust Line */}
+                        <p
+                            className="mt-12 text-sm text-gray-500"
+                            data-hero-reveal
+                        >
+                            Supporting founders managing $500k–$20M businesses
+                            across multiple industries.
+                        </p>
                     </div>
 
-                    {/* Main Headline */}
-                    <h1
-                        className="mb-8 text-4xl leading-[1.05] font-light tracking-tight text-theme-black sm:text-5xl md:text-6xl lg:text-7xl"
-                        data-hero-reveal
-                    >
-                        Run your finance function
-                        <br />
-                        <span className="font-medium">
-                            without the overhead.
-                        </span>
-                    </h1>
-
-                    {/* Description */}
-                    <p
-                        className="mb-10 max-w-xl text-base leading-relaxed text-gray-600 md:text-lg"
-                        data-hero-reveal
-                    >
-                        Accounting, payroll, and financial reporting — fully
-                        owned and operated by a dedicated offshore team. Built
-                        for growing businesses that need control, accuracy, and
-                        accountability.
-                    </p>
-
-                    {/* CTA Buttons */}
+                    {/* Right Column - Team Image */}
                     <div
-                        className="flex flex-col gap-4 sm:flex-row"
+                        className="hidden items-center justify-end lg:flex"
                         data-hero-reveal
                     >
-                        <Link
-                            href="/lead-form/schedule"
-                            className="btn-div uppercase"
-                        >
-                            <span className="text-box">
-                                Get a Financial Ops Plan
-                            </span>
-                            <span className="icon-box">
-                                <ArrowIcon size={14} className="text-white" />
-                            </span>
-                        </Link>
-                        <Link
-                            href="/pricing"
-                            className="inline-flex items-center justify-center border border-theme-black/15 px-8 py-[1rem] text-[0.85rem] font-bold tracking-[0.1em] text-theme-black uppercase transition-all hover:border-primary hover:text-primary"
-                        >
-                            View Pricing
-                        </Link>
+                        <Image
+                            src="/images/hero-team.png"
+                            alt="Professional finance team collaborating"
+                            width={600}
+                            height={450}
+                            className="w-full max-w-xl object-contain"
+                            priority
+                        />
                     </div>
-
-                    {/* Trust Line */}
-                    <p className="mt-12 text-sm text-gray-500" data-hero-reveal>
-                        Supporting founders managing $500k–$20M businesses
-                        across multiple industries.
-                    </p>
                 </div>
             </div>
         </section>

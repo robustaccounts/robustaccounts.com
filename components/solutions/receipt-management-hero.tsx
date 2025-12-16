@@ -24,7 +24,7 @@ export default function HeroSection() {
                         Simplify expense management with automated receipt
                         tracking and digital organization. We handle all the
                         paperwork so you can spend your time on what matters
-                        most—growing your business.
+                        most-growing your business.
                     </p>
                 </div>
 

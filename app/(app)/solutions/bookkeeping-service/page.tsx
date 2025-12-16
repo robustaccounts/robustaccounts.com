@@ -18,6 +18,6 @@ export default function BookkeepingServicePage() {
 export const metadata: Metadata = {
     title: 'Professional Bookkeeping Service | Stop Wasting Weekends on Books',
     description:
-        "Stop wasting Sundays on spreadsheets — we'll do it for you. Expert bookkeeping services that free up your time to focus on growing your business.",
+        "Stop wasting Sundays on spreadsheets - we'll do it for you. Expert bookkeeping services that free up your time to focus on growing your business.",
     alternates: { canonical: '/solutions/bookkeeping-service' },
 };

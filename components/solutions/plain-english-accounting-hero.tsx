@@ -22,7 +22,7 @@ export default function HeroSection() {
                     <p className="max-w-3xl text-base leading-relaxed text-gray-600 sm:text-lg lg:text-xl">
                         Get financial reports you can actually understand and
                         use to make smart business decisions. We translate
-                        complex accounting into clear, actionable insights—no
+                        complex accounting into clear, actionable insights-no
                         jargon, just clarity.
                     </p>
                 </div>

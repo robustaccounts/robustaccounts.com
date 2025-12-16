@@ -58,11 +58,14 @@ const ProcessWorkflow = () => {
         return { x, y };
     };
 
+    // Track last step to prevent backwards animation
+    const lastStepRef = useRef(0);
+
     useGSAP(() => {
         // Scroll-driven step changes
         ScrollTrigger.create({
             trigger: sectionRef.current,
-            start: 'top top',
+            start: 'top 20%',
             end: 'bottom bottom',
             scrub: 0.3,
             onUpdate: (self) => {
@@ -71,7 +74,11 @@ const ProcessWorkflow = () => {
                     Math.floor(progress * totalSteps),
                     totalSteps - 1,
                 );
-                setActiveStep(stepIndex);
+                // Only update if moving forward or at start
+                if (stepIndex >= lastStepRef.current || self.progress < 0.05) {
+                    lastStepRef.current = stepIndex;
+                    setActiveStep(stepIndex);
+                }
             },
         });
     }, [totalSteps]);
@@ -94,17 +101,17 @@ const ProcessWorkflow = () => {
         <section
             ref={sectionRef}
             className="relative bg-white"
-            style={{ height: `${totalSteps * 100}vh` }}
+            style={{ height: `${totalSteps * 80}vh` }}
         >
             {/* Sticky Container */}
-            <div className="sticky top-0 flex h-screen items-center py-8 lg:py-12">
+            <div className="sticky top-0 flex min-h-screen items-start py-20 lg:items-center lg:py-12">
                 <div className="cust-container">
                     {/* Main Content: Circle + Steps side by side */}
-                    <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-16">
+                    <div className="grid items-start gap-6 lg:grid-cols-2 lg:gap-16">
                         {/* Left: Header + Circular Indicator */}
                         <div className="flex flex-col">
                             {/* Header - Aligned with first step */}
-                            <div className="mb-8 lg:mb-10">
+                            <div className="mb-4 lg:mb-10">
                                 <span className="mb-3 block text-xs font-bold tracking-[0.2em] text-primary uppercase">
                                     Our Process
                                 </span>

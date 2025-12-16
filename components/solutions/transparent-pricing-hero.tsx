@@ -21,7 +21,7 @@ export default function HeroSection() {
                     <p className="max-w-3xl text-base leading-relaxed text-gray-600 sm:text-lg lg:text-xl">
                         Budget with confidence knowing exactly what you'll pay
                         each month. Our transparent, all-inclusive pricing means
-                        no surprise bills—just reliable, professional accounting
+                        no surprise bills-just reliable, professional accounting
                         services.
                     </p>
                 </div>

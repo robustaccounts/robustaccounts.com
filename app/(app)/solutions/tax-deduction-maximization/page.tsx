@@ -18,6 +18,6 @@ export default function TaxDeductionMaximizationPage() {
 export const metadata: Metadata = {
     title: 'Tax Deduction Maximization | Never Miss Another Tax Deduction',
     description:
-        'No more missed deductions — keep more of your money. Expert tax planning that identifies every eligible deduction to maximize your savings.',
+        'No more missed deductions - keep more of your money. Expert tax planning that identifies every eligible deduction to maximize your savings.',
     alternates: { canonical: '/solutions/tax-deduction-maximization' },
 };
