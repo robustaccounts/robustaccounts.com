@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 
-import { Check } from '@/ui/icons/google-icons';
+import { Check } from 'lucide-react';
 
-import cn from '@/utils/cn';
+import cn from '@/lib/cn';
 
 interface Step {
     id: number;
@@ -40,8 +40,8 @@ export default function ProgressSteps({ currentStep }: ProgressStepsProps) {
                                     className="group flex items-center"
                                 >
                                     <span className="flex items-center px-2 py-4 text-sm font-medium sm:px-6">
-                                        <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-accent transition-colors group-hover:bg-accent/90 sm:h-10 sm:w-10">
-                                            <Check className="h-4 w-4 fill-white sm:h-6 sm:w-6" />
+                                        <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary transition-colors group-hover:bg-primary/90 sm:h-10 sm:w-10">
+                                            <Check className="h-4 w-4 text-white sm:h-6 sm:w-6" />
                                         </span>
                                         <span className="ml-2 hidden text-sm font-medium text-gray-900 sm:ml-4 sm:inline-block">
                                             {step.name}
@@ -75,12 +75,12 @@ export default function ProgressSteps({ currentStep }: ProgressStepsProps) {
                                     className="flex items-center px-2 py-4 text-sm font-medium sm:px-6"
                                     aria-current="step"
                                 >
-                                    <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 border-accent bg-white sm:h-10 sm:w-10">
-                                        <span className="text-sm font-semibold text-accent sm:text-base">
+                                    <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 border-primary bg-white sm:h-10 sm:w-10">
+                                        <span className="text-sm font-semibold text-primary sm:text-base">
                                             {step.id}
                                         </span>
                                     </span>
-                                    <span className="ml-2 text-sm font-medium text-accent sm:ml-4 sm:text-base">
+                                    <span className="ml-2 text-sm font-medium text-primary sm:ml-4 sm:text-base">
                                         {step.name}
                                     </span>
                                 </div>

@@ -2,15 +2,14 @@
 
 import { useLeadForm } from '@/contexts/lead-form-context';
 
+import { ArrowRight, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import { ArrowForward, Close } from '@/ui/icons/google-icons';
-
 import { getAvailableDates, getTimeSlots } from '@/lib/lead-form-utils';
 
-import cn from '@/utils/cn';
+import cn from '@/lib/cn';
 
 export default function SchedulePage() {
     const router = useRouter();
@@ -57,20 +56,12 @@ export default function SchedulePage() {
     };
 
     const formatFullDate = (date: Date) => {
-        // Extract date components directly to avoid timezone issues
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const day = date.getDate();
-        
-        // Create a new date at noon local time to avoid timezone shifts
-        const dateAtNoon = new Date(year, month, day, 12, 0, 0);
-        
-        return new Intl.DateTimeFormat('en-US', {
+        return date.toLocaleDateString('en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric',
-        }).format(dateAtNoon);
+        });
     };
 
     const timeSlots =
@@ -81,40 +72,43 @@ export default function SchedulePage() {
     // Show loading state until mounted to prevent hydration mismatch
     if (!isMounted) {
         return (
-            <div className="flex min-h-screen flex-col items-center justify-center bg-white">
+            <div className="flex min-h-screen flex-col items-center justify-center bg-theme-offwhite">
                 <div className="text-gray-500">Loading...</div>
             </div>
         );
     }
 
     return (
-        <div className="flex min-h-screen flex-col bg-white">
-            {/* Header - Sticky */}
-            <div className="sticky top-0 z-10 flex w-full items-center justify-between border-b border-gray-200 bg-white px-4 py-4 sm:px-6 sm:py-6">
+        <div className="flex h-screen flex-col overflow-hidden bg-theme-offwhite">
+            {/* Header */}
+            <div className="flex w-full shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 py-4 sm:px-6 sm:py-5">
                 <div className="w-10"></div>
-                <div className="px-2 text-center">
-                    <h2 className="text-base font-bold text-foreground sm:text-lg">
-                        Select a time for your call.
+                <div className="text-center">
+                    <p className="text-xs font-medium text-gray-500">
+                        Step 1 of 2
+                    </p>
+                    <h2 className="mt-0.5 text-base font-bold text-theme-black sm:text-lg">
+                        Schedule Your Call
                     </h2>
                 </div>
                 <Link
                     href="/"
-                    className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-all duration-300 hover:bg-gray-200 sm:h-10 sm:w-10"
+                    className="flex h-8 w-8 cursor-pointer items-center justify-center bg-gray-100 transition-all duration-300 hover:bg-gray-200 sm:h-10 sm:w-10"
                     aria-label="Close"
                 >
-                    <Close className="h-5 w-5 fill-foreground sm:h-6 sm:w-6" />
+                    <X className="h-5 w-5 text-gray-600" />
                 </Link>
             </div>
 
             {/* Main Content - Scrollable */}
-            <div className="flex-1 overflow-y-auto">
-                <div className="mx-auto w-full max-w-4xl p-4 sm:p-6">
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6">
+                <div className="mx-auto w-full max-w-4xl py-4 pt-6 sm:py-6 sm:pt-10 lg:pt-12">
                     {/* Date Selection */}
                     <div className="mb-8">
-                        <h3 className="mb-4 text-lg font-semibold text-foreground sm:text-xl">
+                        <h3 className="mb-4 text-lg font-semibold text-theme-black sm:text-xl">
                             Select a Date
                         </h3>
-                        <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 sm:gap-3">
+                        <div className="grid grid-cols-5 gap-3 sm:gap-4">
                             {availableDates.map((date) => {
                                 const isSelected = isSameDay(
                                     formData.selectedDate,
@@ -129,18 +123,31 @@ export default function SchedulePage() {
                                         key={date.toISOString()}
                                         onClick={() => handleDateSelect(date)}
                                         className={cn(
-                                            'flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 p-3 transition-all sm:p-4',
+                                            'relative flex cursor-pointer flex-col items-center justify-center border-2 p-3 transition-all sm:p-4',
                                             isSelected
-                                                ? 'border-accent bg-accent text-white'
-                                                : 'border-gray-200 text-gray-700 hover:border-accent hover:bg-accent/5',
+                                                ? 'border-primary bg-primary text-white'
+                                                : 'border-gray-200 text-gray-700 hover:border-primary hover:bg-primary/5',
                                         )}
                                     >
+                                        {/* Today badge */}
+                                        {isToday && (
+                                            <span
+                                                className={cn(
+                                                    'absolute -top-2 left-1/2 -translate-x-1/2 rounded-full px-2 py-0.5 text-[10px] font-bold',
+                                                    isSelected
+                                                        ? 'bg-white text-primary'
+                                                        : 'bg-primary text-white',
+                                                )}
+                                            >
+                                                Today
+                                            </span>
+                                        )}
                                         <div
                                             className={cn(
                                                 'text-2xl font-bold sm:text-3xl',
                                                 isSelected
                                                     ? 'text-white'
-                                                    : 'text-foreground',
+                                                    : 'text-theme-black',
                                             )}
                                         >
                                             {date.getDate()}
@@ -153,47 +160,23 @@ export default function SchedulePage() {
                                                     : 'text-gray-600',
                                             )}
                                         >
-                                            {new Intl.DateTimeFormat('en-US', {
+                                            {date.toLocaleDateString('en-US', {
                                                 weekday: 'short',
-                                            }).format(date)}
+                                            })}
                                         </div>
-                                        {isToday && (
-                                            <div
-                                                className={cn(
-                                                    'mt-1 text-xs',
-                                                    isSelected
-                                                        ? 'text-white'
-                                                        : 'text-accent',
-                                                )}
-                                            >
-                                                Today
-                                            </div>
-                                        )}
                                     </button>
                                 );
                             })}
                         </div>
                     </div>
 
-                    {/* Selected Date Display */}
-                    {formData.selectedDate && (
-                        <div className="mb-6 text-center">
-                            <p className="text-sm text-gray-600 sm:text-base">
-                                Selected:{' '}
-                                <span className="font-semibold text-foreground">
-                                    {formatFullDate(formData.selectedDate)}
-                                </span>
-                            </p>
-                        </div>
-                    )}
-
                     {/* Time Selection */}
                     {formData.selectedDate ? (
-                        <div className="mb-8">
-                            <h3 className="mb-4 text-lg font-semibold text-foreground sm:text-xl">
+                        <div>
+                            <h3 className="mb-4 text-lg font-semibold text-theme-black sm:text-xl">
                                 Select a Time
                             </h3>
-                            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-3 lg:grid-cols-5">
+                            <div className="grid grid-cols-4 gap-3 sm:grid-cols-6 sm:gap-4">
                                 {timeSlots.map((slot) => {
                                     const isSelected =
                                         formData.selectedTimeSlot === slot.id;
@@ -206,10 +189,10 @@ export default function SchedulePage() {
                                             }
                                             disabled={!slot.available}
                                             className={cn(
-                                                'cursor-pointer rounded-xl border-2 px-3 py-3 text-sm font-semibold transition-all sm:px-4 sm:py-4 sm:text-base',
+                                                'cursor-pointer border-2 px-3 py-3 text-sm font-semibold transition-all sm:py-4',
                                                 isSelected
-                                                    ? 'border-accent bg-accent text-white'
-                                                    : 'border-gray-200 text-gray-700 hover:border-accent hover:bg-accent/5',
+                                                    ? 'border-primary bg-primary text-white'
+                                                    : 'border-gray-200 text-gray-700 hover:border-primary hover:bg-primary/5',
                                                 !slot.available &&
                                                     'cursor-not-allowed opacity-40',
                                             )}
@@ -221,13 +204,13 @@ export default function SchedulePage() {
                             </div>
 
                             {/* Timezone Info */}
-                            <div className="mt-4 text-center text-xs text-gray-500 sm:text-sm">
+                            <div className="mt-4 text-center text-xs text-gray-500">
                                 All times shown in Eastern Time (ET) • 30 minute
                                 consultation
                             </div>
                         </div>
                     ) : (
-                        <div className="mb-8 rounded-xl bg-gray-50 p-8 text-center">
+                        <div className="bg-gray-50 p-8 text-center">
                             <p className="text-gray-500">
                                 Select a date to view available times
                             </p>
@@ -236,25 +219,47 @@ export default function SchedulePage() {
                 </div>
             </div>
 
-            {/* Footer - Sticky */}
-            <div className="sticky bottom-0 border-t border-gray-200 bg-white px-4 py-4 sm:px-6">
-                <div className="mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row sm:justify-between">
+            {/* Footer */}
+            <div className="shrink-0 border-t border-gray-200 bg-white px-4 py-4 sm:px-6">
+                <div className="mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <Link
                         href="/"
-                        className="cursor-pointer rounded-xl border-2 border-gray-300 px-6 py-3 text-center text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 sm:text-base"
+                        className="hidden cursor-pointer border-2 border-gray-300 px-6 py-3 text-center text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 sm:block sm:text-base"
                     >
                         Cancel
                     </Link>
-                    <button
-                        onClick={handleContinue}
-                        disabled={
-                            !formData.selectedDate || !formData.selectedTimeSlot
-                        }
-                        className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50 sm:text-base"
-                    >
-                        Continue
-                        <ArrowForward className="h-5 w-5 fill-current" />
-                    </button>
+
+                    <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
+                        {/* Selected Date/Time Display */}
+                        {formData.selectedDate && formData.selectedTimeSlot && (
+                            <div className="text-center sm:text-right">
+                                <p className="text-xs text-gray-500">
+                                    Your appointment
+                                </p>
+                                <p className="text-sm font-medium text-theme-black">
+                                    {formatFullDate(formData.selectedDate)} at{' '}
+                                    {
+                                        timeSlots.find(
+                                            (s) =>
+                                                s.id ===
+                                                formData.selectedTimeSlot,
+                                        )?.time
+                                    }
+                                </p>
+                            </div>
+                        )}
+                        <button
+                            onClick={handleContinue}
+                            disabled={
+                                !formData.selectedDate ||
+                                !formData.selectedTimeSlot
+                            }
+                            className="flex w-full cursor-pointer items-center justify-center gap-2 bg-primary px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:text-base"
+                        >
+                            Continue
+                            <ArrowRight className="h-5 w-5" />
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

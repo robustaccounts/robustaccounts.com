@@ -23,14 +23,14 @@ export default function CookieBanner() {
                     use of cookies. You can opt out anytime. See our{' '}
                     <a
                         href="/privacy-policy"
-                        className="text-accent underline underline-offset-2"
+                        className="text-primary underline underline-offset-2"
                     >
                         Privacy Policy
                     </a>{' '}
                     and{' '}
                     <a
                         href="/cookie-policy"
-                        className="text-accent underline underline-offset-2"
+                        className="text-primary underline underline-offset-2"
                     >
                         Cookie Policy
                     </a>
@@ -45,7 +45,7 @@ export default function CookieBanner() {
                     </button>
                     <button
                         onClick={accept}
-                        className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent/90"
+                        className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary/90"
                     >
                         Got It
                     </button>

@@ -1,159 +1,134 @@
 /**
- * Structured logging utility for backend APIs
- * Provides consistent logging format with timestamps and context
+ * Logger Utility
+ *
+ * Structured logging for API routes and cron jobs.
+ * Provides consistent log formatting across the application.
  */
 
-type LogLevel = 'info' | 'warn' | 'error' | 'debug';
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 interface LogContext {
     [key: string]: unknown;
 }
 
-class Logger {
-    private formatMessage(
-        level: LogLevel,
-        message: string,
-        context?: LogContext,
-    ): string {
-        const timestamp = new Date().toISOString();
-        const contextStr = context ? ` ${JSON.stringify(context)}` : '';
-        return `[${timestamp}] [${level.toUpperCase()}] ${message}${contextStr}`;
-    }
+function formatMessage(
+    level: LogLevel,
+    message: string,
+    context?: LogContext,
+): string {
+    const timestamp = new Date().toISOString();
+    const contextStr = context ? ` ${JSON.stringify(context)}` : '';
+    return `[${timestamp}] [${level.toUpperCase()}] ${message}${contextStr}`;
+}
 
-    private log(level: LogLevel, message: string, context?: LogContext) {
-        const formattedMessage = this.formatMessage(level, message, context);
-
-        switch (level) {
-            case 'error':
-                console.error(formattedMessage);
-                break;
-            case 'warn':
-                console.warn(formattedMessage);
-                break;
-            case 'debug':
-                if (
-                    process.env.NODE_ENV === 'development' ||
-                    process.env.EMAIL_DEBUG === '1'
-                ) {
-                    console.debug(formattedMessage);
-                }
-                break;
-            case 'info':
-            default:
-                console.log(formattedMessage);
-                break;
-        }
-    }
-
-    info(message: string, context?: LogContext) {
-        this.log('info', message, context);
-    }
-
-    warn(message: string, context?: LogContext) {
-        this.log('warn', message, context);
-    }
-
-    error(message: string, error?: unknown, context?: LogContext) {
-        const errorContext: LogContext = {
-            ...context,
-        };
-
-        if (error instanceof Error) {
-            errorContext.error = {
-                message: error.message,
-                name: error.name,
-                stack: error.stack,
-            };
-        } else if (error) {
-            errorContext.error = error;
-        }
-
-        this.log('error', message, errorContext);
-    }
-
-    debug(message: string, context?: LogContext) {
-        this.log('debug', message, context);
-    }
-
-    /**
-     * Log API request start
-     */
-    apiStart(method: string, path: string, context?: LogContext) {
-        this.info(`API ${method} ${path} - Started`, {
-            method,
-            path,
-            ...context,
-        });
-    }
-
-    /**
-     * Log API request success
-     */
-    apiSuccess(
-        method: string,
-        path: string,
-        statusCode: number,
-        duration?: number,
-        context?: LogContext,
-    ) {
-        this.info(`API ${method} ${path} - Success`, {
-            method,
-            path,
-            statusCode,
-            duration: duration ? `${duration}ms` : undefined,
-            ...context,
-        });
-    }
-
-    /**
-     * Log API request error
-     */
-    apiError(
-        method: string,
-        path: string,
-        error: unknown,
-        statusCode?: number,
-        context?: LogContext,
-    ) {
-        this.error(`API ${method} ${path} - Error`, error, {
-            method,
-            path,
-            statusCode,
-            ...context,
-        });
-    }
-
-    /**
-     * Log cron job start
-     */
-    cronStart(jobName: string, context?: LogContext) {
-        this.info(`Cron Job: ${jobName} - Started`, {
-            jobName,
-            ...context,
-        });
-    }
-
-    /**
-     * Log cron job success
-     */
-    cronSuccess(jobName: string, duration?: number, results?: LogContext) {
-        this.info(`Cron Job: ${jobName} - Completed`, {
-            jobName,
-            duration: duration ? `${duration}ms` : undefined,
-            ...results,
-        });
-    }
-
-    /**
-     * Log cron job error
-     */
-    cronError(jobName: string, error: unknown, context?: LogContext) {
-        this.error(`Cron Job: ${jobName} - Failed`, error, {
-            jobName,
-            ...context,
-        });
+function log(level: LogLevel, message: string, context?: LogContext) {
+    const formatted = formatMessage(level, message, context);
+    switch (level) {
+        case 'error':
+            console.error(formatted);
+            break;
+        case 'warn':
+            console.warn(formatted);
+            break;
+        default:
+            console.log(formatted);
     }
 }
 
-// Export singleton instance
-export const logger = new Logger();
+function logWithError(
+    level: LogLevel,
+    message: string,
+    error?: unknown,
+    context?: LogContext,
+) {
+    const errorContext = error
+        ? {
+              error: error instanceof Error ? error.message : String(error),
+              ...context,
+          }
+        : context;
+    log(level, message, errorContext);
+}
+
+export const logger = {
+    debug: (message: string, context?: LogContext) =>
+        log('debug', message, context),
+    info: (message: string, context?: LogContext) =>
+        log('info', message, context),
+    warn: (message: string, errorOrContext?: unknown, context?: LogContext) => {
+        if (
+            errorOrContext &&
+            typeof errorOrContext === 'object' &&
+            !('error' in (errorOrContext as object)) &&
+            !(errorOrContext instanceof Error)
+        ) {
+            // Second arg is context
+            log('warn', message, errorOrContext as LogContext);
+        } else {
+            // Second arg is error
+            logWithError('warn', message, errorOrContext, context);
+        }
+    },
+    error: (
+        message: string,
+        errorOrContext?: unknown,
+        context?: LogContext,
+    ) => {
+        if (
+            errorOrContext &&
+            typeof errorOrContext === 'object' &&
+            !('error' in (errorOrContext as object)) &&
+            !(errorOrContext instanceof Error)
+        ) {
+            // Second arg is context
+            log('error', message, errorOrContext as LogContext);
+        } else {
+            // Second arg is error
+            logWithError('error', message, errorOrContext, context);
+        }
+    },
+
+    // API-specific logging
+    apiStart: (method: string, path: string, context?: LogContext) =>
+        log('info', `API ${method} ${path} started`, context),
+    apiSuccess: (
+        method: string,
+        path: string,
+        status: number,
+        duration: number,
+        context?: LogContext,
+    ) =>
+        log('info', `API ${method} ${path} completed`, {
+            status,
+            duration: `${duration}ms`,
+            ...context,
+        }),
+    apiError: (
+        method: string,
+        path: string,
+        error: unknown,
+        status: number,
+        context?: LogContext,
+    ) =>
+        log('error', `API ${method} ${path} failed`, {
+            status,
+            error: error instanceof Error ? error.message : String(error),
+            ...context,
+        }),
+
+    // Cron job-specific logging
+    cronStart: (jobName: string, context?: LogContext) =>
+        log('info', `Cron job [${jobName}] started`, context),
+    cronSuccess: (jobName: string, duration: number, context?: LogContext) =>
+        log('info', `Cron job [${jobName}] completed`, {
+            duration: `${duration}ms`,
+            ...context,
+        }),
+    cronError: (jobName: string, error: unknown, context?: LogContext) =>
+        log('error', `Cron job [${jobName}] failed`, {
+            error: error instanceof Error ? error.message : String(error),
+            ...context,
+        }),
+};
+
+export type Logger = typeof logger;

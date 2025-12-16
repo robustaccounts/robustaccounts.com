@@ -1,8 +1,6 @@
 import BotpressChat from '@/providers/botpress-chat';
 
 import ContactUsBanner from '@/components/contact-us-banner';
-import Footer from '@/components/footer/footer';
-import Header from '@/components/header/header';
 
 export default function Layout({
     children,
@@ -11,10 +9,7 @@ export default function Layout({
 }>) {
     return (
         <>
-            <Header />
             {children}
-            <ContactUsBanner />
-            <Footer />
             <BotpressChat />
         </>
     );

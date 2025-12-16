@@ -5,7 +5,9 @@
   "trailingComma": "all",
   "bracketSpacing": true,
   "bracketSameLine": false,
-  "tailwindFunctions": ["clsx"],
+  "tailwindFunctions": [
+    "clsx"
+  ],
   "tailwindStylesheet": "./app/globals.css",
   "tailwindPreserveWhitespace": false,
   "tailwindPreserveDuplicates": false,

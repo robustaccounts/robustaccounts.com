@@ -95,7 +95,7 @@ export default function TestimonialsSection() {
         <section className="container mx-auto flex h-full w-full flex-col items-center justify-center gap-8 px-5 py-12 sm:gap-10 sm:px-8 sm:py-14 md:px-12 md:py-16 lg:px-16 lg:py-20">
             <div className="text-center">
                 <h2 className="mb-3 text-2xl leading-tight font-bold sm:mb-4 sm:text-3xl lg:text-4xl">
-                    What Our <span className="text-accent">Clients Say</span>
+                    What Our <span className="text-primary">Clients Say</span>
                 </h2>
                 <p className="mx-auto max-w-3xl text-sm leading-relaxed text-gray-700 sm:text-base lg:text-lg">
                     See how our services have helped businesses like yours
@@ -122,7 +122,7 @@ export default function TestimonialsSection() {
                             <div className="h-full rounded-2xl bg-secondary p-6 text-primary shadow-sm transition-all hover:shadow-md sm:p-7">
                                 <div className="mb-5 flex flex-col gap-4">
                                     <div className="flex items-start justify-between gap-3">
-                                        <div className="h-min rounded-full bg-accent/10 px-3 py-1.5 text-xs font-semibold text-accent">
+                                        <div className="h-min rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
                                             {testimonial.plan}
                                         </div>
                                         <div
@@ -135,7 +135,7 @@ export default function TestimonialsSection() {
                                             {[...Array(5)].map((_, i) => (
                                                 <div
                                                     key={i}
-                                                    className="text-accent"
+                                                    className="text-primary"
                                                     aria-hidden
                                                 >
                                                     <span className="text-lg">
@@ -174,7 +174,7 @@ export default function TestimonialsSection() {
                             }
                             emblaApi?.scrollPrev();
                         }}
-                        className="rounded-full border-2 border-accent bg-white px-6 py-2.5 text-sm font-semibold text-accent shadow-sm transition-all hover:bg-accent hover:text-white focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none active:scale-95"
+                        className="rounded-full border-2 border-primary bg-white px-6 py-2.5 text-sm font-semibold text-primary shadow-sm transition-all hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none active:scale-95"
                         aria-label="Previous testimonial"
                     >
                         Previous
@@ -188,7 +188,7 @@ export default function TestimonialsSection() {
                             }
                             emblaApi?.scrollNext();
                         }}
-                        className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all hover:bg-accent/90 hover:shadow-xl focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none active:scale-95"
+                        className="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all hover:bg-primary/90 hover:shadow-xl focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none active:scale-95"
                         aria-label="Next testimonial"
                     >
                         Next

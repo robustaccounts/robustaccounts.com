@@ -1,76 +1,105 @@
-import Image from 'next/image';
-import React from 'react';
+'use client';
 
-import { Check } from '@/ui/icons/google-icons';
+import { useGSAP } from '@gsap/react';
 
-import ScheduleMyCallButton from '@/components/ui/schedule-my-call-button';
+import gsap from 'gsap';
+import Link from 'next/link';
+import React, { useRef } from 'react';
 
-const trustIndicators = [
-    'Complete Service Portfolio',
-    'Scalable Solutions',
-    'Expert Team Support',
-    'Proven Track Record',
-];
+import usePrefersReducedMotion from '@/lib/hooks/use-prefers-reduced-motion';
 
 export default function HeroSection() {
+    const prefersReducedMotion = usePrefersReducedMotion();
+    const sectionRef = useRef<HTMLElement>(null);
+
+    useGSAP(
+        () => {
+            if (prefersReducedMotion) return;
+
+            const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+            tl.fromTo(
+                '[data-animate-label]',
+                { autoAlpha: 0, y: 20 },
+                { autoAlpha: 1, y: 0, duration: 0.6 },
+            )
+                .fromTo(
+                    '[data-animate-title]',
+                    { autoAlpha: 0, y: 30 },
+                    { autoAlpha: 1, y: 0, duration: 0.8 },
+                    '-=0.3',
+                )
+                .fromTo(
+                    '[data-animate-desc]',
+                    { autoAlpha: 0, y: 20 },
+                    { autoAlpha: 1, y: 0, duration: 0.6 },
+                    '-=0.4',
+                )
+                .fromTo(
+                    '[data-animate-cta]',
+                    { autoAlpha: 0, y: 20 },
+                    { autoAlpha: 1, y: 0, duration: 0.6 },
+                    '-=0.3',
+                );
+        },
+        { scope: sectionRef, dependencies: [prefersReducedMotion] },
+    );
+
     return (
-        <section className="hero-section relative min-h-screen w-full">
-            {/* Optimized Background Image */}
-            <Image
-                src="/assets/images/hero-section-bg-2.png"
-                alt=""
-                fill
-                priority={false}
-                className="object-cover"
-                aria-hidden="true"
-            />
-            {/* Overlay for better text contrast */}
-            <div
-                className="absolute inset-0 z-10 bg-black/70"
-                aria-hidden="true"
-            />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-black/40 to-transparent" />
+        <section
+            ref={sectionRef}
+            className="relative overflow-hidden bg-white py-24 lg:py-32"
+        >
+            {/* Background Grid */}
+            <div className="grid-lines pointer-events-none absolute inset-0 opacity-30" />
 
-            {/* Content Container */}
-            <div className="relative z-20 flex min-h-screen w-full flex-col items-center justify-center gap-8 px-4 py-16 sm:gap-12 sm:px-6 md:px-12 lg:px-16 xl:container xl:mx-auto">
-                {/* Main Content */}
-                <div className="flex max-w-4xl flex-col items-center justify-center gap-6 text-center">
-                    <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
-                        Complete Accounting Solutions for{' '}
-                        <span className="text-accent">Your Business</span>
+            <div className="cust-container relative z-10">
+                <div className="max-w-3xl">
+                    <span
+                        className="mb-6 block text-xs font-bold tracking-[0.2em] text-primary uppercase"
+                        data-animate-label
+                    >
+                        Our Services
+                    </span>
+                    <h1
+                        className="mb-6 text-4xl leading-[1.05] font-light tracking-tight text-theme-black md:text-5xl lg:text-6xl"
+                        data-animate-title
+                    >
+                        Complete Accounting
+                        <br />
+                        For Your Business
                     </h1>
-                    <p className="max-w-3xl text-base leading-relaxed text-white/90 sm:text-lg lg:text-xl">
-                        From basic bookkeeping to strategic financial advisory,
+                    <p
+                        className="mb-10 max-w-xl text-base leading-relaxed text-gray-600 md:text-lg"
+                        data-animate-desc
+                    >
+                        From daily bookkeeping to strategic financial advisory,
                         we provide comprehensive accounting services tailored to
-                        your business needs. Save time, reduce costs, and ensure
-                        compliance.
+                        help your business grow.
                     </p>
-                </div>
-
-                {/* Trust Indicators */}
-                <div className="mt-2 grid w-full max-w-4xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                    {trustIndicators.map((indicator, index) => (
-                        <div
-                            key={index}
-                            className="flex items-center justify-center gap-2"
+                    <div data-animate-cta>
+                        <Link
+                            href="/lead-form/schedule?source=services"
+                            className="btn-div inline-flex uppercase"
                         >
-                            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-accent">
-                                <Check className="h-3 w-3 fill-white" />
-                            </div>
-                            <span className="text-sm font-medium text-white">
-                                {indicator}
+                            <span className="text-box">Schedule a Call</span>
+                            <span className="icon-box">
+                                <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 20 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M5.67227 14.6363L4.59045 13.5545L12.0086 6.13632H5.36318V4.59087H14.6359V13.8636H13.0905V7.21814L5.67227 14.6363Z"
+                                        fill="white"
+                                    />
+                                </svg>
                             </span>
-                        </div>
-                    ))}
-                </div>
-
-                {/* CTA Buttons */}
-                <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
-                    <ScheduleMyCallButton
-                        className="w-xs"
-                        size="lg"
-                        showSubtext={false}
-                    />
+                        </Link>
+                    </div>
                 </div>
             </div>
         </section>

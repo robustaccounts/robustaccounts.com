@@ -1,162 +1,111 @@
+'use client';
+
 import React from 'react';
 
-const additionalServices = [
+import Link from '@/components/ui/link';
+
+interface AddOn {
+    name: string;
+    price: string;
+    description: string;
+}
+
+const addOns: AddOn[] = [
     {
-        category: 'Bookkeeping Services',
-        services: [
-            {
-                name: 'Basic Bookkeeping',
-                price: '$299 - $499/month',
-                description: 'Monthly bookkeeping and reconciliation',
-            },
-            {
-                name: 'Advanced Bookkeeping',
-                price: '$499 - $799/month',
-                description: 'Comprehensive accounting services',
-            },
-            {
-                name: 'Financial Statements',
-                price: '$200 - $500/month',
-                description: 'Monthly financial reporting',
-            },
-            {
-                name: 'Accounts Receivable Management',
-                price: '$150 - $300/month',
-                description: 'Invoice and collections management',
-            },
-        ],
+        name: 'Catch-up Bookkeeping',
+        price: 'Starting at $200/mo',
+        description:
+            'Get your books in order and start fresh. Reconcile past months and correct prior period entries.',
     },
     {
-        category: 'Payroll Services',
-        services: [
-            {
-                name: 'Basic Payroll Processing',
-                price: '$50/month + $5/employee',
-                description: 'Up to 25 employees',
-            },
-            {
-                name: 'Full-Service Payroll',
-                price: '$100/month + $8/employee',
-                description: 'Includes tax filing',
-            },
-            {
-                name: 'HR Support',
-                price: '$150/month',
-                description: 'Employee handbook & compliance',
-            },
-            {
-                name: 'Benefits Administration',
-                price: '$25/employee/month',
-                description: 'Health insurance & 401k',
-            },
-        ],
+        name: 'Payroll & Bill Pay',
+        price: 'Starting at $150/mo',
+        description:
+            'Full payroll processing, bill pay, vendor management, and 1099 prep with accountant review.',
     },
     {
-        category: 'Financial Advisory',
-        services: [
-            {
-                name: 'Financial Planning',
-                price: '$200/hour',
-                description: 'Strategic financial guidance',
-            },
-            {
-                name: 'Cash Flow Analysis',
-                price: '$500 - $1,500',
-                description: 'Detailed cash flow forecasting',
-            },
-            {
-                name: 'Budget Planning',
-                price: '$300 - $800',
-                description: 'Annual budget development',
-            },
-            {
-                name: 'Financial Consulting',
-                price: '$150 - $300/hour',
-                description: 'Ongoing financial advisory',
-            },
-        ],
+        name: 'Financial Planning & Analysis',
+        price: 'Starting at $300/mo',
+        description:
+            'Cash flow forecasting, KPI tracking, and investor-ready financial models.',
     },
     {
-        category: 'Business Advisory',
-        services: [
-            {
-                name: 'Strategic Planning',
-                price: '$2,500 - $5,000',
-                description: 'Business strategy development',
-            },
-            {
-                name: 'Business Valuation',
-                price: '$2,500 - $10,000',
-                description: 'Professional valuation services',
-            },
-            {
-                name: 'M&A Advisory',
-                price: '$5,000 - $25,000',
-                description: 'Merger & acquisition support',
-            },
-            {
-                name: 'Performance Analysis',
-                price: '$1,000 - $3,000',
-                description: 'Business performance review',
-            },
-        ],
+        name: 'E-commerce Accounting',
+        price: 'Starting at $100/mo',
+        description:
+            'Multi-channel accounting for Shopify, Amazon, Stripe, and PayPal with profitability reporting.',
+    },
+    {
+        name: 'Tax Services',
+        price: 'Starting at $500',
+        description:
+            'Business and personal returns, quarterly estimates, 1099 filing, and sales tax compliance.',
+    },
+    {
+        name: 'Dedicated Staff Augmentation',
+        price: 'Starting at $2,000/mo',
+        description:
+            'Add a bookkeeper, accountant, or CFO advisor to your team with flat monthly pricing.',
     },
 ];
 
 export default function AdditionalServicesSection() {
     return (
-        <section className="flex min-h-screen items-center py-12 lg:py-16">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-12">
-                <div className="mb-12 text-center">
-                    <h2 className="mb-4 text-2xl font-semibold sm:text-3xl lg:text-4xl">
-                        Additional Services
-                    </h2>
-                    <p className="mx-auto max-w-3xl text-base sm:text-lg">
-                        Enhance your plan with specialized services tailored to
-                        your business needs
-                    </p>
-                </div>
+        <section className="bg-theme-offwhite py-20 lg:py-28">
+            <div className="cust-container">
+                <span className="mb-4 block text-xs font-semibold tracking-[0.2em] text-primary uppercase">
+                    Add-Ons
+                </span>
+                <h2 className="mb-6 text-4xl leading-[1.05] font-light tracking-tight text-theme-black md:text-5xl">
+                    Enhance Your Plan
+                </h2>
+                <p className="mb-12 max-w-2xl text-gray-600 lg:mb-16">
+                    Specialized services tailored to your business needs. Add
+                    these to any plan for expanded capabilities.
+                </p>
 
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                    {additionalServices.map((category, index) => (
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {addOns.map((addon, index) => (
                         <div
                             key={index}
-                            className="rounded-xl bg-secondary p-6"
+                            className="border border-gray-200 bg-white p-8 transition-all duration-300 hover:border-transparent hover:shadow-lg"
                         >
-                            <h3 className="mb-4 text-xl font-semibold">
-                                {category.category}
+                            <h3 className="mb-2 text-xl font-semibold text-theme-black">
+                                {addon.name}
                             </h3>
-                            <div className="space-y-4">
-                                {category.services.map(
-                                    (service, serviceIndex) => (
-                                        <div
-                                            key={serviceIndex}
-                                            className="group relative flex items-center justify-between"
-                                        >
-                                            <div className="flex-1">
-                                                <h4
-                                                    className="cursor-help font-medium"
-                                                    title={service.description}
-                                                >
-                                                    {service.name}
-                                                </h4>
-                                                {/* Tooltip */}
-                                                <div className="invisible absolute bottom-full left-0 z-10 mb-2 w-48 rounded-lg bg-black px-3 py-2 text-sm text-white opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
-                                                    {service.description}
-                                                    <div className="absolute top-[90%] left-4 h-2 w-2 rotate-45 bg-black"></div>
-                                                </div>
-                                            </div>
-                                            <div className="ml-4 text-right">
-                                                <span className="font-semibold text-accent">
-                                                    {service.price}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    ),
-                                )}
-                            </div>
+                            <p className="mb-4 text-sm font-semibold text-primary">
+                                {addon.price}
+                            </p>
+                            <p className="text-sm leading-relaxed text-gray-600">
+                                {addon.description}
+                            </p>
                         </div>
                     ))}
+                </div>
+
+                {/* CTA */}
+                <div className="mt-12 text-center">
+                    <Link
+                        href="/lead-form/schedule?source=pricing&addon=custom"
+                        className="btn-div inline-flex uppercase"
+                    >
+                        <span className="text-box">Discuss Add-Ons</span>
+                        <span className="icon-box">
+                            <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 20 20"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    d="M5.67227 14.6363L4.59045 13.5545L12.0086 6.13632H5.36318V4.59087H14.6359V13.8636H13.0905V7.21814L5.67227 14.6363Z"
+                                    fill="white"
+                                />
+                            </svg>
+                        </span>
+                    </Link>
                 </div>
             </div>
         </section>

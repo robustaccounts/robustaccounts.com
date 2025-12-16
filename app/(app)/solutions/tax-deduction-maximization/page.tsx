@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import React from 'react';
 
-import FAQSection from '@/components/home/faq-section';
+import FAQSection from '@/components/sections/faq-section';
 import TestimonialsSection from '@/components/pricing/testimonials-section';
-import HeroSection from '@/components/solutions/tax-deduction-maximization/hero-section';
+import HeroSection from '@/components/solutions/tax-deduction-maximization-hero';
 
 export default function TaxDeductionMaximizationPage() {
     return (

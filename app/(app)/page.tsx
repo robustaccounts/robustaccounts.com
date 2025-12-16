@@ -1,24 +1,26 @@
-import React from 'react';
 import type { Metadata } from 'next';
+import React from 'react';
 
-import SoftwaresMasterySection from '@/components/common/softwares-mastery';
-import FAQSection from '@/components/home/faq-section';
-import HeroSection from '@/components/home/hero-section';
-import ProcessStepsSection from '@/components/home/process-steps-section';
-import ServicesSection from '@/components/home/services-section';
-import WhyChooseUsSection from '@/components/home/why-choose-us-section';
-import TestimonialsSection from '@/components/pricing/testimonials-section';
+import ContactUsBanner from '@/components/contact-us-banner';
+import FAQSection from '@/components/sections/faq-section';
+import HeroSection from '@/components/sections/hero-section';
+import ProcessWorkflow from '@/components/sections/process-workflow';
+import ServicesSection from '@/components/sections/services-section';
+import SoftwaresMasterySection from '@/components/sections/softwares-mastery';
+import StatsSection from '@/components/sections/stats-section';
+import WhyChooseUsSection from '@/components/sections/why-choose-us-section';
 
 export default function Home() {
     return (
         <main className="flex min-h-screen flex-col">
             <HeroSection />
+            <StatsSection />
             <ServicesSection />
             <SoftwaresMasterySection />
-            <ProcessStepsSection />
+            <ProcessWorkflow />
             <WhyChooseUsSection />
             <FAQSection />
-            <TestimonialsSection />
+            <ContactUsBanner />
         </main>
     );
 }

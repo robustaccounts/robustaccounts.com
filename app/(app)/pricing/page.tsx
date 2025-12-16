@@ -3,10 +3,8 @@ import React from 'react';
 
 import AdditionalServicesSection from '@/components/pricing/additional-services-section';
 import ComparisonTableSection from '@/components/pricing/comparison-table-section';
-import FaqSection from '@/components/pricing/faq-section';
 import HeroSection from '@/components/pricing/hero-section';
 import PricingTiersSection from '@/components/pricing/pricing-tiers-section';
-import TestimonialsSection from '@/components/pricing/testimonials-section';
 
 export default function PricingPage() {
     return (
@@ -15,15 +13,36 @@ export default function PricingPage() {
             <PricingTiersSection />
             <AdditionalServicesSection />
             <ComparisonTableSection />
-            <TestimonialsSection />
-            <FaqSection />
         </main>
     );
 }
 
+
 export const metadata: Metadata = {
-    title: 'Pricing',
+    title: 'Accounting & Bookkeeping Pricing Plans | Robust Accounts',
     description:
-        'Transparent, scalable pricing for bookkeeping, payroll, and advisory services. Find the right plan for your business.',
+        'Affordable bookkeeping and accounting services starting at $160/month. Choose from Starter, Professional, or Enterprise plans with payroll, tax prep, and CFO advisory. No hidden fees.',
+    keywords: [
+        'bookkeeping pricing',
+        'accounting services cost',
+        'small business accounting',
+        'bookkeeping plans',
+        'payroll services pricing',
+        'tax preparation cost',
+        'CFO advisory services',
+        'outsourced accounting',
+    ],
+    openGraph: {
+        title: 'Simple, Transparent Pricing | Robust Accounts',
+        description:
+            'Full-service bookkeeping and accounting from $160/month. Payroll, tax prep, and CFO advisory included. No surprises.',
+        type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Accounting & Bookkeeping Pricing | Robust Accounts',
+        description:
+            'Professional bookkeeping from $160/month. Payroll, tax prep, CFO advisory. Plans that scale with your business.',
+    },
     alternates: { canonical: '/pricing' },
 };

@@ -3,21 +3,20 @@
 import { sendGAEvent } from '@next/third-parties/google';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight, ChevronRight, X } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
-import Checkbox from '@/ui/checkbox';
-import Dropdown, { DropdownOption } from '@/ui/dropdown';
-import GoogleCalendar from '@/ui/icons/google-calendar';
-import { ArrowForward, ChevronRight, Close } from '@/ui/icons/google-icons';
-import Input from '@/ui/input';
-import PhoneInput from '@/ui/phone-input';
-import Textarea from '@/ui/textarea';
+import Checkbox from '@/components/ui/checkbox';
+import Dropdown, { DropdownOption } from '@/components/ui/dropdown';
+import GoogleCalendar from '@/components/ui/icons/google-calendar';
+import Input from '@/components/ui/input';
+import PhoneInput from '@/components/ui/phone-input';
+import Textarea from '@/components/ui/textarea';
 
+import cn from '@/lib/cn';
 import { getAvailableDates, getTimeSlots } from '@/lib/lead-form-utils';
 import { saveLead } from '@/lib/save-lead';
-
-import cn from '@/utils/cn';
 
 interface SchedulingModalProps {
     isOpen: boolean;
@@ -229,8 +228,6 @@ export default function SchedulingModal({
             const result = await saveLead(leadData, appointmentDetails);
 
             if (result.success) {
-                console.log('Lead saved successfully with ID:', result.leadId);
-
                 // Fire Google Ads conversion event for lead form submission
                 sendGAEvent('event', 'conversion', {
                     send_to: 'AW-17600938444/jfkaCOHz5aEbEMyD5MhB',
@@ -353,18 +350,18 @@ export default function SchedulingModal({
                                 <div className="px-2 text-center">
                                     <h2
                                         id="scheduling-modal-title"
-                                        className="text-base font-bold text-foreground sm:text-lg"
+                                        className="text-foreground text-base font-bold sm:text-lg"
                                     >
                                         Consultation Scheduled!
                                     </h2>
                                 </div>
                                 <button
                                     onClick={handleClose}
-                                    className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-secondary transition-all duration-300 hover:bg-gray-200 focus:ring-2 focus:ring-accent/20 focus:outline-none sm:h-10 sm:w-10"
+                                    className="bg-secondary flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-all duration-300 hover:bg-gray-200 focus:ring-2 focus:ring-primary/20 focus:outline-none sm:h-10 sm:w-10"
                                     aria-label="Close modal"
                                     type="button"
                                 >
-                                    <Close className="h-5 w-5 fill-foreground sm:h-6 sm:w-6" />
+                                    <X className="fill-foreground h-5 w-5 sm:h-6 sm:w-6" />
                                 </button>
                             </div>
 
@@ -373,7 +370,7 @@ export default function SchedulingModal({
                                 <div className="flex h-full flex-col items-center justify-center p-4 sm:p-6 xl:mt-12">
                                     {/* Success Title */}
                                     <div className="mb-8 flex flex-col items-center">
-                                        <h3 className="mb-2 text-2xl font-bold text-foreground sm:text-3xl">
+                                        <h3 className="text-foreground mb-2 text-2xl font-bold sm:text-3xl">
                                             Consultation Scheduled!
                                         </h3>
                                         <p className="text-sm text-gray-600 sm:text-base">
@@ -389,13 +386,13 @@ export default function SchedulingModal({
                                                 Your appointment is scheduled
                                                 for:
                                             </div>
-                                            <div className="mb-2 text-lg font-bold text-foreground sm:text-xl">
+                                            <div className="text-foreground mb-2 text-lg font-bold sm:text-xl">
                                                 {selectedDate &&
                                                     formatFullDate(
                                                         selectedDate,
                                                     )}
                                             </div>
-                                            <div className="mb-1 text-xl font-bold text-accent sm:text-2xl">
+                                            <div className="mb-1 text-xl font-bold text-primary sm:text-2xl">
                                                 {selectedSlotDetails?.time}
                                             </div>
                                             <div className="text-sm font-semibold text-gray-600">
@@ -461,7 +458,7 @@ export default function SchedulingModal({
                                                 at{' '}
                                                 <Link
                                                     href="tel:+14153000000"
-                                                    className="font-semibold text-accent"
+                                                    className="font-semibold text-primary"
                                                 >
                                                     +1 (415) 300-0000
                                                 </Link>
@@ -489,16 +486,16 @@ export default function SchedulingModal({
                             <div className="sticky top-0 z-10 flex w-full items-center justify-between border-b border-gray-200 bg-white px-4 py-4 sm:px-6 sm:py-6">
                                 <button
                                     onClick={handleBack}
-                                    className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-secondary transition-all duration-300 hover:bg-gray-200 focus:ring-2 focus:ring-accent/20 focus:outline-none sm:h-10 sm:w-10"
+                                    className="bg-secondary flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-all duration-300 hover:bg-gray-200 focus:ring-2 focus:ring-primary/20 focus:outline-none sm:h-10 sm:w-10"
                                     aria-label="Go back"
                                     type="button"
                                 >
-                                    <ChevronRight className="h-5 w-5 rotate-180 fill-foreground sm:h-7 sm:w-7" />
+                                    <ChevronRight className="fill-foreground h-5 w-5 rotate-180 sm:h-7 sm:w-7" />
                                 </button>
                                 <div className="px-2 text-center">
                                     <h2
                                         id="scheduling-modal-title"
-                                        className="text-base font-bold text-foreground sm:text-lg"
+                                        className="text-foreground text-base font-bold sm:text-lg"
                                     >
                                         {step === 'calendar'
                                             ? 'Select a time for your call.'
@@ -519,11 +516,11 @@ export default function SchedulingModal({
                                 </div>
                                 <button
                                     onClick={handleClose}
-                                    className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-secondary transition-all duration-300 hover:bg-gray-200 focus:ring-2 focus:ring-accent/20 focus:outline-none sm:h-10 sm:w-10"
+                                    className="bg-secondary flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-all duration-300 hover:bg-gray-200 focus:ring-2 focus:ring-primary/20 focus:outline-none sm:h-10 sm:w-10"
                                     aria-label="Close modal"
                                     type="button"
                                 >
-                                    <Close className="h-5 w-5 fill-foreground sm:h-6 sm:w-6" />
+                                    <X className="fill-foreground h-5 w-5 sm:h-6 sm:w-6" />
                                 </button>
                             </div>
 
@@ -553,8 +550,8 @@ export default function SchedulingModal({
                                                                     'w-full cursor-pointer rounded-lg border-2 p-3 text-center transition-all sm:p-4',
                                                                     selectedDate?.toDateString() ===
                                                                         date.toDateString()
-                                                                        ? 'border-accent bg-accent text-white'
-                                                                        : 'border-gray-200 bg-white text-foreground hover:border-accent hover:bg-secondary',
+                                                                        ? 'border-primary bg-primary text-white'
+                                                                        : 'text-foreground hover:bg-secondary border-gray-200 bg-white hover:border-primary',
                                                                 )}
                                                             >
                                                                 <div className="text-base font-medium sm:text-lg">
@@ -594,8 +591,8 @@ export default function SchedulingModal({
                                                                             ? 'cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400'
                                                                             : selectedTimeSlot ===
                                                                                 slot.id
-                                                                              ? 'cursor-pointer border-accent bg-accent text-white'
-                                                                              : 'cursor-pointer border-gray-200 bg-white text-foreground hover:border-accent hover:bg-secondary',
+                                                                              ? 'cursor-pointer border-primary bg-primary text-white'
+                                                                              : 'text-foreground hover:bg-secondary cursor-pointer border-gray-200 bg-white hover:border-primary',
                                                                     )}
                                                                 >
                                                                     <div className="text-xs font-medium sm:text-sm">
@@ -630,7 +627,7 @@ export default function SchedulingModal({
                                         <div className="mt-4 flex justify-center sm:mt-6">
                                             <button
                                                 onClick={handleTimeSlotSelect}
-                                                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-primary hover:shadow-lg sm:px-8 sm:py-4 sm:text-base lg:w-auto"
+                                                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-primary hover:shadow-lg sm:px-8 sm:py-4 sm:text-base lg:w-auto"
                                                 type="button"
                                                 disabled={
                                                     !selectedDate ||
@@ -638,7 +635,7 @@ export default function SchedulingModal({
                                                 }
                                             >
                                                 Continue to Contact Form
-                                                <ArrowForward className="h-4 w-4 sm:h-5 sm:w-5" />
+                                                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
                                             </button>
                                         </div>
                                     </div>
@@ -820,14 +817,14 @@ export default function SchedulingModal({
                                                     our{' '}
                                                     <Link
                                                         href="/terms-of-service"
-                                                        className="text-accent underline hover:text-primary"
+                                                        className="text-primary underline hover:text-primary"
                                                     >
                                                         Terms of Service
                                                     </Link>{' '}
                                                     and{' '}
                                                     <Link
                                                         href="/privacy-policy"
-                                                        className="text-accent underline hover:text-primary"
+                                                        className="text-primary underline hover:text-primary"
                                                     >
                                                         Privacy Policy
                                                     </Link>
@@ -846,7 +843,7 @@ export default function SchedulingModal({
                                                         'flex w-full items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-all sm:w-full sm:px-8 sm:py-4 sm:text-base lg:w-auto',
                                                         isBooking
                                                             ? 'cursor-not-allowed bg-gray-300'
-                                                            : 'cursor-pointer bg-accent hover:bg-primary hover:shadow-lg',
+                                                            : 'cursor-pointer bg-primary hover:bg-primary hover:shadow-lg',
                                                     )}
                                                 >
                                                     {isBooking ? (
@@ -858,7 +855,7 @@ export default function SchedulingModal({
                                                         <>
                                                             Confirm My
                                                             Appointment
-                                                            <ArrowForward className="h-4 w-4 sm:h-5 sm:w-5" />
+                                                            <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
                                                         </>
                                                     )}
                                                 </button>

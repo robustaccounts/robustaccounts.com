@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { Check } from '@/ui/icons/google-icons';
+import { Check } from 'lucide-react';
 
-import cn from '@/utils/cn';
+import cn from '@/lib/cn';
 
 const technicalCapabilities = [
     {
@@ -90,7 +90,7 @@ export default function TechnicalCapabilitiesSection() {
                                             key={detailIndex}
                                             className="flex items-center gap-2"
                                         >
-                                            <Check className="h-4 w-4 flex-shrink-0 fill-accent" />
+                                            <Check className="h-4 w-4 flex-shrink-0 text-primary" />
                                             <span className="text-sm">
                                                 {detail}
                                             </span>

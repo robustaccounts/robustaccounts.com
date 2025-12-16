@@ -1,19 +1,14 @@
 import createMDX from '@next/mdx';
-import remarkGfm from 'remark-gfm';
+
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
     pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
     experimental: {
-        mdxRs: true,
+        scrollRestoration: true,
     },
 };
 
-const withMDX = createMDX({
-    options: {
-        remarkPlugins: [remarkGfm],
-        rehypePlugins: [],
-    },
-});
+const withMDX = createMDX();
 
 export default withMDX(nextConfig);

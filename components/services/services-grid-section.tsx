@@ -1,10 +1,14 @@
-import React from 'react';
+'use client';
 
-import { Check } from '@/ui/icons/google-icons';
+import { useGSAP } from '@gsap/react';
 
-import cn from '@/utils/cn';
+import gsap from 'gsap';
+import { Check } from 'lucide-react';
+import Link from 'next/link';
+import React, { useRef } from 'react';
 
-import LearnMoreButton from '../common/learn-more-button';
+import usePrefersReducedMotion from '@/lib/hooks/use-prefers-reduced-motion';
+
 
 const services = [
     {
@@ -16,11 +20,9 @@ const services = [
             'Daily transaction recording',
             'Bank reconciliation',
             'Accounts payable/receivable',
-            'General ledger maintenance',
             'Monthly financial statements',
-            'Expense tracking & categorization',
         ],
-        pricing: 'Starting at $299/month',
+        pricing: 'Starting at $160/month',
         popular: true,
     },
     {
@@ -32,11 +34,9 @@ const services = [
             'Employee payment processing',
             'Tax withholding & filings',
             'Benefits administration',
-            'Time tracking integration',
-            'Compliance reporting',
             'Direct deposit setup',
         ],
-        pricing: 'Starting at $149/month',
+        pricing: 'Starting at $150/month',
         popular: false,
     },
     {
@@ -48,98 +48,129 @@ const services = [
             'Budget planning & analysis',
             'Cash flow forecasting',
             'Financial reporting',
-            'Business performance analysis',
             'Growth strategy consulting',
-            'Investment planning',
         ],
-        pricing: 'Starting at $399/month',
-        popular: false,
-    },
-    {
-        id: 'business-advisory',
-        title: 'Business Advisory',
-        description:
-            'Strategic business consulting to help you make informed financial decisions.',
-        features: [
-            'Business strategy consulting',
-            'Market analysis',
-            'Mergers & acquisitions',
-            'Business valuation',
-            'Succession planning',
-            'Due diligence',
-        ],
-        pricing: 'Custom pricing',
+        pricing: 'Starting at $300/month',
         popular: false,
     },
 ];
 
 export default function ServicesGridSection() {
+    const prefersReducedMotion = usePrefersReducedMotion();
+    const sectionRef = useRef<HTMLElement>(null);
+
+    useGSAP(
+        () => {
+            if (prefersReducedMotion) return;
+
+            const cards = gsap.utils.toArray<HTMLElement>('.service-card');
+
+            gsap.fromTo(
+                cards,
+                { autoAlpha: 0, y: 24 },
+                {
+                    autoAlpha: 1,
+                    y: 0,
+                    duration: 0.5,
+                    stagger: 0.08,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: sectionRef.current,
+                        start: 'top 95%',
+                        once: true,
+                    },
+                },
+            );
+        },
+        { scope: sectionRef, dependencies: [prefersReducedMotion] },
+    );
+
     return (
-        <section
-            className={cn(
-                'flex w-full flex-col items-center justify-center gap-12 px-4 py-16 sm:gap-16 sm:px-6 md:px-12 lg:px-16 xl:container xl:mx-auto',
-            )}
-        >
-            <div className="flex max-w-4xl flex-col items-center justify-center gap-4 text-center">
-                <h2 className="text-2xl font-semibold sm:text-3xl lg:text-4xl">
-                    Choose Your Perfect Service Package
-                </h2>
-                <p className="text-base text-gray-600 sm:text-lg">
-                    Professional accounting services designed to scale with your
-                    business
-                </p>
-            </div>
+        <section ref={sectionRef} className="bg-theme-offwhite py-20 lg:py-28">
+            <div className="cust-container">
+                {/* Header */}
+                <div className="mb-16">
+                    <span className="mb-4 block text-xs font-bold tracking-[0.2em] text-primary uppercase">
+                        What We Offer
+                    </span>
+                    <h2 className="mb-4 text-4xl leading-[1.05] font-light tracking-tight text-theme-black md:text-5xl">
+                        Choose Your Service
+                    </h2>
+                    <p className="max-w-lg text-base text-gray-600">
+                        Professional accounting services designed to scale with
+                        your business
+                    </p>
+                </div>
 
-            <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {services.map((service) => (
-                    <div key={service.id} className="relative">
-                        {service.popular && (
-                            <div className="absolute -top-4 left-1/2 z-10 -translate-x-1/2 transform rounded-full bg-accent px-4 py-1 text-sm font-medium text-white">
-                                Most Popular
-                            </div>
-                        )}
-                        <div className="h-full cursor-pointer rounded-xl bg-secondary p-6 transition-all duration-300 sm:p-8">
-                            <div className="flex h-full flex-col justify-between gap-6">
-                                <div className="flex flex-col gap-4">
-                                    <div className="flex flex-col gap-2">
-                                        <h3 className="text-lg font-semibold sm:text-xl lg:text-2xl">
-                                            {service.title}
-                                        </h3>
-                                        <p className="font-semibold text-accent">
-                                            {service.pricing}
-                                        </p>
-                                    </div>
+                {/* Services Grid */}
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {services.map((service, index) => (
+                        <div
+                            key={service.id}
+                            className={`service-card relative flex flex-col border bg-white p-8 transition-all duration-300 hover:shadow-lg ${
+                                service.popular
+                                    ? 'border-2 border-primary'
+                                    : 'border-gray-200 hover:border-primary'
+                            }`}
+                        >
+                            {/* Popular Badge */}
+                            {service.popular && (
+                                <div className="absolute -top-3 left-6 bg-primary px-3 py-1 text-xs font-semibold tracking-wide text-white uppercase">
+                                    Most Popular
+                                </div>
+                            )}
 
-                                    <p className="text-sm text-gray-600 sm:text-base">
-                                        {service.description}
-                                    </p>
+                            {/* Content */}
+                            <div className="flex flex-grow flex-col">
+                                <h3 className="mb-2 text-xl font-semibold text-theme-black">
+                                    {service.title}
+                                </h3>
+                                <p className="mb-4 text-sm font-semibold text-primary">
+                                    {service.pricing}
+                                </p>
+                                <p className="mb-6 text-sm leading-relaxed text-gray-600">
+                                    {service.description}
+                                </p>
 
-                                    <div className="space-y-3">
-                                        {service.features.map(
-                                            (feature, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="flex items-center gap-3"
-                                                >
-                                                    <Check className="h-5 w-5 flex-shrink-0 fill-accent" />
-                                                    <span className="text-sm text-gray-700 sm:text-base">
-                                                        {feature}
-                                                    </span>
-                                                </div>
-                                            ),
-                                        )}
-                                    </div>
+                                {/* Features */}
+                                <div className="mb-8 flex-grow space-y-3">
+                                    {service.features.map(
+                                        (feature, featureIndex) => (
+                                            <div
+                                                key={featureIndex}
+                                                className="flex items-start gap-2"
+                                            >
+                                                <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+                                                <span className="text-sm text-gray-700">
+                                                    {feature}
+                                                </span>
+                                            </div>
+                                        ),
+                                    )}
                                 </div>
 
-                                <div className="mt-4">
-                                    <LearnMoreButton
-                                        href={`/services/${service.id}`}
-                                    />
-                                </div>
+                                {/* CTA */}
+                                <Link
+                                    href={`/services/${service.id}`}
+                                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+                                >
+                                    Learn More
+                                    <svg
+                                        className="h-4 w-4"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                </Link>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </section>
     );

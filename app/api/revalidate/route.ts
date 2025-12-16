@@ -1,5 +1,6 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
+
 import { apiConfig } from '@/lib/env';
 import { logger } from '@/lib/logger';
 
@@ -14,7 +15,10 @@ export async function POST(request: NextRequest) {
             (await request.json().catch(() => ({})))?.secret;
 
         // Verify secret token
-        if (!apiConfig.revalidationSecret || secret !== apiConfig.revalidationSecret) {
+        if (
+            !apiConfig.revalidationSecret ||
+            secret !== apiConfig.revalidationSecret
+        ) {
             logger.warn('Revalidation request with invalid token', {
                 hasSecret: !!secret,
             });
@@ -31,7 +35,7 @@ export async function POST(request: NextRequest) {
 
         // Revalidate blog paths
         revalidatePath('/blog');
-        revalidateTag('blog');
+        revalidateTag('blog', 'max');
 
         // If a specific path is provided, revalidate it too
         if (path) {
@@ -52,7 +56,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(response);
     } catch (error) {
         logger.apiError('POST', '/api/revalidate', error, 500);
-        
+
         return NextResponse.json(
             {
                 message: 'Error revalidating',

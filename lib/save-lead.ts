@@ -7,6 +7,7 @@ import {
     sendLeadNotificationEmail,
 } from '@/lib/email';
 import { databaseConfig } from '@/lib/env';
+import { logger } from '@/lib/logger';
 
 interface LeadData {
     firstName: string;
@@ -80,12 +81,16 @@ export async function saveLead(
             appointmentDatetimeISO: leadData.appointmentDatetime.toISOString(),
         })
             .then((result) => {
-                console.log('Lead notification email result:', result);
+                logger.info('Lead notification email sent', {
+                    leadId,
+                    sent: result.sent,
+                });
             })
             .catch((notifyErr) => {
-                console.error(
-                    'Lead saved but internal notification email failed:',
+                logger.error(
+                    'Lead saved but internal notification email failed',
                     notifyErr,
+                    { leadId },
                 );
             });
 
@@ -99,23 +104,28 @@ export async function saveLead(
                 appointmentDate: appointmentDetails.appointmentDate,
                 appointmentTime: appointmentDetails.appointmentTime,
                 appointmentTimezone: appointmentDetails.appointmentTimezone,
-                appointmentDatetimeISO: leadData.appointmentDatetime.toISOString(),
+                appointmentDatetimeISO:
+                    leadData.appointmentDatetime.toISOString(),
                 leadId: leadId,
             })
                 .then((result) => {
-                    console.log('Customer confirmation email result:', result);
+                    logger.info('Customer confirmation email sent', {
+                        leadId,
+                        sent: result.sent,
+                    });
                 })
                 .catch((confirmErr) => {
-                    console.error(
-                        'Lead saved but customer confirmation email failed:',
+                    logger.error(
+                        'Lead saved but customer confirmation email failed',
                         confirmErr,
+                        { leadId },
                     );
                 });
         }
 
         return { success: true, leadId };
     } catch (error) {
-        console.error('Error saving lead:', error);
+        logger.error('Error saving lead', error, { email: leadData.email });
         return { success: false, error: 'Failed to save lead data' };
     }
 }
