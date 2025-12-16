@@ -14,10 +14,10 @@ const Footer = () => {
                 <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
                     {/* Column 1: Contact Us + Head Office */}
                     <div>
-                        <h4 className="mb-6 text-xs font-bold tracking-widest text-theme-black uppercase">
+                        <h4 className="mb-6 text-xs font-bold tracking-widest text-theme-black! uppercase">
                             Contact Us
                         </h4>
-                        <div className="mb-8 space-y-3 text-sm text-gray-600">
+                        <div className="mb-8 space-y-3 text-sm">
                             <p>
                                 <a
                                     href="tel:+18133370109"
@@ -60,7 +60,7 @@ const Footer = () => {
                                 <li>
                                     <Link
                                         href="/services/bookkeeping"
-                                        className="text-sm text-gray-600 transition-colors hover:text-primary"
+                                        className="text-sm transition-colors hover:text-primary"
                                     >
                                         Bookkeeping
                                     </Link>
@@ -68,7 +68,7 @@ const Footer = () => {
                                 <li>
                                     <Link
                                         href="/services/payroll"
-                                        className="text-sm text-gray-600 transition-colors hover:text-primary"
+                                        className="text-sm transition-colors hover:text-primary"
                                     >
                                         Payroll
                                     </Link>
@@ -76,7 +76,7 @@ const Footer = () => {
                                 <li>
                                     <Link
                                         href="/services/financial-advisory"
-                                        className="text-sm text-gray-600 transition-colors hover:text-primary"
+                                        className="text-sm transition-colors hover:text-primary"
                                     >
                                         Financial Advisory
                                     </Link>
@@ -93,7 +93,7 @@ const Footer = () => {
                                 <li>
                                     <Link
                                         href="/about"
-                                        className="text-sm text-gray-600 transition-colors hover:text-primary"
+                                        className="text-sm transition-colors hover:text-primary"
                                     >
                                         About Us
                                     </Link>
@@ -101,7 +101,7 @@ const Footer = () => {
                                 <li>
                                     <Link
                                         href="/pricing"
-                                        className="text-sm text-gray-600 transition-colors hover:text-primary"
+                                        className="text-sm transition-colors hover:text-primary"
                                     >
                                         Pricing
                                     </Link>
@@ -109,7 +109,7 @@ const Footer = () => {
                                 <li>
                                     <Link
                                         href="/how-it-works"
-                                        className="text-sm text-gray-600 transition-colors hover:text-primary"
+                                        className="text-sm transition-colors hover:text-primary"
                                     >
                                         How It Works
                                     </Link>
@@ -117,7 +117,7 @@ const Footer = () => {
                                 <li>
                                     <Link
                                         href="/contact"
-                                        className="text-sm text-gray-600 transition-colors hover:text-primary"
+                                        className="text-sm transition-colors hover:text-primary"
                                     >
                                         Contact
                                     </Link>
@@ -125,7 +125,7 @@ const Footer = () => {
                                 <li>
                                     <Link
                                         href="/faq"
-                                        className="text-sm text-gray-600 transition-colors hover:text-primary"
+                                        className="text-sm transition-colors hover:text-primary"
                                     >
                                         FAQ
                                     </Link>
@@ -135,33 +135,19 @@ const Footer = () => {
                     </div>
                 </div>
 
-                {/* Social & Legal Row */}
+                {/* Copyright & Legal Row */}
                 <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-200 py-6 md:flex-row">
-                    <div className="flex items-center gap-4">
-                        <span className="text-xs font-bold tracking-widest text-theme-black uppercase">
-                            Follow Us
-                        </span>
-                        <div className="flex gap-3">
-                            <a
-                                href={SOCIAL_LINKS.linkedin}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-gray-600 transition-colors hover:text-primary"
-                            >
-                                <LinkedInIcon />
-                            </a>
-                            <a
-                                href={SOCIAL_LINKS.twitter}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-gray-600 transition-colors hover:text-primary"
-                            >
-                                <TwitterIcon />
-                            </a>
-                        </div>
-                    </div>
+                    {/* Copyright - Left */}
+                    <p className="text-sm!" style={{ color: '#0f0f0f' }}>
+                        © {new Date().getFullYear()} Robust Accounts. All rights
+                        reserved.
+                    </p>
 
-                    <div className="flex gap-6 text-sm text-gray-600">
+                    {/* Legal Links - Right */}
+                    <div
+                        className="flex gap-6 text-sm"
+                        style={{ color: '#0f0f0f' }}
+                    >
                         <Link
                             href="/privacy-policy"
                             className="transition-colors hover:text-primary"
@@ -183,13 +169,31 @@ const Footer = () => {
                     </div>
                 </div>
 
-                {/* Copyright Row */}
-                <div className="border-t border-gray-200 py-6">
-                    <p className="text-center !text-sm text-gray-500 md:text-left">
-                        © {new Date().getFullYear()} Robust Accounts. All rights
-                        reserved.
-                    </p>
+                {/* Social Links - Commented out for future use
+                <div className="flex items-center gap-4 border-t border-gray-200 py-6">
+                    <span className="text-xs font-bold tracking-widest text-theme-black uppercase">
+                        Follow Us
+                    </span>
+                    <div className="flex gap-3">
+                        <a
+                            href={SOCIAL_LINKS.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-theme-black transition-colors hover:text-primary"
+                        >
+                            <LinkedInIcon />
+                        </a>
+                        <a
+                            href={SOCIAL_LINKS.twitter}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-theme-black transition-colors hover:text-primary"
+                        >
+                            <TwitterIcon />
+                        </a>
+                    </div>
                 </div>
+                */}
 
                 {/* Disclaimer Row */}
                 <div className="border-t border-gray-200 py-4">

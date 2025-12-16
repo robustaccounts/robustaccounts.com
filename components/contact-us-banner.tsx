@@ -37,7 +37,7 @@ export default function ContactUsBanner() {
                             className="btn-div uppercase"
                         >
                             <span className="text-box">
-                                Get a Financial Ops Plan
+                                Set Your Books Right
                             </span>
                             <span className="icon-box">
                                 <ArrowIcon size={14} className="text-white" />

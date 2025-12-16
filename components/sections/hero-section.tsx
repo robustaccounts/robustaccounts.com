@@ -116,7 +116,7 @@ const HeroSection = () => {
                                 className="btn-div uppercase"
                             >
                                 <span className="text-box">
-                                    Get a Financial Ops Plan
+                                    Set Your Books Right
                                 </span>
                                 <span className="icon-box">
                                     <ArrowIcon
@@ -153,7 +153,7 @@ const HeroSection = () => {
                             alt="Professional finance team collaborating"
                             width={600}
                             height={450}
-                            className="w-full max-w-xl object-contain"
+                            className="w-full max-w-lg object-contain"
                             priority
                         />
                     </div>

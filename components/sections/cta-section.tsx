@@ -38,7 +38,7 @@ export default function CTASection() {
                             href="/lead-form/schedule"
                             className="btn-div uppercase"
                         >
-                            Get a Financial Ops Plan
+                            Set Your Books Right
                         </Link>
                         <Link
                             href="/contact"
