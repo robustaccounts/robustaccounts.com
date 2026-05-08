@@ -20,8 +20,15 @@ export default function AboutPage() {
 }
 
 export const metadata: Metadata = {
-    title: 'About Us',
+    title: 'About Robust Accounts | Our Team & Mission',
     description:
-        'Learn about Robust Accounts - our mission, values, and track record helping businesses with accurate, compliant accounting.',
+        'Meet the Robust Accounts team — our mission, values, and track record helping small businesses run accurate, compliant accounting and bookkeeping.',
     alternates: { canonical: '/about' },
+    openGraph: {
+        title: 'About Robust Accounts | Our Team & Mission',
+        description:
+            'Meet the Robust Accounts team — our mission, values, and track record helping small businesses with accurate, compliant accounting.',
+        url: '/about',
+        type: 'website',
+    },
 };

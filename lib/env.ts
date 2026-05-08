@@ -109,17 +109,19 @@ const envSchema = z.object({
         .min(1, 'BLOB_READ_WRITE_TOKEN is required for blob operations')
         .optional(),
 
-    // Public URLs
+    // Public URLs — must match the canonical host that production redirects to.
+    // Apex robustaccounts.com 301-redirects to www.robustaccounts.com, so all
+    // canonical URLs (sitemap, JSON-LD, og:url, alternates) use www.
     NEXT_PUBLIC_BASE_URL: z
         .string()
         .url('NEXT_PUBLIC_BASE_URL must be a valid URL')
         .optional()
-        .default('https://robustaccounts.com'),
+        .default('https://www.robustaccounts.com'),
     NEXT_PUBLIC_WEBSITE_URL: z
         .string()
         .url('NEXT_PUBLIC_WEBSITE_URL must be a valid URL')
         .optional()
-        .default('https://robustaccounts.com'),
+        .default('https://www.robustaccounts.com'),
 });
 
 // Refine to ensure at least one notification recipient is set
