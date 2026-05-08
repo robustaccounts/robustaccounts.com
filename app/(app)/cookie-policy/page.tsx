@@ -1,7 +1,16 @@
-import siteConfig from '@/siteconfig';
-
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import React from 'react';
+
+import siteConfig from '@/siteconfig';
+
+export const metadata: Metadata = {
+    title: 'Cookie Policy | Robust Accounts',
+    description:
+        'How Robust Accounts uses cookies and similar technologies on our website, and how you can manage your preferences.',
+    alternates: { canonical: '/cookie-policy' },
+    robots: { index: true, follow: true },
+};
 
 export default function CookiePolicy() {
     const { contactInfo } = siteConfig;

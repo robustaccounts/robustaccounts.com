@@ -4,10 +4,12 @@ import { notFound } from 'next/navigation';
 import React, { Suspense } from 'react';
 
 import { type BlogPost, getBlogPostBySlug, getRelatedPosts } from '@/lib/blog';
+import { blogPostingSchema, breadcrumbSchema } from '@/lib/seo/schema';
 
 import ReadingProgressBar from '@/components/blog/reading-progress-bar';
 import CopyLinkButton from '@/components/blog/share-buttons';
 import MDXRenderer from '@/components/mdx-renderer';
+import { JsonLd } from '@/components/seo/json-ld';
 
 // Error boundary wrapper for MDX content
 function ErrorBoundaryWrapper({ children }: { children: React.ReactNode }) {
@@ -48,6 +50,25 @@ export default async function BlogPost({
 
     return (
         <main className="flex min-h-screen flex-col">
+            <JsonLd
+                data={[
+                    blogPostingSchema({
+                        slug: post.slug,
+                        title: post.title,
+                        description: post.excerpt,
+                        datePublished: post.date,
+                        author: post.author,
+                    }),
+                    breadcrumbSchema([
+                        { name: 'Home', url: '/' },
+                        { name: 'Blog', url: '/blog' },
+                        {
+                            name: post.title,
+                            url: `/blog/${post.slug}`,
+                        },
+                    ]),
+                ]}
+            />
             {/* Reading Progress Bar */}
             <ReadingProgressBar />
 

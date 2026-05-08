@@ -1,7 +1,16 @@
-import siteConfig from '@/siteconfig';
-
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import React from 'react';
+
+import siteConfig from '@/siteconfig';
+
+export const metadata: Metadata = {
+    title: 'Privacy Policy | Robust Accounts',
+    description:
+        'How Robust Accounts collects, uses, stores, and protects your personal and financial information when you use our accounting services.',
+    alternates: { canonical: '/privacy-policy' },
+    robots: { index: true, follow: true },
+};
 
 export default function PrivacyPolicy() {
     const { contactInfo } = siteConfig;

@@ -1,7 +1,16 @@
-import siteConfig from '@/siteconfig';
-
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import React from 'react';
+
+import siteConfig from '@/siteconfig';
+
+export const metadata: Metadata = {
+    title: 'Terms of Service | Robust Accounts',
+    description:
+        'The terms and conditions that govern your use of Robust Accounts services, including engagement scope, fees, and responsibilities.',
+    alternates: { canonical: '/terms-of-service' },
+    robots: { index: true, follow: true },
+};
 
 export default function TermsOfService() {
     const { contactInfo } = siteConfig;

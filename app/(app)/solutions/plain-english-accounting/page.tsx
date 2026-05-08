@@ -16,7 +16,7 @@ export default function PlainEnglishAccountingPage() {
 }
 
 export const metadata: Metadata = {
-    title: 'Plain English Accounting | Financial Reports You Can Actually Understand',
+    title: 'Plain-English Accounting | Reports You Understand',
     description:
         'Financial clarity in plain English, not accountant-speak. Easy-to-understand financial reports and insights that help you make informed business decisions.',
     alternates: { canonical: '/solutions/plain-english-accounting' },

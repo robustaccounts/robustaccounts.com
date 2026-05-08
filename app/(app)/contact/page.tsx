@@ -46,8 +46,15 @@ export default function ContactPage() {
 }
 
 export const metadata: Metadata = {
-    title: 'Contact',
+    title: 'Contact Robust Accounts | Free 30-min Consultation',
     description:
-        'Get in touch with Robust Accounts for a free consultation. Call, email, or schedule a time that suits you.',
+        'Get in touch with Robust Accounts for a free 30-minute consultation. Call, email, or schedule a time that works for your business.',
     alternates: { canonical: '/contact' },
+    openGraph: {
+        title: 'Contact Robust Accounts | Free 30-min Consultation',
+        description:
+            'Schedule a free 30-minute consultation with our accounting team. Call, email, or pick a time that suits you.',
+        url: '/contact',
+        type: 'website',
+    },
 };

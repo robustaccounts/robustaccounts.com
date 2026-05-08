@@ -30,8 +30,15 @@ export default async function BlogPage() {
 }
 
 export const metadata: Metadata = {
-    title: 'Blog',
+    title: 'Accounting & Bookkeeping Blog | Robust Accounts',
     description:
-        'Expert insights on accounting, tax planning, compliance, and business strategy from the Robust Accounts team.',
+        'Expert insights on accounting, bookkeeping, tax planning, compliance, and small-business strategy from the Robust Accounts team.',
     alternates: { canonical: '/blog' },
+    openGraph: {
+        title: 'Accounting & Bookkeeping Blog | Robust Accounts',
+        description:
+            'Expert insights on accounting, bookkeeping, tax planning, compliance, and small-business strategy.',
+        url: '/blog',
+        type: 'website',
+    },
 };

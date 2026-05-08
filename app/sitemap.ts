@@ -5,59 +5,71 @@ import { join } from 'path';
 import { getAllBlogPosts } from '@/lib/blog';
 import { config } from '@/lib/config';
 
-// Function to recursively get all page routes from app directory
+// Top-level segments under app/ that should never appear in the sitemap:
+// utility flows (lead-form, reschedule), dev-only previews, route groups,
+// internal Next.js dirs, and the API tree.
+const EXCLUDED_TOP_SEGMENTS = new Set([
+    'lead-form',
+    'reschedule',
+    'error-preview',
+    'api',
+]);
+
 function getPageRoutes(dir: string, baseRoute: string = ''): string[] {
     const routes: string[] = [];
 
+    let items: string[];
     try {
-        const items = readdirSync(dir);
-
-        for (const item of items) {
-            const fullPath = join(dir, item);
-            const stat = statSync(fullPath);
-
-            if (stat.isDirectory()) {
-                // Skip special Next.js directories and route groups
-                if (
-                    item.startsWith('(') ||
-                    item.startsWith('_') ||
-                    item === 'api'
-                ) {
-                    // For route groups like (app), explore inside but don't add to route
-                    if (item.startsWith('(')) {
-                        const nestedRoutes = getPageRoutes(fullPath, baseRoute);
-                        routes.push(...nestedRoutes);
-                    }
-                    continue;
-                }
-
-                // Check if directory has a page.tsx file
-                // const hasPage =
-                //     items.includes('page.tsx') ||
-                //     items.includes('page.ts') ||
-                //     items.includes('page.jsx') ||
-                //     items.includes('page.js');
-
-                // Add the directory as a route
-                const newRoute = baseRoute
-                    ? `${baseRoute}/${item}`
-                    : `/${item}`;
-
-                // Recursively get nested routes
-                const nestedRoutes = getPageRoutes(fullPath, newRoute);
-                routes.push(...nestedRoutes);
-            } else if (
-                item === 'page.tsx' ||
-                item === 'page.ts' ||
-                item === 'page.jsx' ||
-                item === 'page.js'
-            ) {
-                // Found a page file, add the current route
-                routes.push(baseRoute || '/');
-            }
-        }
+        items = readdirSync(dir);
     } catch (error) {
         console.error(`Error reading directory ${dir}:`, error);
+        return routes;
+    }
+
+    for (const item of items) {
+        const fullPath = join(dir, item);
+        let stat;
+        try {
+            stat = statSync(fullPath);
+        } catch {
+            continue;
+        }
+
+        if (stat.isDirectory()) {
+            // Dynamic-route segments like [slug] or [token] must never be
+            // emitted as literal sitemap URLs — those are 404s. Concrete
+            // children (blog posts) come from getAllBlogPosts() below.
+            if (item.startsWith('[')) continue;
+
+            // Underscore-prefixed dirs are private/Next.js internals.
+            if (item.startsWith('_')) continue;
+
+            // Skip the API tree entirely.
+            if (item === 'api') continue;
+
+            // Route groups like (app) — recurse but don't add to path.
+            if (item.startsWith('(')) {
+                routes.push(...getPageRoutes(fullPath, baseRoute));
+                continue;
+            }
+
+            // At the app/ root, drop excluded top-level utility flows.
+            if (baseRoute === '' && EXCLUDED_TOP_SEGMENTS.has(item)) continue;
+
+            const newRoute = baseRoute
+                ? `${baseRoute}/${item}`
+                : `/${item}`;
+
+            routes.push(...getPageRoutes(fullPath, newRoute));
+        } else if (
+            item === 'page.tsx' ||
+            item === 'page.ts' ||
+            item === 'page.jsx' ||
+            item === 'page.js' ||
+            item === 'page.mdx'
+        ) {
+            routes.push(baseRoute || '/');
+        }
     }
 
     return routes;
@@ -66,14 +78,10 @@ function getPageRoutes(dir: string, baseRoute: string = ''): string[] {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = config.baseUrl;
 
-    // Dynamically get all routes from app directory
     const appDir = join(process.cwd(), 'app');
     const dynamicRoutes = getPageRoutes(appDir);
-
-    // Remove duplicates and sort
     const uniqueRoutes = [...new Set(dynamicRoutes)].sort();
 
-    // Map routes to sitemap entries with priorities
     const routeEntries = uniqueRoutes.map((route) => {
         let priority = 0.8;
         let changeFrequency:
@@ -85,7 +93,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             | 'yearly'
             | 'never' = 'weekly';
 
-        // Set priority based on route type
         if (route === '/') {
             priority = 1.0;
             changeFrequency = 'daily';
@@ -122,7 +129,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         };
     });
 
-    // Blog posts from content folder
     const blogPosts = await getAllBlogPosts();
     const blogPostRoutes = blogPosts.map((post) => ({
         url: `${baseUrl}/blog/${post.slug}`,

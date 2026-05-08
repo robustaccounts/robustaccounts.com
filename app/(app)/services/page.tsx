@@ -16,8 +16,15 @@ export default function ServicesPage() {
 }
 
 export const metadata: Metadata = {
-    title: 'Services',
+    title: 'Bookkeeping, Payroll & Tax Services | Robust Accounts',
     description:
-        'Comprehensive bookkeeping, payroll, and financial advisory services tailored to your needs.',
+        'Comprehensive bookkeeping, payroll, and financial-advisory services for small businesses — tailored to your industry, software, and growth stage.',
     alternates: { canonical: '/services' },
+    openGraph: {
+        title: 'Bookkeeping, Payroll & Tax Services | Robust Accounts',
+        description:
+            'Bookkeeping, payroll, and financial advisory built for small businesses. Tailored to your industry, software, and growth stage.',
+        url: '/services',
+        type: 'website',
+    },
 };

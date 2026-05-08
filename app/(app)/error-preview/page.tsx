@@ -1,4 +1,10 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
+
+export const metadata: Metadata = {
+    title: 'Error Preview',
+    robots: { index: false, follow: false, nocache: true },
+};
 
 // Development-only route to preview error page styling
 export default function ErrorPreviewPage() {

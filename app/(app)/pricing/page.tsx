@@ -21,7 +21,7 @@ export default function PricingPage() {
 export const metadata: Metadata = {
     title: 'Accounting & Bookkeeping Pricing Plans | Robust Accounts',
     description:
-        'Affordable bookkeeping and accounting services starting at $160/month. Choose from Starter, Professional, or Enterprise plans with payroll, tax prep, and CFO advisory. No hidden fees.',
+        'Affordable bookkeeping & accounting plans from $160/month. Starter, Professional, or Enterprise — payroll, tax prep, CFO advisory. No hidden fees.',
     keywords: [
         'bookkeeping pricing',
         'accounting services cost',
